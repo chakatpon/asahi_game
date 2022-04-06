@@ -10,54 +10,53 @@ import {
     Text
 } from 'react-native';
 const { width, height } = Dimensions.get('window')
-export default class LockScreenPinCode extends Component {
+export default function LockScreenPinCode () {
 
-    onPress1 = () => {
-      console.log(this.props.tag, '1');
+    const onPress1 = () => {
+      console.log("press button ", '1');
     }
 
-    onPress2 = () => {
-      console.log(this.props.tag, '2');
+    const onPress2 = () => {
+      console.log("press button ", '2');
     }
 
-    onPress3 = () => {
-      console.log(this.props.tag, '3');
+    const onPress3 = () => {
+      console.log("press button ", '3');
     }
     
-    onPress4 = () => {
-      console.log(this.props.tag, '4');
+    const onPress4 = () => {
+      console.log("press button ", '4');
     }
 
-    onPress5 = () => {
-      console.log(this.props.tag, '5');
+    const onPress5 = () => {
+      console.log("press button ", '5');
     }
     
-    onPress6 = () => {
-      console.log(this.props.tag, '6');
+    const onPress6 = () => {
+      console.log("press button ", '6');
     }
 
-    onPress7 = () => {
-      console.log(this.props.tag, '7');
+    const onPress7 = () => {
+      console.log("press button ", '7');
     }
 
-    onPress8 = () => {
-      console.log(this.props.tag, '8');
+    const onPress8 = () => {
+      console.log("press button ", '8');
     }
 
-    onPress9 = () => {
-      console.log(this.props.tag, '9');
+    const onPress9 = () => {
+      console.log("press button ", '9');
     }
     
-    onPressBackSpace = () => {
-      console.log(this.props.tag);
+    const onPressBackSpace = () => {
+      console.log("press button ");
     }
     
-    onPress0= () => {
-      console.log(this.props.tag, '0');
+    const onPress0 = () => {
+      console.log("press button ", '0');
     }
       
 
-    render() {
             return(
             <SafeAreaView style={styles.container}>
                 <Image source={require("../assets/images/asahi_logo.png")} style={styles.logo}  />
@@ -78,105 +77,84 @@ export default class LockScreenPinCode extends Component {
                     <View style={styles.panelWrapper}>
                         <View style={styles.buttonContainer} >
                             <View style={styles.row}>
-                                <View style={styles.button}>
-                                    <TouchableOpacity onPress={this.onPress1}>
+                                    <TouchableOpacity style={styles.touch} onPress={onPress1}>
                                       <Text style={styles.buttonLabel}>
                                         1
                                       </Text>
                                     </TouchableOpacity>
-                                </View>
-                                <View style={styles.button}>
-                                    <TouchableOpacity onPress={this.onPress2}>
+                                    <TouchableOpacity style={styles.touch} onPress={onPress2}>
                                       <Text style={styles.buttonLabel}>
                                         2
                                       </Text>
                                     </TouchableOpacity>
-                                </View>
-                                <View style={styles.button}>
-                                    <TouchableOpacity onPress={this.onPress3}>
+                                    <TouchableOpacity style={styles.touch}  onPress={onPress3}>
                                       <Text style={styles.buttonLabel}>
                                         3
                                       </Text>
                                     </TouchableOpacity>
-                                </View>
                             </View>
 
 
                             <View style={styles.row}>
-                                <View style={styles.button}>
-                                    <TouchableOpacity onPress={this.onPress4}>
+                                    <TouchableOpacity style={styles.touch}  onPress={onPress4}>
                                       <Text style={styles.buttonLabel}>
                                         4
                                       </Text>
                                     </TouchableOpacity>
-                                </View>
-                                <View style={styles.button}>
-                                    <TouchableOpacity onPress={this.onPress5}>
+                                    <TouchableOpacity style={styles.touch}  onPress={onPress5}>
                                       <Text style={styles.buttonLabel}>
                                         5
                                       </Text>
                                     </TouchableOpacity>
-                                </View>
-                                <View style={styles.button}>
-                                    <TouchableOpacity onPress={this.onPress6}>
+                                    <TouchableOpacity style={styles.touch}  onPress={onPress6}>
                                       <Text style={styles.buttonLabel}>
                                         6
                                       </Text>
                                     </TouchableOpacity>
-                                </View>
                             </View>
 
 
                             <View style={styles.row}>
-                                <View style={styles.button}>
-                                    <TouchableOpacity onPress={this.onPress7}>
+                                    <TouchableOpacity style={styles.touch}  onPress={onPress7}>
                                       <Text style={styles.buttonLabel}>
                                         7
                                       </Text>
                                     </TouchableOpacity>
-                                </View>
-                                <View style={styles.button}>
-                                    <TouchableOpacity onPress={this.onPress8}>
+                                    <TouchableOpacity style={styles.touch}  onPress={onPress8}>
                                       <Text style={styles.buttonLabel}>
                                         8
                                       </Text>
                                     </TouchableOpacity>
-                                </View>
-                                <View style={styles.button}>
-                                    <TouchableOpacity onPress={this.onPress9}>
+                                    <TouchableOpacity style={styles.touch}  onPress={onPress9}>
                                       <Text style={styles.buttonLabel}>
                                         9
                                       </Text>
                                     </TouchableOpacity>
-                                </View>
                             </View>
 
 
                             <View style={styles.row}>
                                 <View style={styles.empty}></View>
-                                <View style={styles.button}>
-                                    <TouchableOpacity onPress={this.onPress0}>
+                                    <TouchableOpacity style={styles.touch}  onPress={onPress0}>
                                       <Text style={styles.buttonLabel}>
                                         0
                                       </Text>
                                     </TouchableOpacity>
-                                </View>
                                 <View style={styles.empty} >
-                                    <TouchableOpacity style={styles.relative} onPress={this.onPress0}>
+                                    <TouchableOpacity style={styles.relative} onPress={onPressBackSpace}>
                                     <Image source={require("../assets/images/asahi_close_btn.png")} style={styles.closeButton}  />
                                     </TouchableOpacity>
                                 </View>
                             </View>
                         </View>
                         
+                    <ImageBackground source={require("../assets/images/asahi_background.png")} style={styles.backgroundImage}  />
                     </View>
-            <ImageBackground source={require("../assets/images/asahi_background.png")} style={styles.backgroundImage}  />
 
                 </View>
 
             </SafeAreaView>
         );
-    }
 }
 
 const styles = StyleSheet.create({
@@ -192,10 +170,11 @@ const styles = StyleSheet.create({
         resizeMode: 'contain'
     },
     backgroundImage: {
-        top: -450,
+        top: -300  ,
         height: height,
         width: height,
-        resizeMode: 'cover'
+        resizeMode: 'cover',
+        position:"absolute",
     },
     logo: {
         position:"absolute",
@@ -210,7 +189,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        height: 100,
+        height: 50,
         width: width,
     },
     pincodeBox: {
@@ -253,9 +232,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     buttonContainer: {
-        marginTop: 220,
+        marginTop: -180,
         height: height/1.8,
-        width: width/1.5,
+        width: width,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -280,9 +259,6 @@ const styles = StyleSheet.create({
     },
     buttonLabel: {
       color: 'red',
-      width: 80,
-      height: 80,
-      borderRadius: 80,
       alignItems: 'center',
       justifyContent: 'center',
       textAlign: "center",
@@ -299,11 +275,23 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         textAlign: "center",
         textAlignVertical: "center",
+        zIndex: 10
+    },
+    touch: {
+      width: 80,
+      height: 80,
+      borderRadius: 80,
+      borderWidth: 2,
+      borderColor: 'gray',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 10
     },
     closeButton: {
         height: 50,
         width: 50,
-        resizeMode: 'contain'
+        resizeMode: 'contain',
+        zIndex: 10
     }
   });
   

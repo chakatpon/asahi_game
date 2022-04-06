@@ -1,14 +1,10 @@
-import { StatusBar }              from 'expo-status-bar';
+import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import LockScreenPincode          from './view/LockScreenPincode';
-import Game                       from './view/Game'
 
 export default function App() {
   return (
     <View style={styles.container}>
       <Text>Open up App.js to start working on your app!</Text>
-      <LockScreenPincode/>
-      {/* <Game/> */}
       <StatusBar style="auto" />
     </View>
   );
@@ -17,7 +13,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
