@@ -59,7 +59,7 @@ export default function LockScreenPinCode () {
 
             return(
             <SafeAreaView style={styles.container}>
-                <Image source={require("../assets/images/asahi_logo.png")} style={styles.logo}  />
+                <Image source={require("../assets/images/pincode/asahi_logo.png")} style={styles.logo}  />
                 <View style={styles.wrapper}>
                     <View style={styles.pincodeContainer}>
                         <View style={styles.pincodeBox}>
@@ -142,13 +142,13 @@ export default function LockScreenPinCode () {
                                     </TouchableOpacity>
                                 <View style={styles.empty} >
                                     <TouchableOpacity style={styles.relative} onPress={onPressBackSpace}>
-                                    <Image source={require("../assets/images/asahi_close_btn.png")} style={styles.closeButton}  />
+                                    <Image source={require("../assets/images/pincode/asahi_close_btn.png")} style={styles.closeButton}  />
                                     </TouchableOpacity>
                                 </View>
                             </View>
                         </View>
                         
-                    <ImageBackground source={require("../assets/images/asahi_background.png")} style={styles.backgroundImage}  />
+                    <ImageBackground source={require("../assets/images/pincode/asahi_background.png")} style={styles.backgroundImage}  />
                     </View>
 
                 </View>
