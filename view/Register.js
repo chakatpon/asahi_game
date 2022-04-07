@@ -8,10 +8,13 @@ import {
     ImageBackground,
     Dimensions,
     Text,
-    TextInput
+    TextInput,
+    Linking, 
+    Button
 } from 'react-native';
-// import { CheckBox } from 'react-native-paper';
-const { width, height } = Dimensions.get('window')
+import { CheckBox } from 'react-native-elements'
+const { width, height } = Dimensions.get('window');
+
 export default function Register () {
   const [newName, setName]   = useState('');
   const [newPhone, setPhone] = useState('');
@@ -41,14 +44,28 @@ export default function Register () {
                                         onChangeText={newPhone => setPhone(newPhone)}
                                         defaultValue={newPhone}/>
                                 <TextInput/>
-                                {/* <View style={styles.checkboxContainer}>
+                                <View style={styles.checkboxContainer}>
                                   <CheckBox
-                                    value={isSelected}
-                                    onValueChange={setSelection}
-                                    style={styles.checkbox}
+                                    title={"ยอมรับเงื่อนไขการเข้าร่วมกิจกรรม"}
+                                    textStyle={styles.label}
+                                    containerStyle={styles.checkbox}
+                                    checkedColor='white'
+                                    checked={isSelected}
+                                    onPress={(e) => setSelection(!isSelected)}
                                   />
-                                  <Text style={styles.label}>Do you like React Native?</Text>
-                                </View> */}
+                                  {/* <Text style={styles.label}>ยอมรับเงื่อนไขการเข้าร่วมกิจกรรม</Text> */}
+                                </View>
+                                <TouchableOpacity style={styles.linkWrapper}>
+                                  <Text style={styles.link}
+                                        onPress={() => Linking.openURL('https://www.google.com')}>
+                                    อ่านโยบายความปลอดภัย
+                                  </Text>
+                                </TouchableOpacity>
+                                <View style={styles.submitWrapper} >
+                                  <TouchableOpacity style={styles.submit}>
+                                    <Text style={styles.submitText}>ลงทะเบียน</Text>
+                                  </TouchableOpacity>
+                                </View>
                               </View>
                           </View>
                       </View>
@@ -168,13 +185,65 @@ const styles = StyleSheet.create({
       },
     checkboxContainer: {
       flexDirection: "row",
-      marginBottom: 20,
+      width: 250,
+      padding: 0,
+      margin: 0,
+      zIndex: 100
     },
     checkbox: {
-      alignSelf: "center",
+      padding: 0,
+      margin: 0,
+      backgroundColor: 'transparent',
+      color: 'white',
+      marginLeft: 0,
+      marginRight: 10,
+      borderLeftWidth: 0,
+      borderColor: 'transparent',
+      zIndex: 100
     },
     label: {
       margin: 8,
+      color: "#fff",
+      padding: 0,
+      margin: 0,
+      zIndex: 100
     },
+    linkWrapper: {
+      width: 250,
+      height: 40,
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: "center",
+      textAlignVertical: "center",
+      zIndex: 100
+    },
+    link: {
+      color: 'grey',
+      textDecorationLine: 'underline',
+      zIndex: 100
+    },
+    submitWrapper: {
+      width: 250,
+      height: 90,
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: "center",
+      textAlignVertical: "center",
+      zIndex: 100
+    },
+    submit: {
+      width: 180,
+      height: 45,
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: "center",
+      textAlignVertical: "center",
+      backgroundColor: 'red',
+      zIndex: 100
+    },
+    submitText: {
+      fontSize: 16,
+      color: 'white',
+    }
   });
   
