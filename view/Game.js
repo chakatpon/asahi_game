@@ -1,4 +1,4 @@
-import react, {Component} from 'react';
+import React, {useState} from 'react';
 import {
     SafeAreaView,
     StyleSheet,
@@ -8,111 +8,146 @@ import {
     ImageBackground,
     Dimensions,
     Text,
-    PanResponder,
+    TextInput,
+    Linking, 
+    Button
 } from 'react-native';
+import { CheckBox } from 'react-native-elements'
 const { width, height } = Dimensions.get('window')
+export default function Game ({navigation}) {
+  const [newName, setName]   = useState('');
+  const [newPhone, setPhone] = useState('');
+  const [isSelected, setSelection] = useState(false);
 
-export default function Game () {
+            return(
+            <SafeAreaView style={styles.container}>
+                <Image source={require("../assets/images/register/asahi_logo.png")} style={styles.logo}  />
+                <View style={styles.wrapper}>
+                    <View style={styles.panelWrapper}>
+                      <View style={styles.registerContainer}>
+                          <View style={styles.registerBox}>
+                              <Text style={styles.registerText}>Game</Text>
+                          </View>
+                      </View>
+                    <ImageBackground source={require("../assets/images/register/background.png")} style={styles.backgroundImage}  />
+                    </View>
 
-    const panResponder = PanResponder.create({
-        onMoveShouldSetPanResponder: () => true,
-        onPanResponderMove: handlePanResponderMove.bind(this)
-    });
+                  <View style={styles.menu}  >
+                    <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Home')}}>
+                      <Image source={require("../assets/images/register/logo_home.png")}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Register')}} >
+                      <Image source={require("../assets/images/register/logo_register.png")}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.seletedMenuItem} onPress={() => {navigation.navigate('Game')}}>
+                      <Image source={require("../assets/images/register/logo_game.png")}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Home')}}>
+                      <Image source={require("../assets/images/register/logo_search.png")}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Home')}}>
+                      <Image source={require("../assets/images/register/logo_logout.png")}/>
+                    </TouchableOpacity>
+                  </View>
 
-    function handlePanResponderMove(e, gestureState) {
-        const {dx, dy} = gestureState;
-        const y = `${dx}deg`;
-        const x = `${-dy}deg`;
-        this.refView.setNativeProps({style: {transform: [{perspective: 1000}, {rotateX: x}, {rotateY: y}]}});
-      }
+                </View>
 
-      return (
-        <View >
-            <TouchableOpacity {...panResponder} style={styles.cube}>
-                <View style={styles.front}></View>
-                <View style={styles.right}></View>
-                <View style={styles.back}></View>
-                <View style={styles.left}></View>
-            </TouchableOpacity>
-        </View>
-      );
-  }
+            </SafeAreaView>
+        );
+}
 
-const styles = {
+const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      justifyContent: 'center',
+      backgroundColor: '#000',
       alignItems: 'center',
-      height: height,
+      justifyContent: 'center'
+    },
+    wrapper: {
+        height: height,
+        width: width,
+        resizeMode: 'contain'
+    },
+    backgroundImage: {
+        top: 0  ,
+        height: height,
+        width: height,
+        resizeMode: 'cover',
+        position:"absolute",
+    },
+    logo: {
+        position:"absolute",
+        width: width/3,
+        top: 0,
+        left: 0,
+        right: 0,
+        resizeMode: 'contain',
+        zIndex: 100
+    },
+    panelWrapper: {
+        height: height,
+        width: width,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    registerContainer: {
+        marginTop: -10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: height,
+        width: width,
+        zIndex: 100
+    },
+    registerBox: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: height,
+        width: width/2,
+        zIndex: 100
+    },
+    registerText: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: "center",
+        textAlignVertical: "center",
+        fontSize: 50,
+        color: '#fff',
+        height: 80,
+        width: width/1.5,
+        zIndex: 100,
+        marginBottom: 50
+    },
+    menu: {
+      display: 'flex',
+      flexDirection: 'row',
       width: width,
-      perspective: 800,
-      perspectiveOrigin: "bottom left",
+      height: height/8,
+      position:'absolute',
+      alignItems: 'center',
+      justifyContent: 'center',
+      bottom: 20,
+      right:0,
+      zIndex: 100
     },
-    cube: {
-      width: 200,
-      height: 200,
-      position: "relative",
-      transformStyle: 'preserve-3d',
-      animation: "spin 12s linear infinite",
-      translateX: -100,
-      translateY: -100,
-      rotate: '45deg',
-      translateX: 100,
-      translateY: 100
-      
+    menuItem: {
+      borderColor: 'red',
+      width: width/5,
+      height: height/8,
+      borderWidth: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'white',
+      zIndex: 100
     },
-    front: {
-        position: "absolute",
-        width: 200,
-        height: 200,
-        translateZ: 100,
-        backgroundColor: 'red'
+    seletedMenuItem: {
+      borderColor: 'red',
+      width: width/5,
+      height: height/8,
+      borderWidth: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'white',
+      backgroundColor: 'red',
+      zIndex: 100
     },
-    right: {
-        position: "absolute",
-        width: 200,
-        height: 200,
-        // transform: [{rotateY: '-270deg' },{translateX: 150}],
-        rotateY: '-270deg',
-        translateX: 100,
-        backgroundColor: 'blue'
-
-    },
-    back: {
-        position: "absolute",
-        width: 200,
-        height: 200,
-        // transform: [{rotateY:'180deg'}],
-        translateZ: 100,
-        rotateY: '180deg',
-        backgroundColor: 'green'
-
-    },
-    left: {
-        position: "absolute",
-        width: 200,
-        height: 200,
-        // transform: [{rotateY: '270deg' },{translateX: -150}],
-        rotateY: '270deg',
-        translateX: -100,
-        backgroundColor: 'yellow'
-
-    }
-  }
+  });
   
-
-//   .front{
-//     transform: translateZ(150px);
-// }
-// .right{
-//     transform: rotateY(-270deg) translateX(150px);
-//     transform-origin: 100% 0;
-// }
-// .back{
-//     transform: translateZ(-150px) rotateY(180deg);
-// }
-// .left{
-//     transform: rotateY(270deg) translateX(-150px);
-//     transform-origin: 0 50%;
-// }
-

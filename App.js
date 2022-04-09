@@ -1,4 +1,4 @@
-import react, {useState}          from 'react';
+import React, {useState}          from 'react';
 import { StatusBar }              from 'expo-status-bar';
 import { StyleSheet, 
          Text, 
@@ -18,22 +18,21 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [hasPincode, setHasPincode] = useState(true)
+
+  const logout = () => {
+    setHasPincode(false)
+  }
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      {!hasPincode 
-       ? <LockScreenPincode/>
-       :  
        <NavigationContainer>
          <Stack.Navigator 
             screenOptions={{ headerShown: false }}>
-           <Stack.Screen style={styles.screen} name="Register" component={Register} />
+           <Stack.Screen name="Register" component={Register} />
+           <Stack.Screen name="LockScreen" component={LockScreenPincode} />
            <Stack.Screen name="Home" component={Home} />
            <Stack.Screen name="Game" component={Game} />
          </Stack.Navigator>
          </NavigationContainer>
-        //  <Register/>
-         }
       <StatusBar style="auto" />
     </View>
   );

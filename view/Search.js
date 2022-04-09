@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { CheckBox } from 'react-native-elements'
 const { width, height } = Dimensions.get('window')
-export default function Home ({navigation}) {
+export default function Search ({navigation}) {
 
             return(
             <SafeAreaView style={styles.container}>

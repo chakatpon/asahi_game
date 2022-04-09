@@ -1,4 +1,5 @@
-import React, {Component} from 'react';
+import React, {Component ,useState} from 'react';
+import { render } from 'react-dom';
 import {
     SafeAreaView,
     StyleSheet,
@@ -10,55 +11,118 @@ import {
     Text
 } from 'react-native';
 const { width, height } = Dimensions.get('window')
-export default function LockScreenPinCode () {
+export default class LockScreenPinCode extends Component {
 
-    const onPress1 = () => {
+  constructor(props){
+    super();
+    this.state = {
+      pincode: ['','','','','','']
+    };
+  }
+  //  [pincode, setPincode] = useState([])
+
+     onPress1 = () =>  {
       console.log("press button ", '1');
+      this.typePincode('1');
     }
 
-    const onPress2 = () => {
+     onPress2 = () =>  {
       console.log("press button ", '2');
+      this.typePincode('2');
     }
 
-    const onPress3 = () => {
+     onPress3 = () =>  {
       console.log("press button ", '3');
+      this.typePincode('3');
     }
     
-    const onPress4 = () => {
+     onPress4 = () =>  {
       console.log("press button ", '4');
+      this.typePincode('4');
     }
 
-    const onPress5 = () => {
+     onPress5 = () =>  {
       console.log("press button ", '5');
+      this.typePincode('5');
     }
     
-    const onPress6 = () => {
+     onPress6 = () =>  {
       console.log("press button ", '6');
+      this.typePincode('6');
     }
 
-    const onPress7 = () => {
+     onPress7 = () => {
       console.log("press button ", '7');
+      this.typePincode('7');
     }
 
-    const onPress8 = () => {
+     onPress8 = () => {
       console.log("press button ", '8');
+      this.typePincode('8');
     }
 
-    const onPress9 = () => {
+     onPress9 = () => {
       console.log("press button ", '9');
+      this.typePincode('9');
+      console.log("this.state.pincode : ", this.state.pincode)
     }
     
-    const onPressBackSpace = () => {
-      console.log("press button ");
-    }
-    
-    const onPress0 = () => {
+     onPress0 = () => {
       console.log("press button ", '0');
+      this.typePincode('0')
+    }
+
+     onPressBackSpace = () => {
+      console.log("press button backspace");
+      this.removePinCode();
+    }
+
+     typePincode = (num) => {
+       let tempcode = this.state.pincode;
+       for(let i = 0; i < tempcode.length; i++) {
+         if(tempcode[i] == ''){
+           tempcode[i] = num;
+           break;
+         }else {
+           continue;
+         }
+       }
+       this.setState({pincode: tempcode});
+
+      console.log("this.state.pincode : ", this.state.pincode)
+    }
+
+     removePinCode = () => {
+      let tempcode = this.state.pincode;
+      for(let i = (tempcode.length-1); i >= 0; i--) {
+        if(tempcode[i] != ''){
+          tempcode[i] = '';
+          break;
+        }else {
+          continue;
+        }
+      }
+      this.setState({pincode: tempcode});
+
+     console.log("this.state.pincode : ", this.state.pincode)
+    }
+
+     renderCode = () => {
+      let codes = [] 
+      for(let i=0; i < 6; i++){
+        if(pincode[i]) {
+          codes.push((<View key={i} style={styles.code2}></View>));
+          continue;
+        }else {
+          codes.push((<View key={i} style={styles.code1}></View>));
+          continue;
+        }
+      }
+      return codes
     }
       
-
-            return(
-            <SafeAreaView style={styles.container}>
+    render() {
+        return <SafeAreaView style={styles.container}>
                 <Image source={require("../assets/images/pincode/asahi_logo.png")} style={styles.logo}  />
                 <View style={styles.wrapper}>
                     <View style={styles.pincodeContainer}>
@@ -66,28 +130,26 @@ export default function LockScreenPinCode () {
                             <Text style={styles.pincodeText}>Enter PassCode</Text>
                         </View>
                         <View style={styles.codeContainer}>
-                            <View style={styles.code}></View>
-                            <View style={styles.code}></View>
-                            <View style={styles.code}></View>
-                            <View style={styles.code}></View>
-                            <View style={styles.code}></View>
-                            <View style={styles.code}></View>
+                          {this.state.pincode.map((pin,i)=> {
+                            let style = (pin != '') ? styles.code2 : styles.code1;
+                            return <View key={i} style={style}></View>
+                          })}
                         </View>
                     </View>
                     <View style={styles.panelWrapper}>
                         <View style={styles.buttonContainer} >
                             <View style={styles.row}>
-                                    <TouchableOpacity style={styles.touch} onPress={onPress1}>
+                                    <TouchableOpacity style={styles.touch} onPress={this.onPress1}>
                                       <Text style={styles.buttonLabel}>
                                         1
                                       </Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={styles.touch} onPress={onPress2}>
+                                    <TouchableOpacity style={styles.touch} onPress={this.onPress2}>
                                       <Text style={styles.buttonLabel}>
                                         2
                                       </Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={styles.touch}  onPress={onPress3}>
+                                    <TouchableOpacity style={styles.touch}  onPress={this.onPress3}>
                                       <Text style={styles.buttonLabel}>
                                         3
                                       </Text>
@@ -96,17 +158,17 @@ export default function LockScreenPinCode () {
 
 
                             <View style={styles.row}>
-                                    <TouchableOpacity style={styles.touch}  onPress={onPress4}>
+                                    <TouchableOpacity style={styles.touch}  onPress={this.onPress4}>
                                       <Text style={styles.buttonLabel}>
                                         4
                                       </Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={styles.touch}  onPress={onPress5}>
+                                    <TouchableOpacity style={styles.touch}  onPress={this.onPress5}>
                                       <Text style={styles.buttonLabel}>
                                         5
                                       </Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={styles.touch}  onPress={onPress6}>
+                                    <TouchableOpacity style={styles.touch}  onPress={this.onPress6}>
                                       <Text style={styles.buttonLabel}>
                                         6
                                       </Text>
@@ -115,17 +177,17 @@ export default function LockScreenPinCode () {
 
 
                             <View style={styles.row}>
-                                    <TouchableOpacity style={styles.touch}  onPress={onPress7}>
+                                    <TouchableOpacity style={styles.touch}  onPress={this.onPress7}>
                                       <Text style={styles.buttonLabel}>
                                         7
                                       </Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={styles.touch}  onPress={onPress8}>
+                                    <TouchableOpacity style={styles.touch}  onPress={this.onPress8}>
                                       <Text style={styles.buttonLabel}>
                                         8
                                       </Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={styles.touch}  onPress={onPress9}>
+                                    <TouchableOpacity style={styles.touch}  onPress={this.onPress9}>
                                       <Text style={styles.buttonLabel}>
                                         9
                                       </Text>
@@ -135,13 +197,13 @@ export default function LockScreenPinCode () {
 
                             <View style={styles.row}>
                                 <View style={styles.empty}></View>
-                                    <TouchableOpacity style={styles.touch}  onPress={onPress0}>
+                                    <TouchableOpacity style={styles.touch}  onPress={this.onPress0}>
                                       <Text style={styles.buttonLabel}>
                                         0
                                       </Text>
                                     </TouchableOpacity>
                                 <View style={styles.empty} >
-                                    <TouchableOpacity style={styles.relative} onPress={onPressBackSpace}>
+                                    <TouchableOpacity style={styles.relative} onPress={this.onPressBackSpace}>
                                     <Image source={require("../assets/images/pincode/asahi_close_btn.png")} style={styles.closeButton}  />
                                     </TouchableOpacity>
                                 </View>
@@ -153,8 +215,8 @@ export default function LockScreenPinCode () {
 
                 </View>
 
-            </SafeAreaView>
-        );
+            </SafeAreaView>;
+     } 
 }
 
 const styles = StyleSheet.create({
@@ -217,13 +279,22 @@ const styles = StyleSheet.create({
         alignContent: "center",
         width: width/2,
     },
-    code: {
+    code1: {
         width: 13,
         height: 13,
         borderRadius: 13,
         borderWidth: 1,
         borderColor: 'red'
     },
+
+    code2: {
+      width: 13,
+      height: 13,
+      borderRadius: 13,
+      borderWidth: 1,
+      borderColor: 'red',
+      backgroundColor: 'red'
+  },
 
     panelWrapper: {
         height: height/2,

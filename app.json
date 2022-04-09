@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "asahi_gami",
+    "name": "asahi_game",
     "slug": "asahi_game",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -27,6 +27,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "This project is ASAHI game create for ASAHI event.",
+    "githubUrl": "https://github.com/chakatpon/asahi_game.git"
   }
 }
