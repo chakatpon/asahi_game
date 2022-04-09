@@ -26,7 +26,7 @@ export default function Home () {
                     <View style={styles.panelWrapper}>
                       <View style={styles.registerContainer}>
                           <View style={styles.registerBox}>
-                              <Text style={styles.registerText}>Register</Text>
+                              <Text style={styles.registerText}>Home</Text>
                           </View>
                       </View>
                     <ImageBackground source={require("../assets/images/register/background.png")} style={styles.backgroundImage}  />
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     logo: {
         position:"absolute",
         width: width/3,
-        top: -70,
+        top: 0,
         left: 0,
         right: 0,
         resizeMode: 'contain',

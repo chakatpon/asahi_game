@@ -60,7 +60,6 @@ export default function Register ({navigation}) {
                                       checked={isSelected}
                                       onPress={(e) => setSelection(!isSelected)}
                                     />
-                                    {/* <Text style={styles.label}>ยอมรับเงื่อนไขการเข้าร่วมกิจกรรม</Text> */}
                                   </View>
                                   <TouchableOpacity style={styles.linkWrapper}>
                                     <Text style={styles.link}
@@ -73,6 +72,9 @@ export default function Register ({navigation}) {
                                       <Text style={styles.submitText}>ลงทะเบียน</Text>
                                     </TouchableOpacity>
                                   </View>
+                                  <TouchableOpacity style={styles.registerLogoWrapper} onPress={() => {setStep(2)}} >
+                                    <Image source={require("../assets/images/register/register_logo.png")} style={styles.RegisterLogo}  />
+                                  </TouchableOpacity>
                                 </View>
                             </View>
                         </View>
@@ -82,7 +84,7 @@ export default function Register ({navigation}) {
                                 <Text style={styles.registerText}>Register</Text>
                                 <View style={styles.registerForm}>
                                   <View style={styles.titleForm}>
-                                    <Text style={styles.title} >ยืนยันตัวตนด้วยรหัส OTP จากข้อความที่ SMS ที่โทรศัทพ์ของคุณ</Text>
+                                    <Text style={styles.title2} >ยืนยันตัวตนด้วยรหัส OTP จากข้อความที่ SMS ที่โทรศัทพ์ของคุณ</Text>
                                   </View>
                                   <TextInput
                                           style={styles.input}
@@ -90,8 +92,8 @@ export default function Register ({navigation}) {
                                           onChangeText={OTP => setName(OTP)}
                                           defaultValue={OTP}/>
                                   <TextInput/>
-                                  <TouchableOpacity style={styles.linkWrapper}>
-                                    <Text style={styles.link}
+                                  <TouchableOpacity style={styles.linkWrapper2}>
+                                    <Text style={styles.link2}
                                           onPress={() => Linking.openURL('https://www.google.com')}>
                                       ส่งรหัส OTP อีกครั้ง
                                     </Text>
@@ -101,6 +103,9 @@ export default function Register ({navigation}) {
                                       <Text style={styles.submitText}>ตกลง</Text>
                                     </TouchableOpacity>
                                   </View>
+                                  <TouchableOpacity style={styles.registerLogoWrapper} onPress={() => {setStep(1)}}>
+                                    <Image source={require("../assets/images/register/register_logo.png")} style={styles.RegisterLogo}  />
+                                  </TouchableOpacity>
                                 </View>
                             </View>
                         </View>
@@ -110,42 +115,16 @@ export default function Register ({navigation}) {
                               <Text style={styles.registerText}>Register</Text>
                               <View style={styles.registerForm}>
                                 <View style={styles.titleForm}>
-                                  <Text style={styles.title} >ลงทะเบียนร่วมกิจกรรม</Text>
+                                  <Text style={styles.title2} >การลงทะเบียนสำเร็จขอบคุณสำหรับการร่วนกิจกรรม</Text>
                                 </View>
-                                <TextInput
-                                        style={styles.input}
-                                        placeholder="ชื่อ - นามสกุล"
-                                        onChangeText={newName => setName(newName)}
-                                        defaultValue={newName}/>
-                                <TextInput/>
-                                <TextInput
-                                        style={styles.input}
-                                        placeholder="เบอร์โทรศัพท์"
-                                        onChangeText={newPhone => setPhone(newPhone)}
-                                        defaultValue={newPhone}/>
-                                <TextInput/>
-                                <View style={styles.checkboxContainer}>
-                                  <CheckBox
-                                    title={"ยอมรับเงื่อนไขการเข้าร่วมกิจกรรม"}
-                                    textStyle={styles.label}
-                                    containerStyle={styles.checkbox}
-                                    checkedColor='white'
-                                    checked={isSelected}
-                                    onPress={(e) => setSelection(!isSelected)}
-                                  />
-                                  {/* <Text style={styles.label}>ยอมรับเงื่อนไขการเข้าร่วมกิจกรรม</Text> */}
-                                </View>
-                                <TouchableOpacity style={styles.linkWrapper}>
-                                  <Text style={styles.link}
-                                        onPress={() => Linking.openURL('https://www.google.com')}>
-                                    อ่านโยบายความปลอดภัย
-                                  </Text>
-                                </TouchableOpacity>
                                 <View style={styles.submitWrapper} >
                                   <TouchableOpacity style={styles.submit} onPress={() => {navigation.navigate('Home')}}>
-                                    <Text style={styles.submitText}>ลงทะเบียน</Text>
+                                    <Text style={styles.submitText}>กลับไปหน้าหลัก</Text>
                                   </TouchableOpacity>
                                 </View>
+                                <TouchableOpacity style={styles.registerLogoWrapper} onPress={() => {setStep(1)}} >
+                                    <Image source={require("../assets/images/register/register_logo.png")} style={styles.RegisterLogo}  />
+                                  </TouchableOpacity>
                               </View>
                           </View>
                       </View>: null}
@@ -232,6 +211,18 @@ const styles = StyleSheet.create({
       zIndex: 100
 
     },
+    registerLogoWrapper: {
+      position: 'absolute',
+      bottom:-9,
+      right: -66, 
+      width: width/3,
+      zIndex: 200
+    },
+    RegisterLogo: {
+      width: width/4,
+      resizeMode: 'contain',
+      zIndex: 200
+  },
     titleForm: {
       alignItems: 'center',
       justifyContent: 'center',
@@ -253,6 +244,15 @@ const styles = StyleSheet.create({
       fontSize: 30,
       color: '#fff',
       width: width
+    },
+    title2: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: "center",
+      textAlignVertical: "center",
+      fontSize: 30,
+      color: '#fff',
+      width: width/2
     },
     input: {
       alignItems: 'center',
@@ -299,8 +299,22 @@ const styles = StyleSheet.create({
       textAlignVertical: "center",
       zIndex: 100
     },
+    linkWrapper2: {
+      width: 350,
+      height: 40,
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: "center",
+      textAlignVertical: "center",
+      zIndex: 100
+    },
     link: {
       color: 'grey',
+      textDecorationLine: 'underline',
+      zIndex: 100
+    },
+    link2: {
+      color: "#fff",
       textDecorationLine: 'underline',
       zIndex: 100
     },
