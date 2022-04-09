@@ -179,13 +179,13 @@ const styles = StyleSheet.create({
     logo: {
         position:"absolute",
         width: width/3,
-        top:-70,
+        top: 0,
         left: 0,
         right: 0,
         resizeMode: 'contain'
     },
     pincodeContainer: {
-        marginTop: 120,
+        marginTop: 240,
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     buttonContainer: {
-        marginTop: -180,
+        marginTop: -300,
         height: height/1.8,
         width: width,
         alignItems: 'center',
@@ -266,8 +266,8 @@ const styles = StyleSheet.create({
       fontSize: 30,
     },
     empty: {
-        width: 80,
-        height:80
+        width: 120,
+        height: 120
     },
     relative: {
         flex: 1,
@@ -278,9 +278,9 @@ const styles = StyleSheet.create({
         zIndex: 10
     },
     touch: {
-      width: 80,
-      height: 80,
-      borderRadius: 80,
+      width: 120,
+      height: 120,
+      borderRadius: 120,
       borderWidth: 2,
       borderColor: 'gray',
       alignItems: 'center',

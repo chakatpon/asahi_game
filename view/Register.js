@@ -13,19 +13,99 @@ import {
     Button
 } from 'react-native';
 import { CheckBox } from 'react-native-elements'
+
 const { width, height } = Dimensions.get('window');
 
-export default function Register () {
-  const [newName, setName]   = useState('');
-  const [newPhone, setPhone] = useState('');
-  const [isSelected, setSelection] = useState(false);
+export default function Register ({navigation}) {
+  // navigation.navigate('Home')
+  const [step, setStep]             = useState(1)
+  const [newName, setName]          = useState('');
+  const [newPhone, setPhone]        = useState('');
+  const [isSelected, setSelection]  = useState(false);
+  const [OTP, setOTP]               = useState('');
+  const [refOTP, setRefOTP]         = useState('');
+
 
             return(
             <SafeAreaView style={styles.container}>
                 <Image source={require("../assets/images/register/asahi_logo.png")} style={styles.logo}  />
                 <View style={styles.wrapper}>
                     <View style={styles.panelWrapper}>
-                      <View style={styles.registerContainer}>
+                    {step == 1 // Register Step 1
+                      ? <View style={styles.registerContainer}>
+                            <View style={styles.registerBox}>
+                                <Text style={styles.registerText}>Register</Text>
+                                <View style={styles.registerForm}>
+                                  <View style={styles.titleForm}>
+                                    <Text style={styles.title} >ลงทะเบียนร่วมกิจกรรม</Text>
+                                  </View>
+                                  <TextInput
+                                          style={styles.input}
+                                          placeholder="ชื่อ - นามสกุล"
+                                          onChangeText={newName => setName(newName)}
+                                          defaultValue={newName}/>
+                                  <TextInput/>
+                                  <TextInput
+                                          style={styles.input}
+                                          placeholder="เบอร์โทรศัพท์"
+                                          onChangeText={newPhone => setPhone(newPhone)}
+                                          defaultValue={newPhone}/>
+                                  <TextInput/>
+                                  <View style={styles.checkboxContainer}>
+                                    <CheckBox
+                                      title={"ยอมรับเงื่อนไขการเข้าร่วมกิจกรรม"}
+                                      textStyle={styles.label}
+                                      containerStyle={styles.checkbox}
+                                      checkedColor='white'
+                                      checked={isSelected}
+                                      onPress={(e) => setSelection(!isSelected)}
+                                    />
+                                    {/* <Text style={styles.label}>ยอมรับเงื่อนไขการเข้าร่วมกิจกรรม</Text> */}
+                                  </View>
+                                  <TouchableOpacity style={styles.linkWrapper}>
+                                    <Text style={styles.link}
+                                          onPress={() => Linking.openURL('https://www.google.com')}>
+                                      อ่านโยบายความปลอดภัย
+                                    </Text>
+                                  </TouchableOpacity>
+                                  <View style={styles.submitWrapper} >
+                                    <TouchableOpacity style={styles.submit} onPress={() => {setStep(2)}}>
+                                      <Text style={styles.submitText}>ลงทะเบียน</Text>
+                                    </TouchableOpacity>
+                                  </View>
+                                </View>
+                            </View>
+                        </View>
+                      : step == 2 // Register Step 2
+                      ? <View style={styles.registerContainer}>
+                            <View style={styles.registerBox}>
+                                <Text style={styles.registerText}>Register</Text>
+                                <View style={styles.registerForm}>
+                                  <View style={styles.titleForm}>
+                                    <Text style={styles.title} >ยืนยันตัวตนด้วยรหัส OTP จากข้อความที่ SMS ที่โทรศัทพ์ของคุณ</Text>
+                                  </View>
+                                  <TextInput
+                                          style={styles.input}
+                                          placeholder="รหัส OTP"
+                                          onChangeText={OTP => setName(OTP)}
+                                          defaultValue={OTP}/>
+                                  <TextInput/>
+                                  <TouchableOpacity style={styles.linkWrapper}>
+                                    <Text style={styles.link}
+                                          onPress={() => Linking.openURL('https://www.google.com')}>
+                                      ส่งรหัส OTP อีกครั้ง
+                                    </Text>
+                                  </TouchableOpacity>
+                                  <View style={styles.submitWrapper} >
+                                    <TouchableOpacity style={styles.submit} onPress={() => {setStep(3)}}>
+                                      <Text style={styles.submitText}>ตกลง</Text>
+                                    </TouchableOpacity>
+                                  </View>
+                                </View>
+                            </View>
+                        </View>
+                    : step == 3
+                    ? <View style={styles.registerContainer}>
                           <View style={styles.registerBox}>
                               <Text style={styles.registerText}>Register</Text>
                               <View style={styles.registerForm}>
@@ -62,13 +142,14 @@ export default function Register () {
                                   </Text>
                                 </TouchableOpacity>
                                 <View style={styles.submitWrapper} >
-                                  <TouchableOpacity style={styles.submit}>
+                                  <TouchableOpacity style={styles.submit} onPress={() => {navigation.navigate('Home')}}>
                                     <Text style={styles.submitText}>ลงทะเบียน</Text>
                                   </TouchableOpacity>
                                 </View>
                               </View>
                           </View>
-                      </View>
+                      </View>: null}
+                      
                     <ImageBackground source={require("../assets/images/register/background.png")} style={styles.backgroundImage}  />
                     </View>
 
@@ -99,7 +180,7 @@ const styles = StyleSheet.create({
     logo: {
         position:"absolute",
         width: width/3,
-        top: -70,
+        top: 0,
         left: 0,
         right: 0,
         resizeMode: 'contain',
@@ -160,7 +241,7 @@ const styles = StyleSheet.create({
       borderBottomColor: 'red',
       borderBottomWidth: 2,
       color: '#fff',
-      width: 120,
+      width: 160,
       padding: 10,
       marginBottom: 20
     },
@@ -169,7 +250,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       textAlign: "center",
       textAlignVertical: "center",
-      fontSize: 25,
+      fontSize: 30,
       color: '#fff',
       width: width
     },
@@ -178,14 +259,14 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       textAlignVertical: "center",
       paddingLeft: 4,
-      height: 30,
-      width: 250,
+      height: 45,
+      width: 350,
       zIndex: 100,
       backgroundColor: '#fff'
       },
     checkboxContainer: {
       flexDirection: "row",
-      width: 250,
+      width: 350,
       padding: 0,
       margin: 0,
       zIndex: 100
@@ -209,7 +290,8 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     linkWrapper: {
-      width: 250,
+      marginTop:50,
+      width: 350,
       height: 40,
       alignItems: 'center',
       justifyContent: 'center',
@@ -223,7 +305,7 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     submitWrapper: {
-      width: 250,
+      width: 350,
       height: 90,
       alignItems: 'center',
       justifyContent: 'center',
