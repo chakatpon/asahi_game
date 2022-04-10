@@ -8,6 +8,7 @@ import LockScreenPincode          from './view/LockScreenPincode';
 import Game                       from './view/Game';
 import Register                   from './view/Register';
 import Home                       from './view/Home';
+import Search                     from './view/Search';  
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import 'react-native-gesture-handler'
@@ -29,6 +30,7 @@ export default function App() {
             screenOptions={{ headerShown: false }}>
            <Stack.Screen name="Register" component={Register} />
            <Stack.Screen name="LockScreen" component={LockScreenPincode} />
+           <Stack.Screen name="Search" component={Search} />
            <Stack.Screen name="Home" component={Home} />
            <Stack.Screen name="Game" component={Game} />
          </Stack.Navigator>

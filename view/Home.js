@@ -39,7 +39,7 @@ export default function Home ({navigation}) {
                     <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Game')}}>
                       <Image source={require("../assets/images/register/logo_game.png")}/>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Home')}}>
+                    <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Search')}}>
                       <Image source={require("../assets/images/register/logo_search.png")}/>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Home')}}>

@@ -3,6 +3,7 @@ import {
     SafeAreaView,
     StyleSheet,
     TouchableOpacity,
+    TouchableHighlight,
     View,
     Image,
     ImageBackground,
@@ -15,6 +16,11 @@ import {
 import { CheckBox } from 'react-native-elements'
 const { width, height } = Dimensions.get('window')
 export default function Search ({navigation}) {
+const [search, setSearch] = useState('')
+
+const _fetchResults = () => {
+  console.log('fetchResult : ')
+}
 
             return(
             <SafeAreaView style={styles.container}>
@@ -23,14 +29,31 @@ export default function Search ({navigation}) {
                     <View style={styles.panelWrapper}>
                       <View style={styles.registerContainer}>
                           <View style={styles.registerBox}>
-                              <Text style={styles.registerText}>Home</Text>
+                              <Text style={styles.registerText}>Search</Text>
+                              <View style={styles.inputWrapper}>
+                              <View style={styles.inputWrapper}>
+                                <TextInput
+                                    style={styles.input}
+                                    value = {search}
+                                    onChangeText = {(search) => {setSearch(search)}}
+                                    placeholder = 'ค้นหาเบอร์โทรศัทพ์'
+                                    keyboardType = 'numeric'
+                                    onSubmitEditing = {()=>{_fetchResults()}}
+                                    />
+                              </View>
+                              <TouchableHighlight style={styles.inputButton} onPress = {()=>{_fetchResults()}} underlayColor = 'transparent'>
+                                  <Text style={styles.buttonText} >
+                                    GO
+                                  </Text>
+                              </TouchableHighlight>
+                          </View>
                           </View>
                       </View>
                     <ImageBackground source={require("../assets/images/register/background.png")} style={styles.backgroundImage}  />
                     </View>
 
                   <View style={styles.menu}  >
-                    <TouchableOpacity style={styles.seletedMenuItem} onPress={() => {navigation.navigate('Home')}}>
+                    <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Home')}}>
                       <Image source={require("../assets/images/register/logo_home.png")}/>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Register')}} >
@@ -39,7 +62,7 @@ export default function Search ({navigation}) {
                     <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Game')}}>
                       <Image source={require("../assets/images/register/logo_game.png")}/>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Home')}}>
+                    <TouchableOpacity style={styles.seletedMenuItem} onPress={() => {navigation.navigate('Search')}}>
                       <Image source={require("../assets/images/register/logo_search.png")}/>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Home')}}>
@@ -87,7 +110,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     registerContainer: {
-        marginTop: -10,
+        marginTop: -200,
         alignItems: 'center',
         justifyContent: 'center',
         height: height,
@@ -146,5 +169,41 @@ const styles = StyleSheet.create({
       backgroundColor: 'red',
       zIndex: 100
     },
+    inputWrapper: {
+      flexDirection:'row',
+      alignItems:'center',
+      justifyContent:'center',
+      height: 60,
+      width: 360,
+      zIndex: 100
+
+    },
+    input: {
+      flex:1,
+      alignItems:'center',
+      justifyContent:'center',
+      backgroundColor:'white',
+      height: 60,
+      width: 280,
+      paddingLeft: 20,
+      fontSize: 20,
+      zIndex: 100
+    },
+    inputButton: {
+      alignItems:'center',
+      height: 60,
+      width: 80,
+      backgroundColor: 'red',
+      zIndex: 100
+    },
+    buttonText: {
+      textAlign: 'center',
+      textAlignVertical: 'center', 
+      color: 'white',
+      height: 60,
+      width: 80,
+      fontSize: 30,
+      zIndex: 100
+    }
   });
   
