@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {Component, useState} from 'react';
+import { render } from 'react-dom';
 import {
     SafeAreaView,
     StyleSheet,
@@ -10,50 +11,159 @@ import {
     Text,
     TextInput,
     Linking, 
-    Button
+    Button,
+    PanResponder
 } from 'react-native';
-import { CheckBox } from 'react-native-elements'
+import { transformOrigin, rotateXY, rotateXZ } from '../service/utils';
 const { width, height } = Dimensions.get('window')
-export default function Game ({navigation}) {
-  const [newName, setName]   = useState('');
-  const [newPhone, setPhone] = useState('');
-  const [isSelected, setSelection] = useState(false);
+export default class Game extends Component {
+  constructor(props){
+    super();
+    this.state = {
+    };
+  }
+  componentWillMount() {
+    this.panResponder = PanResponder.create({
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: this.handlePanResponderMove.bind(this)
+    });
+  }
 
-            return(
-            <SafeAreaView style={styles.container}>
-                <Image source={require("../assets/images/register/asahi_logo.png")} style={styles.logo}  />
-                <View style={styles.wrapper}>
-                    <View style={styles.panelWrapper}>
-                      <View style={styles.registerContainer}>
-                          <View style={styles.registerBox}>
-                              <Text style={styles.registerText}>Game</Text>
-                          </View>
+  handlePanResponderMove (e, gestureState) {
+    console.log("gestureState : ", gestureState)
+    const { dx, dy } = gestureState;
+    const origin = { x: 0, y: 0, z: -164 };
+    let matrix = rotateXY(dx, dy);
+    transformOrigin(matrix, origin);
+    this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXY(dx + 180, dy);
+    transformOrigin(matrix, origin);
+    this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXY(dx + 90, dy);
+    transformOrigin(matrix, origin);
+    this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXY(dx - 90, dy);
+    transformOrigin(matrix, origin);
+    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXZ(dx, dy - 90);
+    transformOrigin(matrix, origin);
+    this.refViewTop.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXZ(-dx, dy + 90);
+    transformOrigin(matrix, origin);
+    this.refViewBottom.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+  }
+
+  renderLeft(color) {
+    return (
+      <View
+        ref={component => this.refViewRight = component}
+        style={[styles.cube, (color) ? {backgroundColor: color} : null]}
+        {...this.panResponder.panHandlers}
+      />
+    )
+  }
+
+  renderRight(color) {
+    return (
+      <View
+        ref={component => this.refViewLeft = component}
+        style={[styles.cube, (color) ? {backgroundColor: color} : null]}
+        {...this.panResponder.panHandlers}
+      />
+    )
+  }
+
+  renderFront(color) {
+    return (
+      <View
+        ref={component => this.refViewFront = component}
+        style={[styles.cube, (color) ? {backgroundColor: color} : null]}
+        {...this.panResponder.panHandlers}
+      />
+    )
+  }
+
+  renderBack(color) {
+    return (
+      <View
+        ref={component => this.refViewBack = component}
+        style={[styles.cube, (color) ? {backgroundColor: color} : null]}
+        {...this.panResponder.panHandlers}
+      />
+    )
+  }
+
+  renderTop(color) {
+    return (
+      <View
+        ref={component => this.refViewTop = component}
+        style={[styles.cube, (color) ? {backgroundColor: color} : null]}
+        {...this.panResponder.panHandlers}
+      />
+    )
+  }
+
+  renderBottom(color) {
+    return (
+      <View
+        ref={component => this.refViewBottom = component}
+        style={[styles.cube, (color) ? {backgroundColor: color} : null]}
+        {...this.panResponder.panHandlers}
+      />
+    )
+  }
+
+  render() {
+    return(
+              <SafeAreaView style={styles.container}>
+                  <Image source={require("../assets/images/register/asahi_logo.png")} style={styles.logo}  />
+                  <View style={styles.wrapper}>
+                      <View style={styles.panelWrapper}>
+                        <View style={styles.registerContainer}>
+                            <View style={styles.registerBox}>
+                                <Text style={styles.registerText}>Game</Text>
+                            </View>
+                            <View style={styles.cubeContainer}>
+                              {this.renderFront('#4c72e0')}
+                              {this.renderBack('#8697df')}
+                              {this.renderLeft('#b5bce2')}
+                              {this.renderRight('#e5afb9')}
+                              {this.renderTop('#de7c92')}
+                              {this.renderBottom('#d1426b')}
+                            </View>
+                        </View>
+                      <ImageBackground source={require("../assets/images/register/background.png")} style={styles.backgroundImage}  />
                       </View>
-                    <ImageBackground source={require("../assets/images/register/background.png")} style={styles.backgroundImage}  />
+
+                    <View style={styles.menu}  >
+                      <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Home')}}>
+                        <Image source={require("../assets/images/register/logo_home.png")}/>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Register')}} >
+                        <Image source={require("../assets/images/register/logo_register.png")}/>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.seletedMenuItem} onPress={() => {this.props.navigation.navigate('Game')}}>
+                        <Image source={require("../assets/images/register/logo_game.png")}/>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Search')}}>
+                        <Image source={require("../assets/images/register/logo_search.png")}/>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Home')}}>
+                        <Image source={require("../assets/images/register/logo_logout.png")}/>
+                      </TouchableOpacity>
                     </View>
 
-                  <View style={styles.menu}  >
-                    <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Home')}}>
-                      <Image source={require("../assets/images/register/logo_home.png")}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Register')}} >
-                      <Image source={require("../assets/images/register/logo_register.png")}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.seletedMenuItem} onPress={() => {navigation.navigate('Game')}}>
-                      <Image source={require("../assets/images/register/logo_game.png")}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Search')}}>
-                      <Image source={require("../assets/images/register/logo_search.png")}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Home')}}>
-                      <Image source={require("../assets/images/register/logo_logout.png")}/>
-                    </TouchableOpacity>
                   </View>
 
-                </View>
+              </SafeAreaView>
+          );
 
-            </SafeAreaView>
-        );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -149,5 +259,22 @@ const styles = StyleSheet.create({
       backgroundColor: 'red',
       zIndex: 100
     },
+    cubeContainer: {
+      position: 'absolute',
+      left: width / 2 - 150,
+      top: height / 2 - 150,
+      width: 300,
+      height: 300,
+      backgroundColor: "transparent",
+      zIndex: 100
+    },
+    cube: {
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      width: 300,
+      height: 300,
+      zIndex: 110
+    }
   });
   
