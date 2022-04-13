@@ -12,7 +12,8 @@ import {
     TextInput,
     Linking, 
     Button,
-    PanResponder
+    PanResponder,
+    Animated
 } from 'react-native';
 import { transformOrigin, rotateXY, rotateXZ } from '../service/utils';
 const { width, height } = Dimensions.get('window')
@@ -27,6 +28,40 @@ export default class Game extends Component {
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: this.handlePanResponderMove.bind(this)
     });
+  }
+
+  componentDidMount() {
+    this.initposition();
+  }
+
+  initposition() {
+    let dx = 45;
+    let dy = 0;
+    const origin = { x: 0, y: 0, z: -164 };
+    let matrix = rotateXY(dx, dy);
+    transformOrigin(matrix, origin);
+    this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXY(dx + 180, dy);
+    transformOrigin(matrix, origin);
+    this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXY(dx + 90, dy);
+    transformOrigin(matrix, origin);
+    this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXY(dx - 90, dy);
+    transformOrigin(matrix, origin);
+    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXZ(dx, dy - 90);
+    transformOrigin(matrix, origin);
+    this.refViewTop.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXZ(-dx, dy + 90);
+    transformOrigin(matrix, origin);
+    this.refViewBottom.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
   }
 
   handlePanResponderMove (e, gestureState) {
@@ -58,9 +93,39 @@ export default class Game extends Component {
     this.refViewBottom.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
   }
 
+  playGame() {
+    let dx = 1800;
+    let dy = 0;
+    const origin = { x: 0, y: 0, z: -164 };
+    let matrix = rotateXY(dx, dy);
+    transformOrigin(matrix, origin);
+    this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXY(dx + 180, dy);
+    transformOrigin(matrix, origin);
+    this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXY(dx + 90, dy);
+    transformOrigin(matrix, origin);
+    this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXY(dx - 90, dy);
+    transformOrigin(matrix, origin);
+    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXZ(dx, dy - 90);
+    transformOrigin(matrix, origin);
+    this.refViewTop.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXZ(-dx, dy + 90);
+    transformOrigin(matrix, origin);
+    this.refViewBottom.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+  }
+
   renderLeft(color) {
     return (
-      <View
+      <Animated.View
         ref={component => this.refViewRight = component}
         style={[styles.cube, (color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
@@ -70,7 +135,7 @@ export default class Game extends Component {
 
   renderRight(color) {
     return (
-      <View
+      <Animated.View
         ref={component => this.refViewLeft = component}
         style={[styles.cube, (color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
@@ -80,7 +145,7 @@ export default class Game extends Component {
 
   renderFront(color) {
     return (
-      <View
+      <Animated.View
         ref={component => this.refViewFront = component}
         style={[styles.cube, (color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
@@ -90,7 +155,7 @@ export default class Game extends Component {
 
   renderBack(color) {
     return (
-      <View
+      <Animated.View
         ref={component => this.refViewBack = component}
         style={[styles.cube, (color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
@@ -100,7 +165,7 @@ export default class Game extends Component {
 
   renderTop(color) {
     return (
-      <View
+      <Animated.View
         ref={component => this.refViewTop = component}
         style={[styles.cube, (color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
@@ -110,7 +175,7 @@ export default class Game extends Component {
 
   renderBottom(color) {
     return (
-      <View
+      <Animated.View
         ref={component => this.refViewBottom = component}
         style={[styles.cube, (color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
@@ -147,7 +212,7 @@ export default class Game extends Component {
                       <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Register')}} >
                         <Image source={require("../assets/images/register/logo_register.png")}/>
                       </TouchableOpacity>
-                      <TouchableOpacity style={styles.seletedMenuItem} onPress={() => {this.props.navigation.navigate('Game')}}>
+                      <TouchableOpacity style={styles.seletedMenuItem} onPress={() => {this.playGame()}}>
                         <Image source={require("../assets/images/register/logo_game.png")}/>
                       </TouchableOpacity>
                       <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Search')}}>
