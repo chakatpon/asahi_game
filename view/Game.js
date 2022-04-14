@@ -12,20 +12,113 @@ import {
     TextInput,
     Linking, 
     Button,
-    PanResponder,
-    Animated
+    PanResponder
 } from 'react-native';
-import { transformOrigin, rotateXY, rotateXZ } from '../service/utils';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withRepeat,
+  withTiming,
+  interpolate,
+} from "react-native-reanimated";
+import MatrixMath from 'react-native/Libraries/Utilities/MatrixMath';
 const { width, height } = Dimensions.get('window')
 export default function Game({navigation}) {
+
+const rotateXY = (dx, dy) => {
+  const radX = (Math.PI / 180) * dy;
+  const cosX = Math.cos(radX);
+  const sinX = Math.sin(radX);
+
+  const radY = (Math.PI / 180) * -dx;
+  const cosY= Math.cos(radY);
+  const sinY = Math.sin(radY);
+
+  return [
+    cosY, 
+    sinX * sinY, 
+    cosX * sinY, 
+    0,
+    0, 
+    cosX, 
+    -sinX, 
+    0,
+    -sinY, 
+    cosY * sinX, 
+    cosX * cosY, 
+    0,
+    0, 
+    0, 
+    0, 
+    1
+  ];
+};
+
+const rotateXZ = (dx, dy) => {
+  const radX = (Math.PI / 180) * dx;
+  const cosX = Math.cos(radX);
+  const sinX = Math.sin(radX);
+
+  const radY = (Math.PI / 180) * dy;
+  const cosY= Math.cos(radY);
+  const sinY = Math.sin(radY);
+
+  return [
+    cosX, 
+    -cosY * sinX, 
+    sinX * sinY, 
+    0,
+    sinX, 
+    cosX * cosY,
+    -sinY * cosX,
+    0,
+    0, 
+    sinY, 
+    cosY, 
+    0,
+    0, 
+    0, 
+    0, 
+    1
+  ];
+};
+
+const transformOrigin = (matrix, origin) => {
+  const { x, y, z } = origin;
+
+  const translate = MatrixMath.createIdentityMatrix();
+  MatrixMath.reuseTranslate3dCommand(translate, x, y, z);
+  MatrixMath.multiplyInto(matrix, translate, matrix);
+
+  const untranslate = MatrixMath.createIdentityMatrix();
+  MatrixMath.reuseTranslate3dCommand(untranslate, -x, -y, -z);
+  MatrixMath.multiplyInto(matrix, matrix, untranslate);
+};
+
   const refViewFront = useRef();
   const refViewBack = useRef();
   const refViewLeft = useRef();
   const refViewRight = useRef();
-  const [matrixFront, setMatrixFront] = useState(rotateXY(0, 0));
-  const [matrixBack, setMatrixBack] = useState(rotateXY(180, 0));
-  const [matrixLeft, setMatrixLeft] = useState(rotateXY(-90, 0));
-  const [matrixRight, setMatrixRight] = useState(rotateXY(90, 0));
+  // const [matrixFront, setMatrixFront] = useState(rotateXY(45, 0));
+  // const [matrixBack, setMatrixBack] = useState(rotateXY(225, 0));
+  // const [matrixLeft, setMatrixLeft] = useState(rotateXY(-45, 0));
+  // const [matrixRight, setMatrixRight] = useState(rotateXY(135, 0));
+
+  // const matrixFront = useRef(rotateXY(45, 0)).current;
+  // const matrixBack  = useRef(rotateXY(225, 0)).current;
+  // const matrixLeft  = useRef(rotateXY(-45, 0)).current;
+  // const matrixRight = useRef(rotateXY(135, 0)).current;
+
+  const matrixFront  = useSharedValue(rotateXY(45, 0));
+  const matrixBack   = useSharedValue(rotateXY(225, 0));
+  const matrixLeft   = useSharedValue(rotateXY(-45, 0));
+  const matrixRight  = useSharedValue(rotateXY(135, 0));
+  
+  console.log('matrixFront First : ', matrixFront);
+  console.log('matrixBack First : ', matrixBack);
+  console.log('matrixLeft First : ', matrixLeft);
+  console.log('matrixRight First : ', matrixRight);
 
 const styles = StyleSheet.create({
   container: {
@@ -144,7 +237,6 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     zIndex: 110,
-    //transform: [{perspective: 1000}, {matrix: matrixFront}]
   },
   cubeBack: {
     position: 'absolute',
@@ -153,7 +245,6 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     zIndex: 110,
-    //transform: [{perspective: 1000}, {matrix: matrixBack}]
   },
   cubeLeft: {
     position: 'absolute',
@@ -162,7 +253,6 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     zIndex: 110,
-    //transform: [{perspective: 1000}, {matrix: matrixLeft}]
   },
   cubeRight: {
     position: 'absolute',
@@ -171,7 +261,6 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     zIndex: 110,
-    //transform: [{perspective: 1000}, {matrix: matrixRight}]
   }
 });
 
@@ -186,30 +275,82 @@ const styles = StyleSheet.create({
   //     {
   //       toValue: rotateXY(0,0),
   //       duration: 1500,
+  //       useNativeDriver: false
   //     }
   //   ).start();
   // }, [matrixFront])
+
+  useEffect(() => {
+    matrixFront.value = withDelay(
+      1000,
+      withRepeat(
+        withTiming(rotateXY(0, 0), {
+          duration: 4000,
+        }),
+        -1,
+        false
+      )
+    );
+    matrixBack.value = withDelay(
+      1000,
+      withRepeat(
+        withTiming(rotateXY(180, 0), {
+          duration: 4000,
+        }),
+        -1,
+        false
+      )
+    );
+    matrixLeft.value = withDelay(
+      1000,
+      withRepeat(
+        withTiming(rotateXY(-90, 0), {
+          duration: 4000,
+        }),
+        -1,
+        false
+      )
+    );
+    matrixRight.value = withDelay(
+      1000,
+      withRepeat(
+        withTiming(rotateXY(90, 0), {
+          duration: 4000,
+        }),
+        -1,
+        false
+      )
+    );
+
+  }, []);
 
   const initposition = () => {
     let dx = 45;
     let dy = 0;
     const origin = { x: 0, y: 0, z: -164 };
     let matrix = rotateXY(dx, dy);
-    transformOrigin(matrix, origin);
-    refViewFront.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-    //console.log("refVidwFront : ", refViewFront.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}}))
+    console.log("matrix init1 : ", matrix)
+    console.log("matrixFront init1 : ", matrixFront.value)
+    transformOrigin(matrixFront.value, origin);
+    refViewFront.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixFront.value}]}});
 
     matrix = rotateXY(dx + 180, dy);
-    transformOrigin(matrix, origin);
-    refViewBack.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-
-    matrix = rotateXY(dx + 90, dy);
-    transformOrigin(matrix, origin);
-    refViewRight.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    console.log("matrix init2 : ", matrix)
+    console.log("matrixBack init2 : ", matrixBack.value)
+    transformOrigin(matrixBack.value, origin);
+    refViewBack.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixBack.value}]}});
 
     matrix = rotateXY(dx - 90, dy);
-    transformOrigin(matrix, origin);
-    refViewLeft.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    console.log("matrix init3 : ", matrix)
+    console.log("matrixLeft init3 : ", matrixLeft.value)
+    transformOrigin(matrixLeft.value, origin);
+    refViewLeft.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixLeft.value}]}});
+
+    matrix = rotateXY(dx + 90, dy);
+    console.log("matrix init4 : ", matrix)
+    console.log("matrixRight init4 : ", matrixRight.value)
+    transformOrigin(matrixRight.value, origin);
+    refViewRight.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixRight.value}]}});
 
   }
 
@@ -218,27 +359,35 @@ const styles = StyleSheet.create({
     let dy = 0;
     const origin = { x: 0, y: 0, z: -164 };
     let matrix = rotateXY(dx, dy);
-    transformOrigin(matrix, origin);
-    refViewFront.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-    
-    matrix = rotateXY(dx+180, dy);
-    transformOrigin(matrix, origin);
-    refViewBack.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    console.log("matrix play1 : ", matrix)
+    console.log("matrixFront play1 : ", matrixFront.value)
+    transformOrigin(matrixFront.value, origin);
+    refViewFront.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixFront.value}]}});
 
-    matrix = rotateXY(dx+90, dy);
-    transformOrigin(matrix, origin);
-    refViewRight.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    matrix = rotateXY(dx + 180, dy);
+    console.log("matrix play2 : ", matrix)
+    console.log("matrixBack play2 : ", matrixBack.value)
+    transformOrigin(matrixBack.value, origin);
+    refViewBack.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixBack.value}]}});
 
-    matrix = rotateXY(dx-90, dy);
-    transformOrigin(matrix, origin);
-    refViewLeft.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    matrix = rotateXY(dx - 90, dy);
+    console.log("matrix play3 : ", matrix)
+    console.log("matrixLeft play3 : ", matrixLeft.value)
+    transformOrigin(matrixLeft.value, origin);
+    refViewLeft.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixLeft.value}]}});
+
+    matrix = rotateXY(dx + 90, dy);
+    console.log("matrix play4 : ", matrix)
+    console.log("matrixRight play4 : ", matrixRight.value)
+    transformOrigin(matrixRight.value, origin);
+    refViewRight.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixRight.value}]}});
 
 
   }
 
   const renderFront = (color) => {
     return (
-      <View
+      <Animated.View
         ref={refViewFront}
         style={[styles.cubeFront, (color) ? {backgroundColor: color} : null]}
       />
@@ -247,7 +396,7 @@ const styles = StyleSheet.create({
 
   const renderBack = (color) => {
     return (
-      <View
+      <Animated.View
         ref={refViewBack}
         style={[styles.cubeBack, (color) ? {backgroundColor: color} : null]}
       />
@@ -256,7 +405,7 @@ const styles = StyleSheet.create({
 
   const renderLeft = (color) => {
     return (
-      <View
+      <Animated.View
         ref={refViewRight}
         style={[styles.cubeLeft, (color) ? {backgroundColor: color} : null]}
       />
@@ -265,7 +414,7 @@ const styles = StyleSheet.create({
 
   const renderRight = (color) => {
     return (
-      <View
+      <Animated.View
         ref={refViewLeft}
         style={[styles.cubeRight, (color) ? {backgroundColor: color} : null]}
       />
