@@ -23,7 +23,7 @@ export default function Home ({navigation}) {
                     <View style={styles.panelWrapper}>
                       <View style={styles.registerContainer}>
                           <View style={styles.registerBox}>
-                              <Text style={styles.registerText}>Home</Text>
+                              <Image style={styles.homeImage} source={require("../assets/images/home/2Kanji.png")}></Image>
                           </View>
                       </View>
                     <ImageBackground source={require("../assets/images/register/background.png")} style={styles.backgroundImage}  />
@@ -146,5 +146,10 @@ const styles = StyleSheet.create({
       backgroundColor: 'red',
       zIndex: 100
     },
+    homeImage: {
+      width: 600,
+      height: 300,
+      zIndex: 100
+    }
   });
   

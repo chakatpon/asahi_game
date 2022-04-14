@@ -22,7 +22,7 @@ export default function App() {
   const [hasPincode, setHasPincode] = useState(true)
 
   const logout = () => {
-    setHasPincode(false)
+    setHasPincode(true)
   }
   return (
     <View style={styles.container}>

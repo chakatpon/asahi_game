@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react';
+import React, {Component, useState, useEffect, useRef} from 'react';
 import { render } from 'react-dom';
 import {
     SafeAreaView,
@@ -17,146 +17,264 @@ import {
 } from 'react-native';
 import { transformOrigin, rotateXY, rotateXZ } from '../service/utils';
 const { width, height } = Dimensions.get('window')
-export default class Game extends Component {
-  constructor(props){
-    super();
-    this.state = {
-      matrix: new Animated.Value(0)
-    };
-  }
-  componentWillMount() {
-    this.panResponder = PanResponder.create({
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: this.handlePanResponderMove.bind(this)
-    });
-  }
+export default function Game({navigation}) {
+  const refViewFront = useRef();
+  const refViewBack = useRef();
+  const refViewLeft = useRef();
+  const refViewRight = useRef();
+  const [matrixFront, setMatrixFront] = useState(rotateXY(0, 0));
+  const [matrixBack, setMatrixBack] = useState(rotateXY(180, 0));
+  const [matrixLeft, setMatrixLeft] = useState(rotateXY(-90, 0));
+  const [matrixRight, setMatrixRight] = useState(rotateXY(90, 0));
 
-  componentDidMount() {
-    this.initposition();
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  wrapper: {
+      height: height,
+      width: width,
+      resizeMode: 'contain'
+  },
+  backgroundImage: {
+      top: 0  ,
+      height: height,
+      width: height,
+      resizeMode: 'cover',
+      position:"absolute",
+  },
+  logo: {
+      position:"absolute",
+      width: width/3,
+      top: 0,
+      left: 0,
+      right: 0,
+      resizeMode: 'contain',
+      zIndex: 100
+  },
+  panelWrapper: {
+      height: height,
+      width: width,
+      alignItems: 'center',
+      justifyContent: 'center',
+  },
+  registerContainer: {
+      marginTop: -10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: height,
+      width: width,
+      zIndex: 100
+  },
+  registerBox: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: height,
+      width: width/2,
+      zIndex: 100
+  },
+  registerText: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: "center",
+      textAlignVertical: "center",
+      fontSize: 50,
+      color: '#fff',
+      height: 80,
+      width: width/1.5,
+      zIndex: 100,
+      marginBottom: 50
+  },
+  menu: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: width,
+    height: height/8,
+    position:'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    bottom: 20,
+    right:0,
+    zIndex: 100
+  },
+  menuItem: {
+    borderColor: 'red',
+    width: width/5,
+    height: height/8,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
+    zIndex: 100
+  },
+  seletedMenuItem: {
+    borderColor: 'red',
+    width: width/5,
+    height: height/8,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
+    backgroundColor: 'red',
+    zIndex: 100
+  },
+  cubeContainer: {
+    position: 'absolute',
+    left: width / 2 - 150,
+    top: height / 2 - 150,
+    width: 300,
+    height: 300,
+    backgroundColor: "transparent",
+    zIndex: 100
+  },
+  cube: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: 300,
+    height: 300,
+    zIndex: 110
+  },
+  cubeFront: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: 300,
+    height: 300,
+    zIndex: 110,
+    transform: [{perspective: 1000}, {matrix: matrixFront}]
+  },
+  cubeBack: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: 300,
+    height: 300,
+    zIndex: 110,
+    transform: [{perspective: 1000}, {matrix: matrixBack}]
+  },
+  cubeLeft: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: 300,
+    height: 300,
+    zIndex: 110,
+    transform: [{perspective: 1000}, {matrix: matrixLeft}]
+  },
+  cubeRight: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: 300,
+    height: 300,
+    zIndex: 110,
+    transform: [{perspective: 1000}, {matrix: matrixRight}]
   }
+});
 
-  componentDidUpdate() {
-    Animated.timing(                  // Animate over time
-      this.state.matrix,            // The animated value to drive
-      {
-        toValue: rotateXY(180,0),                   // Animate to opacity: 1 (opaque)
-        duration: 2000,              // Make it take a while
-      }
-    ).start();                        // Starts the animation
-  }
 
-  initposition() {
+  useEffect(() => {
+    initposition();
+  })
+
+  // useEffect(() => {
+  //   Animated.timing(
+  //     matrixFront,
+  //     {
+  //       toValue: rotateXY(0,0),
+  //       duration: 1500,
+  //     }
+  //   ).start();
+  // }, [matrixFront])
+
+  const initposition = () => {
     let dx = 45;
     let dy = 0;
     const origin = { x: 0, y: 0, z: -164 };
     let matrix = rotateXY(dx, dy);
     transformOrigin(matrix, origin);
-    this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    refViewFront.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    //console.log("refVidwFront : ", refViewFront.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}}))
 
     matrix = rotateXY(dx + 180, dy);
     transformOrigin(matrix, origin);
-    this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    refViewBack.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
     matrix = rotateXY(dx + 90, dy);
     transformOrigin(matrix, origin);
-    this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    refViewRight.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
     matrix = rotateXY(dx - 90, dy);
     transformOrigin(matrix, origin);
-    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    refViewLeft.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
   }
 
-  handlePanResponderMove (e, gestureState) {
-    const { dx, dy } = gestureState;
-    const origin = { x: 0, y: 0, z: -164 };
-    let matrix = rotateXY(dx, 0);
-    transformOrigin(matrix, origin);
-    this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-    console.log("matrix : ", matrix)
-
-    matrix = rotateXY(dx + 180, 0);
-    transformOrigin(matrix, origin);
-    this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-    console.log("matrix : ", matrix)
-
-    matrix = rotateXY(dx + 90, 0);
-    transformOrigin(matrix, origin);
-    this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-    console.log("matrix : ", matrix)
-
-    matrix = rotateXY(dx - 90, 0);
-    transformOrigin(matrix, origin);
-    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-    console.log("matrix : ", matrix)
-  }
-
-  playGame() {
-    let dx = 1800;
+  const playGame = () => {
+    let dx = 150;
     let dy = 0;
     const origin = { x: 0, y: 0, z: -164 };
     let matrix = rotateXY(0, 0);
     transformOrigin(matrix, origin);
-    this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    refViewFront.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
     
     matrix = rotateXY(180, 0);
     transformOrigin(matrix, origin);
-    this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    refViewBack.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
     matrix = rotateXY(90, 0);
     transformOrigin(matrix, origin);
-    this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    refViewRight.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
     matrix = rotateXY(-90, 0);
     transformOrigin(matrix, origin);
-    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    refViewLeft.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
 
   }
 
-  renderFront(color) {
+  const renderFront = (color) => {
     return (
       <View
-        ref={component => this.refViewFront = component}
-        style={[styles.cube, this.state.matrix, (color) ? {backgroundColor: color} : null]}
-        {...this.panResponder.panHandlers}
+        ref={refViewFront}
+        style={[styles.cubeFront, (color) ? {backgroundColor: color} : null]}
       />
     )
   }
 
-  renderBack(color) {
+  const renderBack = (color) => {
     return (
       <View
-        ref={component => this.refViewBack = component}
-        style={[styles.cube, this.state.matrix,(color) ? {backgroundColor: color} : null]}
-        {...this.panResponder.panHandlers}
+        ref={refViewBack}
+        style={[styles.cubeBack, (color) ? {backgroundColor: color} : null]}
       />
     )
   }
 
-  renderLeft(color) {
+  const renderLeft = (color) => {
     return (
       <View
-        ref={component => this.refViewRight = component}
-        style={[styles.cube, this.state.matrix,(color) ? {backgroundColor: color} : null]}
-        {...this.panResponder.panHandlers}
+        ref={refViewRight}
+        style={[styles.cubeLeft, (color) ? {backgroundColor: color} : null]}
       />
     )
   }
 
-  renderRight(color) {
+  const renderRight = (color) => {
     return (
       <View
-        ref={component => this.refViewLeft = component}
-        style={[styles.cube, this.state.matrix,(color) ? {backgroundColor: color} : null]}
-        {...this.panResponder.panHandlers}
+        ref={refViewLeft}
+        style={[styles.cubeRight, (color) ? {backgroundColor: color} : null]}
       />
     )
   }
 
 
 
-  render() {
+
     return(
               <SafeAreaView style={styles.container}>
                   <Image source={require("../assets/images/register/asahi_logo.png")} style={styles.logo}  />
@@ -167,29 +285,29 @@ export default class Game extends Component {
                                 <Text style={styles.registerText}>Game</Text>
                             </View>
                             <View style={styles.cubeContainer}>
-                              {this.renderFront('#4c72e0')}
-                              {this.renderBack('#8697df')}
-                              {this.renderLeft('#b5bce2')}
-                              {this.renderRight('#e5afb9')}
+                              {renderFront('#4c72e0')}
+                              {renderBack('#8697df')}
+                              {renderLeft('#b5bce2')}
+                              {renderRight('#e5afb9')}
                             </View>
                         </View>
                       <ImageBackground source={require("../assets/images/register/background.png")} style={styles.backgroundImage}  />
                       </View>
 
                     <View style={styles.menu}  >
-                      <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Home')}}>
+                      <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Home')}}>
                         <Image source={require("../assets/images/register/logo_home.png")}/>
                       </TouchableOpacity>
-                      <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Register')}} >
+                      <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Register')}} >
                         <Image source={require("../assets/images/register/logo_register.png")}/>
                       </TouchableOpacity>
-                      <TouchableOpacity style={styles.seletedMenuItem} onPress={() => {this.playGame()}}>
+                      <TouchableOpacity style={styles.seletedMenuItem} onPress={() => {playGame()}}>
                         <Image source={require("../assets/images/register/logo_game.png")}/>
                       </TouchableOpacity>
-                      <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Search')}}>
+                      <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Search')}}>
                         <Image source={require("../assets/images/register/logo_search.png")}/>
                       </TouchableOpacity>
-                      <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Home')}}>
+                      <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Home')}}>
                         <Image source={require("../assets/images/register/logo_logout.png")}/>
                       </TouchableOpacity>
                     </View>
@@ -198,119 +316,4 @@ export default class Game extends Component {
 
               </SafeAreaView>
           );
-
-  }
 }
-
-const styles = StyleSheet.create({
-    container: {
-      backgroundColor: '#000',
-      alignItems: 'center',
-      justifyContent: 'center'
-    },
-    wrapper: {
-        height: height,
-        width: width,
-        resizeMode: 'contain'
-    },
-    backgroundImage: {
-        top: 0  ,
-        height: height,
-        width: height,
-        resizeMode: 'cover',
-        position:"absolute",
-    },
-    logo: {
-        position:"absolute",
-        width: width/3,
-        top: 0,
-        left: 0,
-        right: 0,
-        resizeMode: 'contain',
-        zIndex: 100
-    },
-    panelWrapper: {
-        height: height,
-        width: width,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    registerContainer: {
-        marginTop: -10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: height,
-        width: width,
-        zIndex: 100
-    },
-    registerBox: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: height,
-        width: width/2,
-        zIndex: 100
-    },
-    registerText: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: "center",
-        textAlignVertical: "center",
-        fontSize: 50,
-        color: '#fff',
-        height: 80,
-        width: width/1.5,
-        zIndex: 100,
-        marginBottom: 50
-    },
-    menu: {
-      display: 'flex',
-      flexDirection: 'row',
-      width: width,
-      height: height/8,
-      position:'absolute',
-      alignItems: 'center',
-      justifyContent: 'center',
-      bottom: 20,
-      right:0,
-      zIndex: 100
-    },
-    menuItem: {
-      borderColor: 'red',
-      width: width/5,
-      height: height/8,
-      borderWidth: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white',
-      zIndex: 100
-    },
-    seletedMenuItem: {
-      borderColor: 'red',
-      width: width/5,
-      height: height/8,
-      borderWidth: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white',
-      backgroundColor: 'red',
-      zIndex: 100
-    },
-    cubeContainer: {
-      position: 'absolute',
-      left: width / 2 - 150,
-      top: height / 2 - 150,
-      width: 300,
-      height: 300,
-      backgroundColor: "transparent",
-      zIndex: 100
-    },
-    cube: {
-      position: 'absolute',
-      left: 0,
-      top: 0,
-      width: 300,
-      height: 300,
-      zIndex: 110
-    }
-  });
-  
