@@ -21,6 +21,7 @@ export default class Game extends Component {
   constructor(props){
     super();
     this.state = {
+      matrix: new Animated.Value(0)
     };
   }
   componentWillMount() {
@@ -32,6 +33,16 @@ export default class Game extends Component {
 
   componentDidMount() {
     this.initposition();
+  }
+
+  componentDidUpdate() {
+    Animated.timing(                  // Animate over time
+      this.state.matrix,            // The animated value to drive
+      {
+        toValue: rotateXY(180,0),                   // Animate to opacity: 1 (opaque)
+        duration: 2000,              // Make it take a while
+      }
+    ).start();                        // Starts the animation
   }
 
   initposition() {
@@ -54,100 +65,60 @@ export default class Game extends Component {
     transformOrigin(matrix, origin);
     this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
-    matrix = rotateXZ(dx, dy - 90);
-    transformOrigin(matrix, origin);
-    this.refViewTop.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-
-    matrix = rotateXZ(-dx, dy + 90);
-    transformOrigin(matrix, origin);
-    this.refViewBottom.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-
   }
 
   handlePanResponderMove (e, gestureState) {
-    console.log("gestureState : ", gestureState)
     const { dx, dy } = gestureState;
     const origin = { x: 0, y: 0, z: -164 };
-    let matrix = rotateXY(dx, dy);
+    let matrix = rotateXY(dx, 0);
     transformOrigin(matrix, origin);
     this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    console.log("matrix : ", matrix)
 
-    matrix = rotateXY(dx + 180, dy);
+    matrix = rotateXY(dx + 180, 0);
     transformOrigin(matrix, origin);
     this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    console.log("matrix : ", matrix)
 
-    matrix = rotateXY(dx + 90, dy);
+    matrix = rotateXY(dx + 90, 0);
     transformOrigin(matrix, origin);
     this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    console.log("matrix : ", matrix)
 
-    matrix = rotateXY(dx - 90, dy);
+    matrix = rotateXY(dx - 90, 0);
     transformOrigin(matrix, origin);
     this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-
-    matrix = rotateXZ(dx, dy - 90);
-    transformOrigin(matrix, origin);
-    this.refViewTop.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-
-    matrix = rotateXZ(-dx, dy + 90);
-    transformOrigin(matrix, origin);
-    this.refViewBottom.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    console.log("matrix : ", matrix)
   }
 
   playGame() {
     let dx = 1800;
     let dy = 0;
     const origin = { x: 0, y: 0, z: -164 };
-    let matrix = rotateXY(dx, dy);
+    let matrix = rotateXY(0, 0);
     transformOrigin(matrix, origin);
     this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-
-    matrix = rotateXY(dx + 180, dy);
+    
+    matrix = rotateXY(180, 0);
     transformOrigin(matrix, origin);
     this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
-    matrix = rotateXY(dx + 90, dy);
+    matrix = rotateXY(90, 0);
     transformOrigin(matrix, origin);
     this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
-    matrix = rotateXY(dx - 90, dy);
+    matrix = rotateXY(-90, 0);
     transformOrigin(matrix, origin);
     this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
-    matrix = rotateXZ(dx, dy - 90);
-    transformOrigin(matrix, origin);
-    this.refViewTop.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
-    matrix = rotateXZ(-dx, dy + 90);
-    transformOrigin(matrix, origin);
-    this.refViewBottom.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-
-  }
-
-  renderLeft(color) {
-    return (
-      <Animated.View
-        ref={component => this.refViewRight = component}
-        style={[styles.cube, (color) ? {backgroundColor: color} : null]}
-        {...this.panResponder.panHandlers}
-      />
-    )
-  }
-
-  renderRight(color) {
-    return (
-      <Animated.View
-        ref={component => this.refViewLeft = component}
-        style={[styles.cube, (color) ? {backgroundColor: color} : null]}
-        {...this.panResponder.panHandlers}
-      />
-    )
   }
 
   renderFront(color) {
     return (
-      <Animated.View
+      <View
         ref={component => this.refViewFront = component}
-        style={[styles.cube, (color) ? {backgroundColor: color} : null]}
+        style={[styles.cube, this.state.matrix, (color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
       />
     )
@@ -155,33 +126,35 @@ export default class Game extends Component {
 
   renderBack(color) {
     return (
-      <Animated.View
+      <View
         ref={component => this.refViewBack = component}
-        style={[styles.cube, (color) ? {backgroundColor: color} : null]}
+        style={[styles.cube, this.state.matrix,(color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
       />
     )
   }
 
-  renderTop(color) {
+  renderLeft(color) {
     return (
-      <Animated.View
-        ref={component => this.refViewTop = component}
-        style={[styles.cube, (color) ? {backgroundColor: color} : null]}
+      <View
+        ref={component => this.refViewRight = component}
+        style={[styles.cube, this.state.matrix,(color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
       />
     )
   }
 
-  renderBottom(color) {
+  renderRight(color) {
     return (
-      <Animated.View
-        ref={component => this.refViewBottom = component}
-        style={[styles.cube, (color) ? {backgroundColor: color} : null]}
+      <View
+        ref={component => this.refViewLeft = component}
+        style={[styles.cube, this.state.matrix,(color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
       />
     )
   }
+
+
 
   render() {
     return(
@@ -198,8 +171,6 @@ export default class Game extends Component {
                               {this.renderBack('#8697df')}
                               {this.renderLeft('#b5bce2')}
                               {this.renderRight('#e5afb9')}
-                              {this.renderTop('#de7c92')}
-                              {this.renderBottom('#d1426b')}
                             </View>
                         </View>
                       <ImageBackground source={require("../assets/images/register/background.png")} style={styles.backgroundImage}  />
