@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     zIndex: 110,
-    transform: [{perspective: 1000}, {matrix: matrixFront}]
+    //transform: [{perspective: 1000}, {matrix: matrixFront}]
   },
   cubeBack: {
     position: 'absolute',
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     zIndex: 110,
-    transform: [{perspective: 1000}, {matrix: matrixBack}]
+    //transform: [{perspective: 1000}, {matrix: matrixBack}]
   },
   cubeLeft: {
     position: 'absolute',
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     zIndex: 110,
-    transform: [{perspective: 1000}, {matrix: matrixLeft}]
+    //transform: [{perspective: 1000}, {matrix: matrixLeft}]
   },
   cubeRight: {
     position: 'absolute',
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     zIndex: 110,
-    transform: [{perspective: 1000}, {matrix: matrixRight}]
+    //transform: [{perspective: 1000}, {matrix: matrixRight}]
   }
 });
 
@@ -214,22 +214,22 @@ const styles = StyleSheet.create({
   }
 
   const playGame = () => {
-    let dx = 150;
+    let dx = 135 ;
     let dy = 0;
     const origin = { x: 0, y: 0, z: -164 };
-    let matrix = rotateXY(0, 0);
+    let matrix = rotateXY(dx, dy);
     transformOrigin(matrix, origin);
     refViewFront.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
     
-    matrix = rotateXY(180, 0);
+    matrix = rotateXY(dx+180, dy);
     transformOrigin(matrix, origin);
     refViewBack.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
-    matrix = rotateXY(90, 0);
+    matrix = rotateXY(dx+90, dy);
     transformOrigin(matrix, origin);
     refViewRight.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
-    matrix = rotateXY(-90, 0);
+    matrix = rotateXY(dx-90, dy);
     transformOrigin(matrix, origin);
     refViewLeft.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
