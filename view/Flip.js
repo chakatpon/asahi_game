@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Animated, StyleSheet, Button, Dimensions} from 'react-native';
+import {View, Animated, StyleSheet, Button, Dimensions, Image} from 'react-native';
 import MatrixMath from 'react-native/Libraries/Utilities/MatrixMath';
 
 const { width, height } = Dimensions.get('window')
@@ -58,61 +58,61 @@ export default class Container extends Component {
     // Origin Front
     this.dFX = 45;
     this.dFY = 0;
-    this.originFront = { x: 0, y: 0, z: -150 };
+    this.originFront = { x: 0, y: 0, z: -170 };
     this.matrixFront = rotateXY(this.dFX, this.dFY);
 
     // Origin Back
     this.dBX = 225;
     this.dBY = 0;
-    this.originBack = { x: 0, y: 0, z: -150 };
+    this.originBack = { x: 0, y: 0, z: -170 };
     this.matrixBack = rotateXY(this.dBX, this.dBY);
 
     // Origin Left
     this.dLX = -45;
     this.dLY = 0;
-    this.originLeft = { x: 0, y: 0, z: -150 };
+    this.originLeft = { x: 0, y: 0, z: -170 };
     this.matrixLeft = rotateXY(this.dLX, this.dLY);
 
     // Origin Back
     this.dRX = 135;
     this.dRY = 0;
-    this.originRight = { x: 0, y: 0, z: -150 };
+    this.originRight = { x: 0, y: 0, z: -170 };
     this.matrixRight = rotateXY(this.dRX, this.dRY);
 
     // Front
-    let inputRange = [0, 10];
-    let outputRange = ['0deg', '360deg'];
+    let inputRange = [0, 16];
+    let outputRange = ['0deg', '3600deg'];
     this.rotateFrontX = this.animation.x.interpolate({inputRange, outputRange});
 
-    inputRange = [0, 10];
-    outputRange = ['45deg', '1800deg'];
+    inputRange = [0, 16];
+    outputRange = ['45deg', '3645deg'];
     this.rotateFrontY = this.animation.y.interpolate({inputRange, outputRange});
 
     // Back
-    inputRange = [0, 10];
-    outputRange = ['0deg', '180deg'];
+    inputRange = [0, 16];
+    outputRange = ['0deg', '3600deg'];
     this.rotateBackX = this.animation.x.interpolate({inputRange, outputRange});
 
-    inputRange = [0, 10];
-    outputRange = ['225deg', '1800deg'];
+    inputRange = [0, 16];
+    outputRange = ['225deg', '3825deg'];
     this.rotateBackY = this.animation.y.interpolate({inputRange, outputRange});
 
     // Left
-    inputRange = [0, 10];
-    outputRange = ['0deg', '180deg'];
+    inputRange = [0, 16];
+    outputRange = ['0deg', '3600deg'];
     this.rotateLeftX = this.animation.x.interpolate({inputRange, outputRange});
 
-    inputRange = [0, 10];
-    outputRange = ['-45deg', '1800deg'];
+    inputRange = [0, 16];
+    outputRange = ['-45deg', '3555deg'];
     this.rotateLeftY = this.animation.y.interpolate({inputRange, outputRange});
 
     // Right
-    inputRange = [0, 10];
-    outputRange = ['0deg', '180deg'];
+    inputRange = [0, 16];
+    outputRange = ['0deg', '3600deg'];
     this.rotateRightX = this.animation.x.interpolate({inputRange, outputRange});
 
-    inputRange = [0, 10];
-    outputRange = ['135deg', '1800deg'];
+    inputRange = [0, 16];
+    outputRange = ['135deg', '3735deg'];
     this.rotateRightY = this.animation.y.interpolate({inputRange, outputRange});
   }
 
@@ -129,13 +129,13 @@ export default class Container extends Component {
                         } = this
 
     transformOrigin(matrixFront,    originFront);
-    // this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixFront}]}});
+    // this.refViewFront.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixFront}]}});
     transformOrigin(matrixBack,     originBack);
-    // this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixBack}]}});
+    // this.refViewBack.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixBack}]}});
     transformOrigin(matrixLeft,     originLeft);
-    // this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixLeft}]}});
+    // this.refViewLeft.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixLeft}]}});
     transformOrigin(matrixRight,    originRight);
-    // this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixRight}]}});
+    // this.refViewRight.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixRight}]}});
 
   }
 
@@ -152,27 +152,61 @@ export default class Container extends Component {
                         } = this
 
     //transformOrigin(matrixFront,    originFront);
-    this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixFront}]}});
+    this.refViewFront.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixFront}]}});
     // transformOrigin(matrixBack,     originBack);
-    this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixBack}]}});
+    this.refViewBack.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixBack}]}});
     // transformOrigin(matrixLeft,     originLeft);
-    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixLeft}]}});
+    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixLeft}]}});
     // transformOrigin(matrixRight,    originRight);
-    this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixRight}]}});
+    this.refViewRight.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixRight}]}});
   }
 
   flip = (val) => {
+    // Origin Front
+    const dFX = 0;
+    const dFY = 0;
+    const originFront = { x: 0, y: 0, z: -160 };
+    const matrixFront = rotateXY(dFX, dFY);
+
+    // Origin Back
+    const dBX = 180;
+    const dBY = 0;
+    const originBack = { x: 0, y: 0, z: -160 };
+    const matrixBack = rotateXY(dBX, dBY);
+
+    // Origin Left
+    const dLX = -90;
+    const dLY = 0;
+    const originLeft = { x: 0, y: 0, z: -160 };
+    const matrixLeft = rotateXY(dLX, dLY);
+
+    // Origin Back
+    const dRX = 90;
+    const dRY = 0;
+    const originRight = { x: 0, y: 0, z: -160 };
+    const matrixRight = rotateXY(dRX, dRY);
+
+    transformOrigin(matrixFront,    originFront);
+    this.refViewFront.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixFront}]}});
+    transformOrigin(matrixBack,     originBack);
+    this.refViewBack.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixBack}]}});
+    transformOrigin(matrixLeft,     originLeft);
+    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixLeft}]}});
+    transformOrigin(matrixRight,    originRight);
+    this.refViewRight.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixRight}]}});
+
     this.animation[val].setValue(0);
+
     Animated.timing(this.animation[val], {
-      toValue: 10,
-      duration: 5000,
+      toValue: 32,
+      duration: 3000,
       useNativeDriver: false,
     }).start();
 
     this.animation[val].setValue(0);
     Animated.timing(this.animation[val], {
-      toValue: 10,
-      duration: 5000,
+      toValue: 33,
+      duration: 3000,
       useNativeDriver: false,
     }).start();
   };
@@ -188,32 +222,35 @@ export default class Container extends Component {
           ref={component => this.refViewFront = component}
           style={{
             ...styles.front,
-            transform: [{rotateX: rotateFrontX}, {rotateY: rotateFrontY}, {perspective: 1000}, {matrix: matrixFront}],
-          }}
-        />
+            transform: [{rotateX: rotateFrontX}, {rotateY: rotateFrontY}, {perspective: 500}],
+          }}>
+              <Image style={styles.image2}  source={require("../assets/images/game/Kanji2.png")}/></Animated.View>
         <Animated.View
           ref={component => this.refViewBack = component}
           style={{
             ...styles.back,
-            transform: [{rotateX: rotateBackX}, {rotateY: rotateBackY}, {perspective: 1000}, {matrix: matrixBack}],
+            transform: [{rotateX: rotateBackX}, {rotateY: rotateBackY}, {perspective: 500}],
           }}
-        />
+        >
+        <Image style={styles.image2}  source={require("../assets/images/game/Kanji2.png")}/></Animated.View>
         <Animated.View
           ref={component => this.refViewLeft = component}
           style={{
             ...styles.left,
-            transform: [{rotateX: rotateLeftX}, {rotateY: rotateLeftY}, {perspective: 1000}, {matrix: matrixLeft}],
+            transform: [{rotateX: rotateLeftX}, {rotateY: rotateLeftY}, {perspective: 500}],
           }}
-        />
+        >
+        <Image style={styles.image1}  source={require("../assets/images/game/Kanji1.png")}/></Animated.View>
         <Animated.View
           ref={component => this.refViewRight = component}
           style={{
             ...styles.right,
-            transform: [{rotateX: rotateRightX}, {rotateY: rotateRightY}, {perspective: 1000}, {matrix: matrixRight}],
+            transform: [{rotateX: rotateRightX}, {rotateY: rotateRightY}, {perspective: 500}],
           }}
-        />
+        >
+        <Image style={styles.image1}  source={require("../assets/images/game/Kanji1.png")}/></Animated.View>
 
-          </View>
+        </View>
         <Button title="flip x " onPress={() => this.flip('x')} />
         <Button title="flip y " onPress={() => this.flip('y')} />
       </View>
@@ -253,8 +290,7 @@ const styles = StyleSheet.create({
     top: 0,
     height: 300,
     width: 300,
-    backgroundColor: 'red',
-    marginBottom: 20,
+    backgroundColor: 'grey',
     zIndex: 110,
   },
   back: {
@@ -263,8 +299,7 @@ const styles = StyleSheet.create({
     top: 0,
     height: 300,
     width: 300,
-    backgroundColor: 'green',
-    marginBottom: 20,
+    backgroundColor: 'grey',
     zIndex: 110,
   },
   left: {
@@ -273,8 +308,7 @@ const styles = StyleSheet.create({
     top: 0,
     height: 300,
     width: 300,
-    backgroundColor: 'blue',
-    marginBottom: 20,
+    backgroundColor: 'grey',
     zIndex: 110,
   },
   right: {
@@ -283,8 +317,17 @@ const styles = StyleSheet.create({
     top: 0,
     height: 300,
     width: 300,
-    backgroundColor: 'yellow',
-    marginBottom: 20,
+    backgroundColor: 'grey',
     zIndex: 110,
   },
+  image1: {
+    top: -120,
+    width: 300,
+    resizeMode: 'contain',
+  },
+  image2: {
+    top: -99,
+    width: 300,
+    resizeMode: 'contain',
+  }
 });

@@ -12,24 +12,24 @@ const WIDTH = Dimensions.get('window').width;
 const styles = {
   container: {
     position: 'absolute',
-    left: WIDTH / 2 - 50,
-    top: HEIGHT / 2 - 50,
-    width: 100,
-    height: 100,
+    left: WIDTH / 2 - 150,
+    top: HEIGHT / 2 - 150,
+    width: 300,
+    height: 300,
     backgroundColor: "transparent"
   },
   rectangle: {
     position: 'absolute',
     left: 0,
     top: 0,
-    width: 100,
-    height: 100,
-    zIndex: 10
+    width: 300,
+    height: 300,
+    zIndex: 110
   }
 };
 
 export default class Cube extends Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: this.handlePanResponderMove.bind(this)
@@ -38,7 +38,7 @@ export default class Cube extends Component {
 
   handlePanResponderMove (e, gestureState) {
     const { dx, dy } = gestureState;
-    const origin = { x: 0, y: 0, z: -50 };
+    const origin = { x: 0, y: 0, z: -150 };
     let matrix = rotateXY(dx, dy);
     transformOrigin(matrix, origin);
     this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});

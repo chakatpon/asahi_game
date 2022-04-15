@@ -1,5 +1,4 @@
-import React, {Component, useState, useEffect, useRef} from 'react';
-import { render } from 'react-dom';
+import React, {Component, useState} from 'react';
 import {
     SafeAreaView,
     StyleSheet,
@@ -12,19 +11,10 @@ import {
     TextInput,
     Linking, 
     Button,
-    PanResponder
+    Animated
 } from 'react-native';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withRepeat,
-  withTiming,
-  interpolate,
-} from "react-native-reanimated";
 import MatrixMath from 'react-native/Libraries/Utilities/MatrixMath';
 const { width, height } = Dimensions.get('window')
-export default function Game({navigation}) {
 
 const rotateXY = (dx, dy) => {
   const radX = (Math.PI / 180) * dy;
@@ -36,52 +26,28 @@ const rotateXY = (dx, dy) => {
   const sinY = Math.sin(radY);
 
   return [
-    cosY, 
-    sinX * sinY, 
-    cosX * sinY, 
-    0,
-    0, 
-    cosX, 
-    -sinX, 
-    0,
-    -sinY, 
-    cosY * sinX, 
-    cosX * cosY, 
-    0,
-    0, 
-    0, 
-    0, 
-    1
+    cosY, sinX * sinY, cosX * sinY, 0,
+    0, cosX, -sinX, 0,
+    -sinY, cosY * sinX, cosX * cosY, 0,
+    0, 0, 0, 1
   ];
 };
 
 const rotateXZ = (dx, dy) => {
-  const radX = (Math.PI / 180) * dx;
-  const cosX = Math.cos(radX);
-  const sinX = Math.sin(radX);
+const radX = (Math.PI / 180) * dx;
+const cosX = Math.cos(radX);
+const sinX = Math.sin(radX);
 
-  const radY = (Math.PI / 180) * dy;
-  const cosY= Math.cos(radY);
-  const sinY = Math.sin(radY);
+const radY = (Math.PI / 180) * dy;
+const cosY= Math.cos(radY);
+const sinY = Math.sin(radY);
 
-  return [
-    cosX, 
-    -cosY * sinX, 
-    sinX * sinY, 
-    0,
-    sinX, 
-    cosX * cosY,
-    -sinY * cosX,
-    0,
-    0, 
-    sinY, 
-    cosY, 
-    0,
-    0, 
-    0, 
-    0, 
-    1
-  ];
+return [
+  cosX, -cosY * sinX, sinX * sinY, 0,
+  sinX, cosX * cosY, -sinY * cosX, 0,
+  0, sinY, cosY, 0,
+  0, 0, 0, 1
+];
 };
 
 const transformOrigin = (matrix, origin) => {
@@ -95,374 +61,411 @@ const transformOrigin = (matrix, origin) => {
   MatrixMath.reuseTranslate3dCommand(untranslate, -x, -y, -z);
   MatrixMath.multiplyInto(matrix, matrix, untranslate);
 };
+export default class Game extends Component {
+  constructor(props){
+    super(props);
+    this.animation = new Animated.ValueXY({x: 0, y: 0});
 
-  const refViewFront = useRef();
-  const refViewBack = useRef();
-  const refViewLeft = useRef();
-  const refViewRight = useRef();
-  // const [matrixFront, setMatrixFront] = useState(rotateXY(45, 0));
-  // const [matrixBack, setMatrixBack] = useState(rotateXY(225, 0));
-  // const [matrixLeft, setMatrixLeft] = useState(rotateXY(-45, 0));
-  // const [matrixRight, setMatrixRight] = useState(rotateXY(135, 0));
+    // Origin Front
+    this.dFX = 45;
+    this.dFY = 0;
+    this.originFront = { x: 0, y: 0, z: -170 };
+    this.matrixFront = rotateXY(this.dFX, this.dFY);
 
-  // const matrixFront = useRef(rotateXY(45, 0)).current;
-  // const matrixBack  = useRef(rotateXY(225, 0)).current;
-  // const matrixLeft  = useRef(rotateXY(-45, 0)).current;
-  // const matrixRight = useRef(rotateXY(135, 0)).current;
+    // Origin Back
+    this.dBX = 225;
+    this.dBY = 0;
+    this.originBack = { x: 0, y: 0, z: -170 };
+    this.matrixBack = rotateXY(this.dBX, this.dBY);
 
-  const matrixFront  = useSharedValue(rotateXY(45, 0));
-  const matrixBack   = useSharedValue(rotateXY(225, 0));
-  const matrixLeft   = useSharedValue(rotateXY(-45, 0));
-  const matrixRight  = useSharedValue(rotateXY(135, 0));
-  
-  console.log('matrixFront First : ', matrixFront);
-  console.log('matrixBack First : ', matrixBack);
-  console.log('matrixLeft First : ', matrixLeft);
-  console.log('matrixRight First : ', matrixRight);
+    // Origin Left
+    this.dLX = -45;
+    this.dLY = 0;
+    this.originLeft = { x: 0, y: 0, z: -170 };
+    this.matrixLeft = rotateXY(this.dLX, this.dLY);
+
+    // Origin Back
+    this.dRX = 135;
+    this.dRY = 0;
+    this.originRight = { x: 0, y: 0, z: -170 };
+    this.matrixRight = rotateXY(this.dRX, this.dRY);
+
+    // Front
+    let inputRange = [0, 16];
+    let outputRange = ['0deg', '3600deg'];
+    this.rotateFrontX = this.animation.x.interpolate({inputRange, outputRange});
+
+    inputRange = [0, 16];
+    outputRange = ['45deg', '3645deg'];
+    this.rotateFrontY = this.animation.y.interpolate({inputRange, outputRange});
+
+    // Back
+    inputRange = [0, 16];
+    outputRange = ['0deg', '3600deg'];
+    this.rotateBackX = this.animation.x.interpolate({inputRange, outputRange});
+
+    inputRange = [0, 16];
+    outputRange = ['225deg', '3825deg'];
+    this.rotateBackY = this.animation.y.interpolate({inputRange, outputRange});
+
+    // Left
+    inputRange = [0, 16];
+    outputRange = ['0deg', '3600deg'];
+    this.rotateLeftX = this.animation.x.interpolate({inputRange, outputRange});
+
+    inputRange = [0, 16];
+    outputRange = ['-45deg', '3555deg'];
+    this.rotateLeftY = this.animation.y.interpolate({inputRange, outputRange});
+
+    // Right
+    inputRange = [0, 16];
+    outputRange = ['0deg', '3600deg'];
+    this.rotateRightX = this.animation.x.interpolate({inputRange, outputRange});
+
+    inputRange = [0, 16];
+    outputRange = ['135deg', '3735deg'];
+    this.rotateRightY = this.animation.y.interpolate({inputRange, outputRange});
+    this.state = {};
+  }
+
+
+  UNSAFE_componentWillMount() {
+    const { 
+            matrixFront,
+            matrixBack,
+            matrixLeft,
+            matrixRight,
+            originFront,
+            originBack,
+            originLeft,
+            originRight
+                        } = this
+
+    transformOrigin(matrixFront,    originFront);
+    // this.refViewFront.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixFront}]}});
+    transformOrigin(matrixBack,     originBack);
+    // this.refViewBack.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixBack}]}});
+    transformOrigin(matrixLeft,     originLeft);
+    // this.refViewLeft.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixLeft}]}});
+    transformOrigin(matrixRight,    originRight);
+    // this.refViewRight.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixRight}]}});
+
+  }
+
+  componentDidMount() {
+    const { 
+            matrixFront,
+            matrixBack,
+            matrixLeft,
+            matrixRight,
+            originFront,
+            originBack,
+            originLeft,
+            originRight
+                        } = this
+
+    //transformOrigin(matrixFront,    originFront);
+    this.refViewFront.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixFront}]}});
+    // transformOrigin(matrixBack,     originBack);
+    this.refViewBack.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixBack}]}});
+    // transformOrigin(matrixLeft,     originLeft);
+    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixLeft}]}});
+    // transformOrigin(matrixRight,    originRight);
+    this.refViewRight.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixRight}]}});
+  }
+
+  flip = (val) => {
+    // Origin Front
+    const dFX = 0;
+    const dFY = 0;
+    const originFront = { x: 0, y: 0, z: -160 };
+    const matrixFront = rotateXY(dFX, dFY);
+
+    // Origin Back
+    const dBX = 180;
+    const dBY = 0;
+    const originBack = { x: 0, y: 0, z: -160 };
+    const matrixBack = rotateXY(dBX, dBY);
+
+    // Origin Left
+    const dLX = -90;
+    const dLY = 0;
+    const originLeft = { x: 0, y: 0, z: -160 };
+    const matrixLeft = rotateXY(dLX, dLY);
+
+    // Origin Back
+    const dRX = 90;
+    const dRY = 0;
+    const originRight = { x: 0, y: 0, z: -160 };
+    const matrixRight = rotateXY(dRX, dRY);
+
+    transformOrigin(matrixFront,    originFront);
+    this.refViewFront.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixFront}]}});
+    transformOrigin(matrixBack,     originBack);
+    this.refViewBack.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixBack}]}});
+    transformOrigin(matrixLeft,     originLeft);
+    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixLeft}]}});
+    transformOrigin(matrixRight,    originRight);
+    this.refViewRight.setNativeProps({style: {transform: [{perspective: 500}, {matrix: matrixRight}]}});
+
+    this.animation[val].setValue(0);
+
+    Animated.timing(this.animation[val], {
+      toValue: 32,
+      duration: 3000,
+      useNativeDriver: false,
+    }).start();
+
+    this.animation[val].setValue(0);
+    Animated.timing(this.animation[val], {
+      toValue: 33,
+      duration: 3000,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  render() {
+    const { rotateFrontX,   rotateFrontY,   matrixFront,
+            rotateBackX,    rotateBackY,    matrixBack,
+            rotateLeftX,    rotateLeftY,    matrixLeft,
+            rotateRightX,   rotateRightY,   matrixRight } = this;
+    return(
+      <SafeAreaView style={styles.container}>
+          <Image source={require("../assets/images/register/asahi_logo.png")} style={styles.logo}  />
+          <View style={styles.wrapper}>
+              <View style={styles.panelWrapper}>
+                <View style={styles.registerContainer}>
+                    <View style={styles.registerBox}>
+                    <View style={styles.cubeContainer}>
+                      <Animated.View
+                        ref={component => this.refViewFront = component}
+                        style={{
+                          ...styles.front,
+                          transform: [{rotateX: rotateFrontX}, {rotateY: rotateFrontY}, {perspective: 500}],
+                        }}>
+                            <Image style={styles.image2}  source={require("../assets/images/game/Kanji2.png")}/></Animated.View>
+                      <Animated.View
+                        ref={component => this.refViewBack = component}
+                        style={{
+                          ...styles.back,
+                          transform: [{rotateX: rotateBackX}, {rotateY: rotateBackY}, {perspective: 500}],
+                        }}
+                      >
+                      <Image style={styles.image2}  source={require("../assets/images/game/Kanji2.png")}/></Animated.View>
+                      <Animated.View
+                        ref={component => this.refViewLeft = component}
+                        style={{
+                          ...styles.left,
+                          transform: [{rotateX: rotateLeftX}, {rotateY: rotateLeftY}, {perspective: 500}],
+                        }}
+                      >
+                      <Image style={styles.image1}  source={require("../assets/images/game/Kanji1.png")}/></Animated.View>
+                      <Animated.View
+                        ref={component => this.refViewRight = component}
+                        style={{
+                          ...styles.right,
+                          transform: [{rotateX: rotateRightX}, {rotateY: rotateRightY}, {perspective: 500}],
+                        }}
+                      >
+                      <Image style={styles.image1}  source={require("../assets/images/game/Kanji1.png")}/></Animated.View>
+                      
+                      </View>
+                      {/* <Button title="flip x " onPress={() => this.flip('x')} /> */}
+                      <Button title="Play" onPress={() => this.flip('y')} />
+                    </View>
+                </View>
+              <ImageBackground source={require("../assets/images/register/background.png")} style={styles.backgroundImage}  />
+              </View>
+
+            <View style={styles.menu}  >
+              <TouchableOpacity style={styles.seletedMenuItem} onPress={() => {this.props.navigation.navigate('Home')}}>
+                <Image source={require("../assets/images/register/logo_home.png")}/>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Register')}} >
+                <Image source={require("../assets/images/register/logo_register.png")}/>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Game')}}>
+                <Image source={require("../assets/images/register/logo_game.png")}/>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Search')}}>
+                <Image source={require("../assets/images/register/logo_search.png")}/>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Home')}}>
+                <Image source={require("../assets/images/register/logo_logout.png")}/>
+              </TouchableOpacity>
+            </View>
+
+          </View>
+
+      </SafeAreaView>
+  );
+  }
+
+}
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  wrapper: {
-      height: height,
+    container: {
+      backgroundColor: '#000',
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    wrapper: {
+        height: height,
+        width: width,
+        resizeMode: 'contain'
+    },
+    backgroundImage: {
+        top: 0  ,
+        height: height,
+        width: height,
+        resizeMode: 'cover',
+        position:"absolute",
+    },
+    logo: {
+        position:"absolute",
+        width: width/3,
+        top: 0,
+        left: 0,
+        right: 0,
+        resizeMode: 'contain',
+        zIndex: 100
+    },
+    panelWrapper: {
+        height: height,
+        width: width,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    registerContainer: {
+        marginTop: -10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: height,
+        width: width,
+        zIndex: 100
+    },
+    registerBox: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: height,
+        width: width/2,
+        zIndex: 100
+    },
+    registerText: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: "center",
+        textAlignVertical: "center",
+        fontSize: 50,
+        color: '#fff',
+        height: 80,
+        width: width/1.5,
+        zIndex: 100,
+        marginBottom: 50
+    },
+    menu: {
+      display: 'flex',
+      flexDirection: 'row',
       width: width,
-      resizeMode: 'contain'
-  },
-  backgroundImage: {
-      top: 0  ,
-      height: height,
-      width: height,
-      resizeMode: 'cover',
-      position:"absolute",
-  },
-  logo: {
-      position:"absolute",
-      width: width/3,
-      top: 0,
-      left: 0,
-      right: 0,
-      resizeMode: 'contain',
+      height: height/8,
+      position:'absolute',
+      alignItems: 'center',
+      justifyContent: 'center',
+      bottom: 20,
+      right:0,
       zIndex: 100
-  },
-  panelWrapper: {
-      height: height,
-      width: width,
+    },
+    menuItem: {
+      borderColor: 'red',
+      width: width/5,
+      height: height/8,
+      borderWidth: 1,
       alignItems: 'center',
       justifyContent: 'center',
-  },
-  registerContainer: {
-      marginTop: -10,
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: height,
-      width: width,
+      color: 'white',
       zIndex: 100
-  },
-  registerBox: {
+    },
+    seletedMenuItem: {
+      borderColor: 'red',
+      width: width/5,
+      height: height/8,
+      borderWidth: 1,
       alignItems: 'center',
       justifyContent: 'center',
-      height: height,
-      width: width/2,
+      color: 'white',
+      backgroundColor: 'red',
       zIndex: 100
-  },
-  registerText: {
-      alignItems: 'center',
+    },
+    homeImage: {
+      width: 600,
+      height: 300,
+      zIndex: 100
+    },
+    cubeContainer: {
+      position: 'relative',
+      alignItems: 'center', 
       justifyContent: 'center',
-      textAlign: "center",
-      textAlignVertical: "center",
-      fontSize: 50,
-      color: '#fff',
-      height: 80,
-      width: width/1.5,
+      width: 300,
+      height: 300,
+      backgroundColor: "transparent",
       zIndex: 100,
-      marginBottom: 50
-  },
-  menu: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: width,
-    height: height/8,
-    position:'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    bottom: 20,
-    right:0,
-    zIndex: 100
-  },
-  menuItem: {
-    borderColor: 'red',
-    width: width/5,
-    height: height/8,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-    zIndex: 100
-  },
-  seletedMenuItem: {
-    borderColor: 'red',
-    width: width/5,
-    height: height/8,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-    backgroundColor: 'red',
-    zIndex: 100
-  },
-  cubeContainer: {
-    position: 'absolute',
-    left: width / 2 - 150,
-    top: height / 2 - 150,
-    width: 300,
-    height: 300,
-    backgroundColor: "transparent",
-    zIndex: 100
-  },
-  cube: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    width: 300,
-    height: 300,
-    zIndex: 110
-  },
-  cubeFront: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    width: 300,
-    height: 300,
-    zIndex: 110,
-  },
-  cubeBack: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    width: 300,
-    height: 300,
-    zIndex: 110,
-  },
-  cubeLeft: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    width: 300,
-    height: 300,
-    zIndex: 110,
-  },
-  cubeRight: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    width: 300,
-    height: 300,
-    zIndex: 110,
-  }
-});
-
-
-  useEffect(() => {
-    initposition();
-  })
-
-  // useEffect(() => {
-  //   Animated.timing(
-  //     matrixFront,
-  //     {
-  //       toValue: rotateXY(0,0),
-  //       duration: 1500,
-  //       useNativeDriver: false
-  //     }
-  //   ).start();
-  // }, [matrixFront])
-
-  useEffect(() => {
-    matrixFront.value = withDelay(
-      1000,
-      withRepeat(
-        withTiming(rotateXY(0, 0), {
-          duration: 4000,
-        }),
-        -1,
-        false
-      )
-    );
-    matrixBack.value = withDelay(
-      1000,
-      withRepeat(
-        withTiming(rotateXY(180, 0), {
-          duration: 4000,
-        }),
-        -1,
-        false
-      )
-    );
-    matrixLeft.value = withDelay(
-      1000,
-      withRepeat(
-        withTiming(rotateXY(-90, 0), {
-          duration: 4000,
-        }),
-        -1,
-        false
-      )
-    );
-    matrixRight.value = withDelay(
-      1000,
-      withRepeat(
-        withTiming(rotateXY(90, 0), {
-          duration: 4000,
-        }),
-        -1,
-        false
-      )
-    );
-
-  }, []);
-
-  const initposition = () => {
-    let dx = 45;
-    let dy = 0;
-    const origin = { x: 0, y: 0, z: -164 };
-    let matrix = rotateXY(dx, dy);
-    console.log("matrix init1 : ", matrix)
-    console.log("matrixFront init1 : ", matrixFront.value)
-    transformOrigin(matrixFront.value, origin);
-    refViewFront.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixFront.value}]}});
-
-    matrix = rotateXY(dx + 180, dy);
-    console.log("matrix init2 : ", matrix)
-    console.log("matrixBack init2 : ", matrixBack.value)
-    transformOrigin(matrixBack.value, origin);
-    refViewBack.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixBack.value}]}});
-
-    matrix = rotateXY(dx - 90, dy);
-    console.log("matrix init3 : ", matrix)
-    console.log("matrixLeft init3 : ", matrixLeft.value)
-    transformOrigin(matrixLeft.value, origin);
-    refViewLeft.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixLeft.value}]}});
-
-    matrix = rotateXY(dx + 90, dy);
-    console.log("matrix init4 : ", matrix)
-    console.log("matrixRight init4 : ", matrixRight.value)
-    transformOrigin(matrixRight.value, origin);
-    refViewRight.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixRight.value}]}});
-
-  }
-
-  const playGame = () => {
-    let dx = 135 ;
-    let dy = 0;
-    const origin = { x: 0, y: 0, z: -164 };
-    let matrix = rotateXY(dx, dy);
-    console.log("matrix play1 : ", matrix)
-    console.log("matrixFront play1 : ", matrixFront.value)
-    transformOrigin(matrixFront.value, origin);
-    refViewFront.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixFront.value}]}});
-
-    matrix = rotateXY(dx + 180, dy);
-    console.log("matrix play2 : ", matrix)
-    console.log("matrixBack play2 : ", matrixBack.value)
-    transformOrigin(matrixBack.value, origin);
-    refViewBack.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixBack.value}]}});
-
-    matrix = rotateXY(dx - 90, dy);
-    console.log("matrix play3 : ", matrix)
-    console.log("matrixLeft play3 : ", matrixLeft.value)
-    transformOrigin(matrixLeft.value, origin);
-    refViewLeft.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixLeft.value}]}});
-
-    matrix = rotateXY(dx + 90, dy);
-    console.log("matrix play4 : ", matrix)
-    console.log("matrixRight play4 : ", matrixRight.value)
-    transformOrigin(matrixRight.value, origin);
-    refViewRight.current.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrixRight.value}]}});
-
-
-  }
-
-  const renderFront = (color) => {
-    return (
-      <Animated.View
-        ref={refViewFront}
-        style={[styles.cubeFront, (color) ? {backgroundColor: color} : null]}
-      />
-    )
-  }
-
-  const renderBack = (color) => {
-    return (
-      <Animated.View
-        ref={refViewBack}
-        style={[styles.cubeBack, (color) ? {backgroundColor: color} : null]}
-      />
-    )
-  }
-
-  const renderLeft = (color) => {
-    return (
-      <Animated.View
-        ref={refViewRight}
-        style={[styles.cubeLeft, (color) ? {backgroundColor: color} : null]}
-      />
-    )
-  }
-
-  const renderRight = (color) => {
-    return (
-      <Animated.View
-        ref={refViewLeft}
-        style={[styles.cubeRight, (color) ? {backgroundColor: color} : null]}
-      />
-    )
-  }
-
-
-
-
-    return(
-              <SafeAreaView style={styles.container}>
-                  <Image source={require("../assets/images/register/asahi_logo.png")} style={styles.logo}  />
-                  <View style={styles.wrapper}>
-                      <View style={styles.panelWrapper}>
-                        <View style={styles.registerContainer}>
-                            <View style={styles.registerBox}>
-                                <Text style={styles.registerText}>Game</Text>
-                            </View>
-                            <View style={styles.cubeContainer}>
-                              {renderFront('#4c72e0')}
-                              {renderBack('#8697df')}
-                              {renderLeft('#b5bce2')}
-                              {renderRight('#e5afb9')}
-                            </View>
-                        </View>
-                      <ImageBackground source={require("../assets/images/register/background.png")} style={styles.backgroundImage}  />
-                      </View>
-
-                    <View style={styles.menu}  >
-                      <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Home')}}>
-                        <Image source={require("../assets/images/register/logo_home.png")}/>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Register')}} >
-                        <Image source={require("../assets/images/register/logo_register.png")}/>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={styles.seletedMenuItem} onPress={() => {playGame()}}>
-                        <Image source={require("../assets/images/register/logo_game.png")}/>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Search')}}>
-                        <Image source={require("../assets/images/register/logo_search.png")}/>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Home')}}>
-                        <Image source={require("../assets/images/register/logo_logout.png")}/>
-                      </TouchableOpacity>
-                    </View>
-
-                  </View>
-
-              </SafeAreaView>
-          );
-}
+      flexDirection: 'row',
+      //backgroundColor: 'black', 
+    },
+    item: {
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      height: 300,
+      width: 300,
+      backgroundColor: 'red',
+      marginBottom: 20,
+    },
+    front: {
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      height: 300,
+      width: 300,
+      backgroundColor: 'white',
+      zIndex: 110,
+    },
+    back: {
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      height: 300,
+      width: 300,
+      backgroundColor: 'white',
+      zIndex: 100,
+    },
+    left: {
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      height: 300,
+      width: 300,
+      backgroundColor: 'white',
+      zIndex: 110,
+    },
+    right: {
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      height: 300,
+      width: 300,
+      backgroundColor: 'white',
+      zIndex: 100,
+    },
+    image1: {
+      top: -120,
+      width: 300,
+      resizeMode: 'contain',
+    },
+    image2: {
+      top: -90,
+      width: 300,
+      resizeMode: 'contain',
+    }
+  });
+  

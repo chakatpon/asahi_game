@@ -14,7 +14,7 @@ const { width, height } = Dimensions.get('window')
 export default class LockScreenPinCode extends Component {
 
   constructor(props){
-    super();
+    super(props);
     this.state = {
       pincode: ['','','','','','']
     };

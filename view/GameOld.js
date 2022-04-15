@@ -269,60 +269,6 @@ const styles = StyleSheet.create({
     initposition();
   })
 
-  // useEffect(() => {
-  //   Animated.timing(
-  //     matrixFront,
-  //     {
-  //       toValue: rotateXY(0,0),
-  //       duration: 1500,
-  //       useNativeDriver: false
-  //     }
-  //   ).start();
-  // }, [matrixFront])
-
-  useEffect(() => {
-    matrixFront.value = withDelay(
-      1000,
-      withRepeat(
-        withTiming(rotateXY(0, 0), {
-          duration: 4000,
-        }),
-        -1,
-        false
-      )
-    );
-    matrixBack.value = withDelay(
-      1000,
-      withRepeat(
-        withTiming(rotateXY(180, 0), {
-          duration: 4000,
-        }),
-        -1,
-        false
-      )
-    );
-    matrixLeft.value = withDelay(
-      1000,
-      withRepeat(
-        withTiming(rotateXY(-90, 0), {
-          duration: 4000,
-        }),
-        -1,
-        false
-      )
-    );
-    matrixRight.value = withDelay(
-      1000,
-      withRepeat(
-        withTiming(rotateXY(90, 0), {
-          duration: 4000,
-        }),
-        -1,
-        false
-      )
-    );
-
-  }, []);
 
   const initposition = () => {
     let dx = 45;
