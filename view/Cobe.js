@@ -67,7 +67,7 @@ export default class Cube extends Component {
   renderLeft(color) {
     return (
       <View
-        ref={component => this.refViewRight = component}
+        ref={component => this.refViewLeft = component}
         style={[styles.rectangle, (color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
       />
@@ -77,7 +77,7 @@ export default class Cube extends Component {
   renderRight(color) {
     return (
       <View
-        ref={component => this.refViewLeft = component}
+        ref={component => this.refViewRight = component}
         style={[styles.rectangle, (color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
       />
