@@ -5,7 +5,7 @@ export default class Container extends Component {
   constructor() {
     super();
     this.animation = new Animated.ValueXY({x: 0, y: 0});
-    const inputRange = [0, 1];
+    const inputRange = [0, 10];
     const outputRange = ['0deg', '180deg'];
     this.rotateX = this.animation.x.interpolate({inputRange, outputRange});
     this.rotateY = this.animation.y.interpolate({inputRange, outputRange});
@@ -13,8 +13,8 @@ export default class Container extends Component {
   flip = (val) => {
     this.animation[val].setValue(0);
     Animated.timing(this.animation[val], {
-      toValue: 1,
-      duration: 500,
+      toValue: 10,
+      duration: 5000,
       useNativeDriver: false,
     }).start();
   };
