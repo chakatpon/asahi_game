@@ -7,6 +7,7 @@ import { StyleSheet,
 import LockScreenPincode          from './view/LockScreenPincode';
 import Game                       from './view/Game';
 import Cube                       from './view/Cobe';
+import Flip                       from './view/Flip';
 import Register                   from './view/Register';
 import Home                       from './view/Home';
 import Search                     from './view/Search';  
@@ -29,7 +30,7 @@ export default function App() {
        <NavigationContainer>
          <Stack.Navigator 
             screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Game" component={Game} />
+            <Stack.Screen name="Game" component={Flip} />
            <Stack.Screen name="Register" component={Register} />
            <Stack.Screen name="LockScreen" component={LockScreenPincode} />
            <Stack.Screen name="Search" component={Search} />
