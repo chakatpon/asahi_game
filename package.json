@@ -16,10 +16,17 @@
     "@react-navigation/native": "^6.0.10",
     "@react-navigation/native-stack": "^6.6.1",
     "@react-navigation/stack": "^6.2.1",
+    "@react-three/fiber": "^8.0.12",
+    "@unimodules/core": "^7.1.2",
+    "@unimodules/react-native-adapter": "^6.3.9",
     "axios": "^0.26.1",
     "expo": "~44.0.0",
     "expo-device": "^4.1.1",
+    "expo-gl": "^11.1.2",
+    "expo-graphics": "^2.0.0",
     "expo-status-bar": "~1.2.0",
+    "expo-three": "^6.1.0",
+    "expo-three-ar": "^0.0.0",
     "expo-updates": "~0.11.6",
     "react": "17.0.1",
     "react-dom": "17.0.1",
@@ -35,7 +42,9 @@
     "react-native-screens": "^3.13.1",
     "react-native-web": "0.17.1",
     "react-navigation": "^4.4.4",
-    "react-navigation-stack": "^2.10.4"
+    "react-navigation-stack": "^2.10.4",
+    "react-three-fiber": "^6.0.13",
+    "three": "^0.139.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

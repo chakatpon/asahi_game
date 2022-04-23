@@ -1,139 +1,95 @@
-import React, { Component, PropTypes } from 'react';
-import {
-  Dimensions,
-  PanResponder,
-  View
-} from 'react-native';
-import { transformOrigin, rotateXY, rotateXZ } from '../service/utils';
+import React, {Component} from 'react';
+import { View, StyleSheet, TouchableOpacity, Dimensions, Text } from 'react-native';
+import * as THREE from 'three';
+import ExpoTHREE, { Renderer } from 'expo-three';
+import { GLView } from 'expo-gl';
 
-const HEIGHT = Dimensions.get('window').height;
-const WIDTH = Dimensions.get('window').width;
 
-const styles = {
-  container: {
-    position: 'absolute',
-    left: WIDTH / 2 - 150,
-    top: HEIGHT / 2 - 150,
-    width: 300,
-    height: 300,
-    backgroundColor: "transparent"
-  },
-  rectangle: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    width: 300,
-    height: 300,
-    zIndex: 110
-  }
-};
 
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({ opacity: 0.5});
+
+const { width, height } = Dimensions.get('window');
 export default class Cube extends Component {
-  UNSAFE_componentWillMount() {
-    this.panResponder = PanResponder.create({
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: this.handlePanResponderMove.bind(this)
+  constructor(props) {
+    super(props);
+    this.state = {
+      isSpin: false,
+      gl : '',
+      scene: new THREE.Scene(),
+      camera: '',
+      cube: new THREE.Mesh(geometry, material),
+      renderer: ''
+    }
+  }
+
+  _onGLContextCreate = async (gl) => {
+    // Do graphics stuff here!
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera( 75, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.1, 1000);
+    const renderer = new Renderer({ gl });
+    renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
+    const loader = new THREE.TextureLoader();
+    const paths = [
+      require("../assets/images/game/Kanji1.png"),
+      require("../assets/images/game/Kanji2.png"),
+      require("../assets/images/game/Kanji2.png"),
+      require("../assets/images/game/Kanji1.png"),
+      require("../assets/images/game/Kanji1.png"),
+      require("../assets/images/game/Kanji2.png")
+    ]
+
+    const materials = []; // an array of materials you'll pass into the constructor of THREE.Mesh
+    await paths.forEach(path => {
+      materials.push(
+        new THREE.MeshBasicMaterial({
+          map: loader.load(path),
+          color: 0xffffff
+        }));
     });
+    const geometry = new THREE.BoxBufferGeometry(2, 2, 2);
+
+    const  cube = new THREE.Mesh(geometry, materials)
+    scene.add(cube);
+    camera.position.z = 5;
+    renderer.render(scene, camera);
+    const animate = () => {
+      // cube.rotation.x += 0.07;
+      cube.rotation.y += 0.5;
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+      gl.endFrameEXP();
+    }
+    animate();
   }
 
-  handlePanResponderMove (e, gestureState) {
-    const { dx, dy } = gestureState;
-    const origin = { x: 0, y: 0, z: -150 };
-    let matrix = rotateXY(dx, dy);
-    transformOrigin(matrix, origin);
-    this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
-    matrix = rotateXY(dx + 180, dy);
-    transformOrigin(matrix, origin);
-    this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
-    matrix = rotateXY(dx + 90, dy);
-    transformOrigin(matrix, origin);
-    this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-
-    matrix = rotateXY(dx - 90, dy);
-    transformOrigin(matrix, origin);
-    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-
-    matrix = rotateXZ(dx, dy - 90);
-    transformOrigin(matrix, origin);
-    this.refViewTop.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-
-    matrix = rotateXZ(-dx, dy + 90);
-    transformOrigin(matrix, origin);
-    this.refViewBottom.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-  }
-
-  renderLeft(color) {
-    return (
-      <View
-        ref={component => this.refViewLeft = component}
-        style={[styles.rectangle, (color) ? {backgroundColor: color} : null]}
-        {...this.panResponder.panHandlers}
-      />
-    )
-  }
-
-  renderRight(color) {
-    return (
-      <View
-        ref={component => this.refViewRight = component}
-        style={[styles.rectangle, (color) ? {backgroundColor: color} : null]}
-        {...this.panResponder.panHandlers}
-      />
-    )
-  }
-
-  renderFront(color) {
-    return (
-      <View
-        ref={component => this.refViewFront = component}
-        style={[styles.rectangle, (color) ? {backgroundColor: color} : null]}
-        {...this.panResponder.panHandlers}
-      />
-    )
-  }
-
-  renderBack(color) {
-    return (
-      <View
-        ref={component => this.refViewBack = component}
-        style={[styles.rectangle, (color) ? {backgroundColor: color} : null]}
-        {...this.panResponder.panHandlers}
-      />
-    )
-  }
-
-  renderTop(color) {
-    return (
-      <View
-        ref={component => this.refViewTop = component}
-        style={[styles.rectangle, (color) ? {backgroundColor: color} : null]}
-        {...this.panResponder.panHandlers}
-      />
-    )
-  }
-
-  renderBottom(color) {
-    return (
-      <View
-        ref={component => this.refViewBottom = component}
-        style={[styles.rectangle, (color) ? {backgroundColor: color} : null]}
-        {...this.panResponder.panHandlers}
-      />
-    )
-  }
 
   render() {
     return (
       <View style={styles.container}>
-        {this.renderFront('#4c72e0')}
-        {this.renderBack('#8697df')}
-        {this.renderLeft('#b5bce2')}
-        {this.renderRight('#e5afb9')}
-        {this.renderTop('#de7c92')}
-        {this.renderBottom('#d1426b')}
+        <GLView
+          style={{flex:1, zIndex: 100 }}
+          onContextCreate={this._onGLContextCreate}
+        />
       </View>
     );
   }
+
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    width: width,
+    height: height
+  },
+  screen: {
+    width: width,
+    height: height,
+    zIndex: 100
+  }
+});
