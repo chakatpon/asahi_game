@@ -31,12 +31,12 @@ export default class Cube extends Component {
     renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
     const loader = new THREE.TextureLoader();
     const paths = [
-      require("../assets/images/game/Kanji1.png"),
-      require("../assets/images/game/Kanji2.png"),
-      require("../assets/images/game/Kanji2.png"),
-      require("../assets/images/game/Kanji1.png"),
-      require("../assets/images/game/Kanji1.png"),
-      require("../assets/images/game/Kanji2.png")
+        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png",
+        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png",
+        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png",
+        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png",
+        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png",
+        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png"
     ]
 
     const materials = []; // an array of materials you'll pass into the constructor of THREE.Mesh
@@ -47,7 +47,7 @@ export default class Cube extends Component {
           color: 0xffffff
         }));
     });
-    const geometry = new THREE.BoxBufferGeometry(2, 2, 2);
+    const geometry = new THREE.BoxBufferGeometry(2.2, 2.2, 2.2);
 
     const  cube = new THREE.Mesh(geometry, materials)
     scene.add(cube);
@@ -55,7 +55,7 @@ export default class Cube extends Component {
     renderer.render(scene, camera);
     const animate = () => {
       // cube.rotation.x += 0.07;
-      cube.rotation.y += 0.5;
+      cube.rotation.y += 0.1;
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
       gl.endFrameEXP();

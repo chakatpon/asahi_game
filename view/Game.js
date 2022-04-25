@@ -11,10 +11,12 @@ import {
     TextInput,
     Linking, 
     Button,
-    Animated
+    Animated,
+    PanResponder
 } from 'react-native';
 import MatrixMath from 'react-native/Libraries/Utilities/MatrixMath';
 import Cube from './Cube';
+import { transformOrigin, rotateXY, rotateXZ } from '../service/utils';
 
 const { width, height } = Dimensions.get('window')
 
@@ -31,12 +33,17 @@ export default class Game extends Component {
 
 
   UNSAFE_componentWillMount() {
-    console.log('UNSAFE_componentWillMount()')
-
+    console.log('UNSAFE_componentWillMount()');    
+    this.panResponder = PanResponder.create({
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: this.handlePanResponderMove.bind(this)
+    });
   }
 
   componentDidMount() {
-    console.log('componentDidMount')
+    console.log('componentDidMount');
+    this.initposition();
+
   }
 
   playGame = (val) => {
@@ -53,6 +60,102 @@ export default class Game extends Component {
     })
   };
 
+  handlePanResponderMove (e, gestureState) {
+    const { dx, dy } = gestureState;
+    const origin = { x: 0, y: 0, z: -150 };
+    let matrix = rotateXY(dx, dy);
+    transformOrigin(matrix, origin);
+    this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXY(dx + 180, dy);
+    transformOrigin(matrix, origin);
+    this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXY(dx + 90, dy);
+    transformOrigin(matrix, origin);
+    this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXY(dx - 90, dy);
+    transformOrigin(matrix, origin);
+    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXZ(dx, dy - 90);
+    transformOrigin(matrix, origin);
+    this.refViewTop.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXZ(-dx, dy + 90);
+    transformOrigin(matrix, origin);
+    this.refViewBottom.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+  }
+
+  initposition = () => {
+    let dx = 45;
+    let dy = 0;
+    const origin = { x: 0, y: 0, z: -164 };
+    let matrix = rotateXY(dx, dy);
+    console.log("matrix init1 : ", matrix)
+    console.log("matrixFront init1 : ", matrix)
+    transformOrigin(matrix, origin);
+    this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXY(dx + 180, dy);
+    console.log("matrix init2 : ", matrix)
+    console.log("matrixBack init2 : ",matrix)
+    transformOrigin(matrix, origin);
+    this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXY(dx - 90, dy);
+    console.log("matrix init3 : ", matrix)
+    console.log("matrixLeft init3 : ", matrix)
+    transformOrigin(matrix, origin);
+    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+    matrix = rotateXY(dx + 90, dy);
+    console.log("matrix init4 : ", matrix)
+    console.log("matrixRight init4 : ", matrix)
+    transformOrigin(matrix, origin);
+    this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+
+  }
+
+  renderFront = (color) => {
+    return (
+      <View
+        ref={component => this.refViewFront = component}
+        style={[styles.front, (color) ? {backgroundColor: color} : null]}
+      />
+    )
+  }
+
+  renderBack = (color) => {
+    return (
+      <View
+        ref={component => this.refViewBack = component}
+        style={[styles.back, (color) ? {backgroundColor: color} : null]}
+      />
+    )
+  }
+
+  renderLeft = (color) => {
+    return (
+      <View
+        ref={component => this.refViewRight = component}
+        style={[styles.left, (color) ? {backgroundColor: color} : null]}
+      />
+    )
+  }
+
+  renderRight = (color) => {
+    return (
+      <View
+        ref={component => this.refViewLeft = component}
+        style={[styles.right, (color) ? {backgroundColor: color} : null]}
+      />
+    )
+  }
+
+
+
   render() {
     const { } = this;
     return(
@@ -63,6 +166,14 @@ export default class Game extends Component {
                 <View style={styles.registerContainer}>
                     <View style={styles.registerBox}>
                       <View style={styles.cubeContainer}>
+                      {!this.state.isRunnig ? 
+                      <View style={styles.cubeBox}>
+                          {this.renderFront('#4c72e0')}
+                          {this.renderBack('#8697df')}
+                          {this.renderLeft('#b5bce2')}
+                          {this.renderRight('#e5afb9')}
+                        </View>:null}
+                        
                         {this.state.isRunnig ? <Cube/>: null}
                       
                       </View>
@@ -226,6 +337,14 @@ const styles = StyleSheet.create({
       width: 300,
       backgroundColor: 'red',
       marginBottom: 20,
+    },  
+    cubeBox: {
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      width: 300,
+      height: 300,
+      backgroundColor: "transparent"
     },
     front: {
       position: 'absolute',

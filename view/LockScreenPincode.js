@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
       borderColor: 'gray',
       alignItems: 'center',
       justifyContent: 'center',
-      zIndex: 10
+      zIndex: 1000
     },
     closeButton: {
         height: 50,

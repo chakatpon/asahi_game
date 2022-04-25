@@ -10,7 +10,7 @@ import { StyleSheet,
          ActivityIndicator, }             from 'react-native';
 import LockScreenPincode          from './view/LockScreenPincode';
 import Game                       from './view/Game';
-import Cube                       from './view/Cube';
+import Cube                       from './view/CubeOld';
 import Flip                       from './view/Flip';
 import Register                   from './view/Register';
 import Home                       from './view/Home';
@@ -39,7 +39,7 @@ export default function App() {
   useEffect(() => {
     console.log("deviceUID : ",deviceUID)
     console.log("DeviceName : ",deviceName)
-    checkDeviceID();
+    // checkDeviceID();
   },[])
 
   const checkDeviceID = () => {
@@ -89,15 +89,16 @@ export default function App() {
        <NavigationContainer>
          <Stack.Navigator 
             screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="Game" component={Game} />
             <Stack.Screen name="LockScreen" component={LockScreenPincode} />
+            {/* <Stack.Screen name="Game" component={Cube} /> */}
             <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Register" component={Register} />
-            {/* <Stack.Screen name="Game" component={Game} /> */}
+            
            <Stack.Screen name="Search" component={Search} />
          </Stack.Navigator>
          </NavigationContainer>
-         <ActivityIndicator size="large" color="#ff0000" />
+         {/* <ActivityIndicator size="large" color="#ff0000" /> */}
     </View>
   );
 }

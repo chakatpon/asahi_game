@@ -29,6 +29,9 @@ const styles = {
 };
 
 export default class Cube extends Component {
+  constructor(props) {
+    super(props)
+  }
   UNSAFE_componentWillMount() {
     this.panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
