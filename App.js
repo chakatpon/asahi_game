@@ -39,7 +39,7 @@ export default function App() {
   useEffect(() => {
     console.log("deviceUID : ",deviceUID)
     console.log("DeviceName : ",deviceName)
-    // checkDeviceID();
+    checkDeviceID();
   },[])
 
   const checkDeviceID = () => {
