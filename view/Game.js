@@ -93,26 +93,18 @@ export default class Game extends Component {
     let dy = 0;
     const origin = { x: 0, y: 0, z: -164 };
     let matrix = rotateXY(dx, dy);
-    console.log("matrix init1 : ", matrix)
-    console.log("matrixFront init1 : ", matrix)
     transformOrigin(matrix, origin);
     this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
     matrix = rotateXY(dx + 180, dy);
-    console.log("matrix init2 : ", matrix)
-    console.log("matrixBack init2 : ",matrix)
     transformOrigin(matrix, origin);
     this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
     matrix = rotateXY(dx - 90, dy);
-    console.log("matrix init3 : ", matrix)
-    console.log("matrixLeft init3 : ", matrix)
     transformOrigin(matrix, origin);
     this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
     matrix = rotateXY(dx + 90, dy);
-    console.log("matrix init4 : ", matrix)
-    console.log("matrixRight init4 : ", matrix)
     transformOrigin(matrix, origin);
     this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
@@ -353,7 +345,7 @@ const styles = StyleSheet.create({
       height: 300,
       width: 300,
       backgroundColor: 'white',
-      zIndex: 110,
+      zIndex: 120,
     },
     back: {
       position: 'absolute',
@@ -371,7 +363,7 @@ const styles = StyleSheet.create({
       height: 300,
       width: 300,
       backgroundColor: 'white',
-      zIndex: 110,
+      zIndex: 120,
     },
     right: {
       position: 'absolute',
@@ -380,7 +372,7 @@ const styles = StyleSheet.create({
       height: 300,
       width: 300,
       backgroundColor: 'white',
-      zIndex: 100,
+      zIndex: 120,
     },
     image1: {
       top: -120,
