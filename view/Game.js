@@ -60,7 +60,7 @@ export default class Game extends Component {
     })
   };
 
-  handlePanResponderMove (e, gestureState) {
+  handlePanResponderMove = (e, gestureState) => {
     const { dx, dy } = gestureState;
     const origin = { x: 0, y: 0, z: -150 };
     let matrix = rotateXY(dx, dy);
@@ -115,7 +115,9 @@ export default class Game extends Component {
       <View
         ref={component => this.refViewFront = component}
         style={[styles.front, (color) ? {backgroundColor: color} : null]}
-      />
+      >
+        <Image style={styles.back} source={require("../assets/images/game/cubeSide.png")}/>
+      </View>
     )
   }
 
@@ -124,7 +126,9 @@ export default class Game extends Component {
       <View
         ref={component => this.refViewBack = component}
         style={[styles.back, (color) ? {backgroundColor: color} : null]}
-      />
+      >
+        <Image style={styles.back} source={require("../assets/images/game/cubeSide.png")}/>
+      </View>
     )
   }
 
@@ -133,7 +137,9 @@ export default class Game extends Component {
       <View
         ref={component => this.refViewRight = component}
         style={[styles.left, (color) ? {backgroundColor: color} : null]}
-      />
+        >
+        <Image style={styles.left} source={require("../assets/images/game/cubeSide.png")}/>
+      </View>
     )
   }
 
@@ -142,7 +148,9 @@ export default class Game extends Component {
       <View
         ref={component => this.refViewLeft = component}
         style={[styles.right, (color) ? {backgroundColor: color} : null]}
-      />
+        >
+        <Image style={styles.right} source={require("../assets/images/game/cubeSide.png")}/>
+      </View>
     )
   }
 
@@ -187,13 +195,13 @@ export default class Game extends Component {
               </View>
 
             <View style={styles.menu}  >
-              <TouchableOpacity style={styles.seletedMenuItem} onPress={() => {this.props.navigation.navigate('Home')}}>
+              <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Home')}}>
                 <Image source={require("../assets/images/register/logo_home.png")}/>
               </TouchableOpacity>
               <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Register')}} >
                 <Image source={require("../assets/images/register/logo_register.png")}/>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Game')}}>
+              <TouchableOpacity style={styles.seletedMenuItem} onPress={() => {this.props.navigation.navigate('Game')}}>
                 <Image source={require("../assets/images/register/logo_game.png")}/>
               </TouchableOpacity>
               <TouchableOpacity style={styles.menuItem} onPress={() => {this.props.navigation.navigate('Search')}}>
@@ -363,7 +371,7 @@ const styles = StyleSheet.create({
       height: 300,
       width: 300,
       backgroundColor: 'white',
-      zIndex: 120,
+      zIndex: 110,
     },
     right: {
       position: 'absolute',
