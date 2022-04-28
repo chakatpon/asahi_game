@@ -212,6 +212,7 @@ export default function Register ({navigation}) {
                                           style={styles.input}
                                           placeholder="เบอร์โทรศัพท์"
                                           onChangeText={newPhone => setPhone(newPhone)}
+                                          keyboardType = 'numeric'
                                           defaultValue={newPhone}/>
                                   <TextInput/>
                                   <View style={styles.checkboxContainer}>
@@ -265,6 +266,7 @@ export default function Register ({navigation}) {
                                           style={styles.input}
                                           placeholder="รหัส OTP"
                                           onChangeText={OTP => setOTP(OTP)}
+                                          keyboardType = 'numeric'
                                           defaultValue={OTP}/>
                                   <TextInput/>
                                   <TouchableOpacity style={styles.linkWrapper2}>
