@@ -68,7 +68,7 @@ export default function Register ({navigation}) {
       // }
       console.log("RESPONSE REGISTER: ", res);
       console.log("RESPONSE REGISTER RECEIVED: ", res.data);
-      const status = res.data.otp_refno
+      const status = res.data.status
       const message = res.data.message
       const otp_refno = res.data.otp_refno
       if((status == "success") && (otp_refno)) {
@@ -118,7 +118,7 @@ export default function Register ({navigation}) {
       // }
       console.log("RESPONSE OTP: ", res);
       console.log("RESPONSE OTP RECEIVED: ", res.data);
-      const status = res.data.otp_refno
+      const status = res.data.status
       const message = res.data.message
       const profile = res.data.profile
       if(status == "success") {
