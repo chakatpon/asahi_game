@@ -89,9 +89,9 @@ export default function App() {
        <NavigationContainer>
          <Stack.Navigator 
             screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Game" component={Game} />
             <Stack.Screen name="LockScreen" component={LockScreenPincode} />
               <Stack.Screen name="Register" component={Register} />
-            <Stack.Screen name="Game" component={Game} />
             <Stack.Screen name="Home" component={Home} />
            <Stack.Screen name="Search" component={Search} />
          </Stack.Navigator>

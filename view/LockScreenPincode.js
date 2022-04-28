@@ -14,6 +14,10 @@ import {
 import axios   from 'axios';
 import * as Device from 'expo-device';
 import AnimatedRingExample from './Ring';
+import * as MediaLibrary from 'expo-media-library';
+import * as FileSystem from 'expo-file-system';
+import * as Permissions from 'expo-permissions';
+
 const { width, height } = Dimensions.get('window');
 
 const endpoint  = 'https://asahigame.dev.kanda.digital/api';
@@ -190,6 +194,8 @@ export default class LockScreenPinCode extends Component {
         }else {
           this.setState({...this.state, pincode: ['','','','','',''], isLoading: false, cubic: cubic})
           // this.props.navigation.navigate('Home')
+
+          this.downloadFile(cubic[0].file_url, cubic[0].display_file);
         }
       })
       .catch((err) => {
@@ -199,8 +205,31 @@ export default class LockScreenPinCode extends Component {
     }
 
     seveCubicImage = () => {
-
     }
+
+    downloadFile(uri, display_file){
+      let fileUri = FileSystem.documentDirectory + display_file;
+      FileSystem.downloadAsync(uri, fileUri)
+      .then(({ uri }) => {
+          this.saveFile(uri);
+        })
+        .catch(error => {
+          console.error(error);
+        })
+  }
+  
+  saveFile = async (fileUri) => {
+    console.log('FileURI :', fileUri)
+      // const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      // console.log('status : ',status)
+      // if (status === "granted") {
+      //     const asset = await MediaLibrary.createAssetAsync(fileUri)
+      //     await MediaLibrary.createAlbumAsync("Download", asset, false)
+      // }
+
+      const asset = await MediaLibrary.createAssetAsync(fileUri)
+      await MediaLibrary.createAlbumAsync("Download", asset, false)
+  }
 
     wrongPIN = () => {
       Alert.alert(

@@ -1,13 +1,21 @@
 import React, {Component} from 'react';
 import { View, StyleSheet, TouchableOpacity, Dimensions, Text } from 'react-native';
-import * as THREE from 'three';
+import {
+  AmbientLight,
+  BoxBufferGeometry,
+  Fog,
+  GridHelper,
+  Mesh,
+  MeshBasicMaterial,
+  PerspectiveCamera,
+  PointLight,
+  Scene,
+  SpotLight,
+}  from 'three';
 import ExpoTHREE, { Renderer, TextureLoader} from 'expo-three';
 import { GLView } from 'expo-gl';
 
 
-
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ opacity: 0.5});
 
 const { width, height } = Dimensions.get('window');
 export default class Cube extends Component {
@@ -16,75 +24,70 @@ export default class Cube extends Component {
     this.state = {
       isSpin: false,
       gl : '',
-      scene: new THREE.Scene(),
-      camera: '',
-      cube: new THREE.Mesh(geometry, material),
-      renderer: ''
     }
   }
 
   _onGLContextCreate = async (gl) => {
     // Do graphics stuff here!
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera( 75, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.1, 1000);
+    const sceneColor = 0x6ad6f0;
+    const scene = new Scene();
+    scene.fog = new Fog(sceneColor, 1, 10000);
+
+    const ambientLight = new AmbientLight(0x101010);
+    scene.add(ambientLight);
+
+    const pointLight = new PointLight(0xffffff, 2, 1000, 1);
+    pointLight.position.set(0, 200, 200);
+    scene.add(pointLight);
+
+    const spotLight = new SpotLight(0xffffff, 0.5);
+    spotLight.position.set(0, 500, 100);
+    spotLight.lookAt(scene.position);
+    scene.add(spotLight);
+    const camera = new PerspectiveCamera( 75, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.1, 1000);
     const renderer = new Renderer({ gl });
     renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
     const loader = new TextureLoader();
+    loader.setCrossOrigin("Anonymous")
+    loader.crossOrigin = "Anonymous"
     const paths = [
-        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png",
-        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png",
-        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png",
-        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png",
-        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png",
-        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png"
+        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png", // 1
+        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png", // 2
+        require("../assets/images/game/cubeSide.png"), // 3 not show
+        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png", // 4
+        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png", // 5
+        "https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png"// 6
     ]
 
-    //const materials = []; // an array of materials you'll pass into the constructor of THREE.Mesh
-    // const materials = await paths.map(path => {
-    //   console.log('loader.load(path) : ', loader.load(path))
-    //     return new THREE.MeshBasicMaterial({
-    //       map: loader.load(path),
-    //       color: 0xffffff
-    //     });
-    // });
-
-    // load a resource
-    loader.load(
-      // resource URL
-      'https://asahigame.dev.kanda.digital/storage/xvK9p1e9ZFzirQDNFKAhqiUbMyjlllh1x0DFOrTA.png',
-      // Function when resource is loaded
-      function ( texture ) {
-          // do something with the texture
-          console.log('texture is loading . ', texture)
-          var material = new THREE.MeshBasicMaterial( {
-              map: texture
-           } );
-      },
-      // Function called when download progresses
-      function ( xhr ) {
-          console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
-      },
-      // Function called when download errors
-      function ( xhr ) {
-          console.log( 'An error happened' );
-      }
-    );
+  //   Example 
+  //   const paths = [
+  //     "https://www.dlf.pt/png/list/7/73398_dice-faces-png.png", // 1
+  //     "https://www.pinclipart.com/picdir/middle/77-771472_dice-clipart-number-dice-face-3-png-transparent.png", // 2
+  //     require("../assets/images/game/cubeSide.png"), // 3 not show
+  //     "https://w7.pngwing.com/pngs/931/801/png-transparent-dice-dice-face-text-rectangle-orange.png", // 4
+  //     "https://www.pinclipart.com/picdir/middle/21-214197_making-five-side-of-dice-clipart.png", // 5
+  //     "https://www.clipartmax.com/png/middle/235-2353386_open-dice-number-6.png"// 6
+  // ]
 
     
-    const materials = new THREE.MeshBasicMaterial( {
-      color: 0xffffff,
-      map: loader.load(require('../assets/images/game/cubeSide.png'))
-     });
+    // const materials = []; // an array of materials you'll pass into the constructor of THREE.Mesh
+    let materials = await paths.map(path => {
+      console.log('loader.load(path) : ', loader.load(path))
+        return new THREE.MeshBasicMaterial({
+          map: loader.load(path),
+          color: 0xffffff
+        });
+    });
 
-    const geometry = new THREE.BoxBufferGeometry(1.6, 1.6, 1.6);
-    const  cube = new THREE.Mesh(geometry, materials)
+    const geometry = new BoxBufferGeometry(1.6, 1.6, 1.6);
+    const  cube = new Mesh(geometry, materials)
     scene.add(cube);
     camera.position.z = 5;
     renderer.render(scene, camera);
     const animate = () => {
       // cube.rotation.x += 0.07;
-      cube.rotation.y += 0.2;
       requestAnimationFrame(animate);
+      cube.rotation.y += 0.2;
       renderer.render(scene, camera);
       gl.endFrameEXP();
     }

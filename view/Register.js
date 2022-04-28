@@ -25,6 +25,11 @@ export default function Register ({navigation}) {
   const [OTP, setOTP]               = useState('');
   const [refOTP, setRefOTP]         = useState('');
 
+
+  const register = () => {
+    
+  }
+
             return(
             <SafeAreaView style={styles.container}>
                 <Image source={require("../assets/images/register/asahi_logo.png")} style={styles.logo}  />
