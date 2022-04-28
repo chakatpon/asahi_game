@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import axios   from 'axios';
 import * as Device from 'expo-device';
+import AnimatedRingExample from './Ring';
 const { width, height } = Dimensions.get('window');
 
 const endpoint  = 'https://asahigame.dev.kanda.digital/api';
@@ -25,10 +26,17 @@ export default class LockScreenPinCode extends Component {
     super(props);
     this.state = {
       pincode: ['','','','','',''],
-      isLoading: false
+      isLoading: true
     };
   }
   //  [pincode, setPincode] = useState([])
+
+  componentDidMount(){
+    this.setState({
+      ...this.state,
+      isLoading: false
+    })
+  }
 
      onPress1 = () =>  {
       console.log("press button ", '1');
@@ -154,8 +162,9 @@ export default class LockScreenPinCode extends Component {
         if(!access_token) {
           this.wrongPIN()
         }else {
-          this.setState({...this.state, pincode: ['','','','','','']})
-          this.props.navigation.navigate('Home')
+          this.setState({...this.state, pincode: ['','','','','',''], isLoading: true, accessToken: access_token})
+          this.callEvent();
+          // this.props.navigation.navigate('Home')
         }
       })
       .catch((err) => {
@@ -165,13 +174,41 @@ export default class LockScreenPinCode extends Component {
       // this.props.navigation.navigate('Home')
     }
 
+    callEvent = () => {
+      axios({
+        method: 'get',
+        url: `${endpoint}/events/info`,
+        headers: {'X-Requested-With':'XMLHttpRequest',
+                  'x-api-key':apiKey,
+                  'x-device-uid':deviceUID,
+                  'Authorization':`Bearer ${this.state.accessToken}`}
+      }).then((res) => {
+        console.log("RESPONSE PIN RECEIVED: ", res.data);
+        const cubic = res.data.cubic
+        if(!cubic) {
+          this.wrongPIN()
+        }else {
+          this.setState({...this.state, pincode: ['','','','','',''], isLoading: false, cubic: cubic})
+          // this.props.navigation.navigate('Home')
+        }
+      })
+      .catch((err) => {
+        console.log("AXIOS PIN ERROR: ", err);
+        this.wrongPIN();
+      });
+    }
+
+    seveCubicImage = () => {
+
+    }
+
     wrongPIN = () => {
       Alert.alert(
         'รหัส PIN ไม่ถูกต้อง',
         'กรุณาลองใหม่',
         [
-          {text: 'ตกลง', onPress: () => this.setState({...this.state, pincode: ['','','','','','']})},
-          {text: 'ปิด', onPress: () => this.setState({...this.state, pincode: ['','','','','','']})},
+          {text: 'ตกลง', onPress: () => this.setState({...this.state, pincode: ['','','','','',''], isLoading: false})},
+          {text: 'ปิด', onPress: () => this.setState({...this.state, pincode: ['','','','','',''], isLoading: false})},
         ],
         { cancelable: false });
         return true;
@@ -180,96 +217,99 @@ export default class LockScreenPinCode extends Component {
     render() {
         return <SafeAreaView style={styles.container}>
                 <Image source={require("../assets/images/pincode/asahi_logo.png")} style={styles.logo}  />
-                <View style={styles.wrapper}>
-                    <View style={styles.pincodeContainer}>
-                        <View style={styles.pincodeBox}>
-                            <Text style={styles.pincodeText}>Enter PassCode</Text>
-                        </View>
-                        <View style={styles.codeContainer}>
-                          {this.state.pincode.map((pin,i)=> {
-                            let style = (pin != '') ? styles.code2 : styles.code1;
-                            return <View key={i} style={style}></View>
-                          })}
-                        </View>
-                    </View>
-                    <View style={styles.panelWrapper}>
-                        <View style={styles.buttonContainer} >
-                            <View style={styles.row}>
-                                    <TouchableOpacity style={styles.touch} onPress={this.onPress1}>
-                                      <Text style={styles.buttonLabel}>
-                                        1
-                                      </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.touch} onPress={this.onPress2}>
-                                      <Text style={styles.buttonLabel}>
-                                        2
-                                      </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.touch}  onPress={this.onPress3}>
-                                      <Text style={styles.buttonLabel}>
-                                        3
-                                      </Text>
-                                    </TouchableOpacity>
-                            </View>
+                {this.state.isLoading
+                 ? <AnimatedRingExample/> 
+                 : <View style={styles.wrapper}>
+                      <View style={styles.pincodeContainer}>
+                          <View style={styles.pincodeBox}>
+                              <Text style={styles.pincodeText}>Enter PassCode</Text>
+                          </View>
+                          <View style={styles.codeContainer}>
+                            {this.state.pincode.map((pin,i)=> {
+                              let style = (pin != '') ? styles.code2 : styles.code1;
+                              return <View key={i} style={style}></View>
+                            })}
+                          </View>
+                      </View>
+                      <View style={styles.panelWrapper}>
+                          <View style={styles.buttonContainer} >
+                              <View style={styles.row}>
+                                      <TouchableOpacity style={styles.touch} onPress={this.onPress1}>
+                                        <Text style={styles.buttonLabel}>
+                                          1
+                                        </Text>
+                                      </TouchableOpacity>
+                                      <TouchableOpacity style={styles.touch} onPress={this.onPress2}>
+                                        <Text style={styles.buttonLabel}>
+                                          2
+                                        </Text>
+                                      </TouchableOpacity>
+                                      <TouchableOpacity style={styles.touch}  onPress={this.onPress3}>
+                                        <Text style={styles.buttonLabel}>
+                                          3
+                                        </Text>
+                                      </TouchableOpacity>
+                              </View>
+                          
+                          
+                              <View style={styles.row}>
+                                      <TouchableOpacity style={styles.touch}  onPress={this.onPress4}>
+                                        <Text style={styles.buttonLabel}>
+                                          4
+                                        </Text>
+                                      </TouchableOpacity>
+                                      <TouchableOpacity style={styles.touch}  onPress={this.onPress5}>
+                                        <Text style={styles.buttonLabel}>
+                                          5
+                                        </Text>
+                                      </TouchableOpacity>
+                                      <TouchableOpacity style={styles.touch}  onPress={this.onPress6}>
+                                        <Text style={styles.buttonLabel}>
+                                          6
+                                        </Text>
+                                      </TouchableOpacity>
+                              </View>
+                          
+                          
+                              <View style={styles.row}>
+                                      <TouchableOpacity style={styles.touch}  onPress={this.onPress7}>
+                                        <Text style={styles.buttonLabel}>
+                                          7
+                                        </Text>
+                                      </TouchableOpacity>
+                                      <TouchableOpacity style={styles.touch}  onPress={this.onPress8}>
+                                        <Text style={styles.buttonLabel}>
+                                          8
+                                        </Text>
+                                      </TouchableOpacity>
+                                      <TouchableOpacity style={styles.touch}  onPress={this.onPress9}>
+                                        <Text style={styles.buttonLabel}>
+                                          9
+                                        </Text>
+                                      </TouchableOpacity>
+                              </View>
+                          
+                          
+                              <View style={styles.row}>
+                                  <View style={styles.empty}></View>
+                                      <TouchableOpacity style={styles.touch}  onPress={this.onPress0}>
+                                        <Text style={styles.buttonLabel}>
+                                          0
+                                        </Text>
+                                      </TouchableOpacity>
+                                  <View style={styles.empty} >
+                                      <TouchableOpacity style={styles.relative} onPress={this.onPressBackSpace}>
+                                      <Image source={require("../assets/images/pincode/asahi_close_btn.png")} style={styles.closeButton}  />
+                                      </TouchableOpacity>
+                                  </View>
+                              </View>
+                          </View>
+                          
+                      <ImageBackground source={require("../assets/images/pincode/asahi_background.png")} style={styles.backgroundImage}  />
+                      </View>
 
+             </View>}
 
-                            <View style={styles.row}>
-                                    <TouchableOpacity style={styles.touch}  onPress={this.onPress4}>
-                                      <Text style={styles.buttonLabel}>
-                                        4
-                                      </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.touch}  onPress={this.onPress5}>
-                                      <Text style={styles.buttonLabel}>
-                                        5
-                                      </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.touch}  onPress={this.onPress6}>
-                                      <Text style={styles.buttonLabel}>
-                                        6
-                                      </Text>
-                                    </TouchableOpacity>
-                            </View>
-
-
-                            <View style={styles.row}>
-                                    <TouchableOpacity style={styles.touch}  onPress={this.onPress7}>
-                                      <Text style={styles.buttonLabel}>
-                                        7
-                                      </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.touch}  onPress={this.onPress8}>
-                                      <Text style={styles.buttonLabel}>
-                                        8
-                                      </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.touch}  onPress={this.onPress9}>
-                                      <Text style={styles.buttonLabel}>
-                                        9
-                                      </Text>
-                                    </TouchableOpacity>
-                            </View>
-
-
-                            <View style={styles.row}>
-                                <View style={styles.empty}></View>
-                                    <TouchableOpacity style={styles.touch}  onPress={this.onPress0}>
-                                      <Text style={styles.buttonLabel}>
-                                        0
-                                      </Text>
-                                    </TouchableOpacity>
-                                <View style={styles.empty} >
-                                    <TouchableOpacity style={styles.relative} onPress={this.onPressBackSpace}>
-                                    <Image source={require("../assets/images/pincode/asahi_close_btn.png")} style={styles.closeButton}  />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </View>
-                        
-                    <ImageBackground source={require("../assets/images/pincode/asahi_background.png")} style={styles.backgroundImage}  />
-                    </View>
-
-                </View>
 
             </SafeAreaView>;
      } 

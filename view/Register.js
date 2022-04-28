@@ -25,7 +25,6 @@ export default function Register ({navigation}) {
   const [OTP, setOTP]               = useState('');
   const [refOTP, setRefOTP]         = useState('');
 
-
             return(
             <SafeAreaView style={styles.container}>
                 <Image source={require("../assets/images/register/asahi_logo.png")} style={styles.logo}  />
@@ -68,7 +67,19 @@ export default function Register ({navigation}) {
                                     </Text>
                                   </TouchableOpacity>
                                   <View style={styles.submitWrapper} >
-                                    <TouchableOpacity style={styles.submit} onPress={() => {setStep(2)}}>
+                                    <TouchableOpacity 
+                                      // style={styles.submit}
+                                      style={
+                                        (!newName || !newPhone || !isSelected)
+                                        ? styles.submitDisable
+                                        : styles.submit
+                                      }
+                                      disabled={
+                                        (!newName || !newPhone || !isSelected)
+                                        ? true
+                                        : false
+                                      }  
+                                      onPress={() => {setStep(2)}}>
                                       <Text style={styles.submitText}>ลงทะเบียน</Text>
                                     </TouchableOpacity>
                                   </View>
@@ -352,7 +363,17 @@ const styles = StyleSheet.create({
       textAlign: "center",
       textAlignVertical: "center",
       backgroundColor: 'red',
-      zIndex: 100
+      zIndex: 100,
+    },
+    submitDisable: {
+      width: 180,
+      height: 45,
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: "center",
+      textAlignVertical: "center",
+      backgroundColor: 'grey',
+      zIndex: 100,
     },
     submitText: {
       fontSize: 16,
