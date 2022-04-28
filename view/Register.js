@@ -123,7 +123,7 @@ export default function Register ({navigation}) {
       const profile = res.data.profile
       if(status == "success") {
         setProfile(profile);
-        successOTP(message)
+        setStep(3);
       }else if(status == "failed") {
         wrongOTP(message)
       }else {
