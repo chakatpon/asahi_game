@@ -14,6 +14,14 @@ import {
 }  from 'three';
 import ExpoTHREE, { Renderer, TextureLoader} from 'expo-three';
 import { GLView } from 'expo-gl';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import * as Device from 'expo-device';
+
+const endpoint  = 'https://asahigame.dev.kanda.digital/api';
+const apiKey    = '818EY26UYbZEYPZ76QwH4nVcTCtsLpYMnJQuI7Jn';
+const deviceUID = Device.osBuildId;
+const deviceName = Device.deviceName+"_expo";
 
 
 
@@ -27,8 +35,26 @@ export default class Cube extends Component {
     }
   }
 
+  UNSAFE_componentWillMount () {
+    
+  }
+
+
+
   _onGLContextCreate = async (gl) => {
     // Do graphics stuff here!
+    await AsyncStorage.getItem('@paths')
+    .then((data) => {
+      const paths = JSON.parse(data)
+
+      console.log("GET PATHS FROM STORE : ", paths)
+      this.setState({
+        ...this.state,
+        paths: paths
+      })
+      console.log('path', paths);
+
+    });
     const sceneColor = 0x6ad6f0;
     const scene = new Scene();
     scene.fog = new Fog(sceneColor, 1, 10000);
@@ -71,7 +97,7 @@ export default class Cube extends Component {
 
     
     // const materials = []; // an array of materials you'll pass into the constructor of THREE.Mesh
-    let materials = await paths.map(path => {
+    let materials = await this.state.paths.map(path => {
       console.log('loader.load(path) : ', loader.load(path))
         return new THREE.MeshBasicMaterial({
           map: loader.load(path),

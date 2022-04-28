@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     SafeAreaView,
     StyleSheet,
@@ -10,12 +10,21 @@ import {
     Text,
     TextInput,
     Linking, 
-    Button
+    Button,
+    Alert
 } from 'react-native';
-import { CheckBox } from 'react-native-elements'
+import { CheckBox } from 'react-native-elements';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+
+import * as Device from 'expo-device';
 
 const { width, height } = Dimensions.get('window');
 
+const endpoint  = 'https://asahigame.dev.kanda.digital/api';
+const apiKey    = '818EY26UYbZEYPZ76QwH4nVcTCtsLpYMnJQuI7Jn';
+const deviceUID = Device.osBuildId;
+const deviceName = Device.deviceName+"_expo";
 export default function Register ({navigation}) {
   // navigation.navigate('Home')
   const [step, setStep]             = useState(1)
@@ -24,10 +33,160 @@ export default function Register ({navigation}) {
   const [isSelected, setSelection]  = useState(false);
   const [OTP, setOTP]               = useState('');
   const [refOTP, setRefOTP]         = useState('');
+  const [token, setToken]           = useState('');
+  const [profile, setProfile]       = useState('');
 
+
+  useEffect(() => {
+    AsyncStorage.getItem('@access_token')
+      .then((data) => {
+      const token = JSON.parse(data)
+      console.log("GET Token FROM STORE : ", token)
+      setToken(token)
+    });
+  },[])
 
   const register = () => {
-    
+    axios({
+      method: 'post',
+      url: `${endpoint}/members/register`,
+      data: {
+        "phoneno" : newPhone,
+        "name" : newName,
+        "tac" : isSelected
+    },
+      headers: {'X-Requested-With':'XMLHttpRequest',
+                'x-api-key':apiKey,
+                'x-device-uid':deviceUID,
+                'Authorization':`${token}`}
+    }).then((res) => {
+      // Example Response
+      // {
+      //   "status": "success",
+      //   "message": "ลงทะเบียนสำหรับ กรุณายืนยัน OTP จาก SMS",
+      //   "otp_refno": "3LHOD"
+      // }
+      console.log("RESPONSE REGISTER: ", res);
+      console.log("RESPONSE REGISTER RECEIVED: ", res.data);
+      const status = res.data.otp_refno
+      const message = res.data.message
+      const otp_refno = res.data.otp_refno
+      if((status == "success") && (otp_refno)) {
+        setRefOTP(otp_refno)
+        successRegister(message)
+      }else if(status == "failed") {
+        wrongRegister(message)
+      }else {
+        wrongRegister(message)
+      }
+    })
+    .catch((err) => {
+      if(err.response.status == 400){
+        console.log("AXIOS REGISTER ERROR: ", err.response.data.message);
+        wrongRegister(err.response.data.message)
+      }else{
+        wrongRegister()
+
+      }
+    });
+  }
+
+  const sendOTP = () => {
+    // {
+    //   "phoneno" : "0805649964",
+    //   "otp_code" : "168305",
+    //   "otp_refno" : "J2Y1U"
+    // }
+    axios({
+      method: 'post',
+      url: `${endpoint}/members/verify`,
+      data: {
+        "phoneno" : newPhone,
+        "otp_code" : OTP,
+        "otp_refno" : refOTP
+    },
+      headers: {'X-Requested-With':'XMLHttpRequest',
+                'x-api-key':apiKey,
+                'x-device-uid':deviceUID,
+                'Authorization':`${token}`}
+    }).then((res) => {
+      // Example Response
+      // {
+      //   "status": "success",
+      //   "message": "ลงทะเบียนสำหรับ กรุณายืนยัน OTP จาก SMS",
+      //   "otp_refno": "3LHOD"
+      // }
+      console.log("RESPONSE OTP: ", res);
+      console.log("RESPONSE OTP RECEIVED: ", res.data);
+      const status = res.data.otp_refno
+      const message = res.data.message
+      const profile = res.data.profile
+      if(status == "success") {
+        setProfile(profile);
+        successOTP(message)
+      }else if(status == "failed") {
+        wrongOTP(message)
+      }else {
+        wrongOTP(message)
+      }
+    })
+    .catch((err) => {
+      if(err.response.status == 400){
+        console.log("AXIOS OTP ERROR: ", err.response.data.message);
+        wrongOTP(err.response.data.message)
+      }else{
+        wrongOTP()
+
+      }
+    });
+  }
+
+  const wrongRegister = (message) => {
+    Alert.alert(
+      message || 'ลงทะเบียนไม่สำเร็จ',
+      'กรุณาลองใหม่',
+      [
+        {text: 'ตกลง', onPress: () => {console.log('Close dialog')}},
+        {text: 'ปิด', onPress: () => {console.log('Close dialog')}},
+      ],
+      { cancelable: false });
+      return true;
+  }
+
+  const successRegister = (message) => {
+    Alert.alert(
+      message,
+      'ดำเนินการต่อ',
+      [
+        {text: 'ตกลง', onPress: () => setStep(2)},
+        {text: 'ปิด', onPress: () => setStep(2)},
+      ],
+      { cancelable: false });
+      return true;
+  }
+
+  const wrongOTP = (message) => {
+    Alert.alert(
+      message || 'รหัสอ้างอิง OTP ไม่ถูกต้องกรุณาตรวจสอบการเรียก',
+      'กรุณาลองใหม่',
+      [
+        {text: 'ตกลง', onPress: () => {console.log('Close dialog')}},
+        {text: 'ปิด', onPress: () => {console.log('Close dialog')}},
+      ],
+      { cancelable: false });
+      return true;
+  }
+
+  const successOTP = (message) => {
+    Alert.alert(
+      message,
+      'ดำเนินการต่อ',
+      [
+        {text: 'ตกลง', onPress: () => setStep(3)},
+        {text: 'ปิด', onPress: () => setStep(3)},
+      ],
+      { cancelable: false });
+      return true;
   }
 
             return(
@@ -84,11 +243,11 @@ export default function Register ({navigation}) {
                                         ? true
                                         : false
                                       }  
-                                      onPress={() => {setStep(2)}}>
+                                      onPress={() => register()}>
                                       <Text style={styles.submitText}>ลงทะเบียน</Text>
                                     </TouchableOpacity>
                                   </View>
-                                  <TouchableOpacity style={styles.registerLogoWrapper} onPress={() => {setStep(2)}} >
+                                  <TouchableOpacity style={styles.registerLogoWrapper} onPress={() => {navigation.navigate('Home')}} >
                                     <Image source={require("../assets/images/register/register_logo.png")} style={styles.RegisterLogo}  />
                                   </TouchableOpacity>
                                 </View>
@@ -105,7 +264,7 @@ export default function Register ({navigation}) {
                                   <TextInput
                                           style={styles.input}
                                           placeholder="รหัส OTP"
-                                          onChangeText={OTP => setName(OTP)}
+                                          onChangeText={OTP => setOTP(OTP)}
                                           defaultValue={OTP}/>
                                   <TextInput/>
                                   <TouchableOpacity style={styles.linkWrapper2}>
@@ -115,11 +274,22 @@ export default function Register ({navigation}) {
                                     </Text>
                                   </TouchableOpacity>
                                   <View style={styles.submitWrapper} >
-                                    <TouchableOpacity style={styles.submit} onPress={() => {setStep(3)}}>
+                                    <TouchableOpacity 
+                                      style={
+                                        (!OTP)
+                                        ? styles.submitDisable
+                                        : styles.submit
+                                      }
+                                      disabled={
+                                        (!OTP)
+                                        ? true
+                                        : false
+                                      } 
+                                      onPress={() => {sendOTP(3)}}>
                                       <Text style={styles.submitText}>ตกลง</Text>
                                     </TouchableOpacity>
                                   </View>
-                                  <TouchableOpacity style={styles.registerLogoWrapper} onPress={() => {setStep(1)}}>
+                                  <TouchableOpacity style={styles.registerLogoWrapper} onPress={() => {navigation.navigate('Home')}}>
                                     <Image source={require("../assets/images/register/register_logo.png")} style={styles.RegisterLogo}  />
                                   </TouchableOpacity>
                                 </View>
@@ -138,7 +308,7 @@ export default function Register ({navigation}) {
                                     <Text style={styles.submitText}>กลับไปหน้าหลัก</Text>
                                   </TouchableOpacity>
                                 </View>
-                                <TouchableOpacity style={styles.registerLogoWrapper} onPress={() => {setStep(1)}} >
+                                <TouchableOpacity style={styles.registerLogoWrapper} onPress={() => {navigation.navigate('Home')}} >
                                     <Image source={require("../assets/images/register/register_logo.png")} style={styles.RegisterLogo}  />
                                   </TouchableOpacity>
                               </View>

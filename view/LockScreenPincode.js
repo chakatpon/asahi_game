@@ -17,6 +17,7 @@ import AnimatedRingExample from './Ring';
 import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -30,7 +31,7 @@ export default class LockScreenPinCode extends Component {
     super(props);
     this.state = {
       pincode: ['','','','','',''],
-      isLoading: true
+      isLoading: false
     };
   }
   //  [pincode, setPincode] = useState([])
@@ -163,12 +164,13 @@ export default class LockScreenPinCode extends Component {
       }).then((res) => {
         console.log("RESPONSE PIN RECEIVED: ", res.data);
         const access_token = res.data.access_token
+        const token_type = res.data.token_type
         if(!access_token) {
           this.wrongPIN()
         }else {
-          this.setState({...this.state, pincode: ['','','','','',''], isLoading: true, accessToken: access_token})
-          this.callEvent();
-          // this.props.navigation.navigate('Home')
+          this.setState({...this.state, pincode: ['','','','','',''], isLoading: false, accessToken: `${token_type} ${access_token}`})
+          this.storeToken(`${token_type} ${access_token}`);
+          this.callEvent(`${token_type} ${access_token}`);
         }
       })
       .catch((err) => {
@@ -178,62 +180,80 @@ export default class LockScreenPinCode extends Component {
       // this.props.navigation.navigate('Home')
     }
 
-    callEvent = () => {
+
+
+    storeToken = async (value) => {
+      try {
+        const jsonValue = await JSON.stringify(value)
+        console.log('set token jsonValue : ', jsonValue)
+        await AsyncStorage.setItem('@access_token', jsonValue)
+      } catch (e) {
+        // saving error
+        console.log('set token error : ', e)
+      }
+    }
+
+    storePath = async (value) => {
+      try {
+        const jsonValue = await JSON.stringify(value)
+        console.log('set PATHS jsonValue : ', jsonValue)
+        await AsyncStorage.setItem('@paths', jsonValue)
+      } catch (e) {
+        // saving error
+        console.log('set token error : ', e)
+      }
+    }
+
+    callEvent = (token) => {
       axios({
         method: 'get',
         url: `${endpoint}/events/info`,
         headers: {'X-Requested-With':'XMLHttpRequest',
                   'x-api-key':apiKey,
                   'x-device-uid':deviceUID,
-                  'Authorization':`Bearer ${this.state.accessToken}`}
+                  'Authorization':`${token}`}
       }).then((res) => {
-        console.log("RESPONSE PIN RECEIVED: ", res.data);
+        console.log(`${endpoint}/events/info : `, res.data.cubic);
         const cubic = res.data.cubic
+        console.log('CUBIC : ', cubic)
         if(!cubic) {
-          this.wrongPIN()
+          this.wrongEvent();
         }else {
-          this.setState({...this.state, pincode: ['','','','','',''], isLoading: false, cubic: cubic})
-          // this.props.navigation.navigate('Home')
-
-          this.downloadFile(cubic[0].file_url, cubic[0].display_file);
+          let paths = [
+            cubic[0].file_url,
+            cubic[0].file_url,
+            require("../assets/images/game/cubeSide.png"),
+            cubic[0].file_url,
+            cubic[0].file_url,
+            require("../assets/images/game/cubeSide.png")
+          ]
+          this.setState({...this.state, paths: paths})
+          this.storePath(paths);
+          this.props.navigation.navigate('Home')
         }
       })
       .catch((err) => {
-        console.log("AXIOS PIN ERROR: ", err);
-        this.wrongPIN();
+        console.log("AXIOS GAME ERROR: ", err);
+        this.wrongEvent();
+        this.props.navigation.navigate('LockScreen')
       });
     }
-
-    seveCubicImage = () => {
-    }
-
-    downloadFile(uri, display_file){
-      let fileUri = FileSystem.documentDirectory + display_file;
-      FileSystem.downloadAsync(uri, fileUri)
-      .then(({ uri }) => {
-          this.saveFile(uri);
-        })
-        .catch(error => {
-          console.error(error);
-        })
-  }
-  
-  saveFile = async (fileUri) => {
-    console.log('FileURI :', fileUri)
-      // const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-      // console.log('status : ',status)
-      // if (status === "granted") {
-      //     const asset = await MediaLibrary.createAssetAsync(fileUri)
-      //     await MediaLibrary.createAlbumAsync("Download", asset, false)
-      // }
-
-      const asset = await MediaLibrary.createAssetAsync(fileUri)
-      await MediaLibrary.createAlbumAsync("Download", asset, false)
-  }
 
     wrongPIN = () => {
       Alert.alert(
         'รหัส PIN ไม่ถูกต้อง',
+        'กรุณาลองใหม่',
+        [
+          {text: 'ตกลง', onPress: () => this.setState({...this.state, pincode: ['','','','','',''], isLoading: false})},
+          {text: 'ปิด', onPress: () => this.setState({...this.state, pincode: ['','','','','',''], isLoading: false})},
+        ],
+        { cancelable: false });
+        return true;
+    }
+
+    wrongEvent = () => {
+      Alert.alert(
+        'รหัส PIN ไม่ถูกต้อง ไม่พบกิจกรรม',
         'กรุณาลองใหม่',
         [
           {text: 'ตกลง', onPress: () => this.setState({...this.state, pincode: ['','','','','',''], isLoading: false})},

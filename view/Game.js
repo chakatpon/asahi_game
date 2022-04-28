@@ -17,8 +17,15 @@ import {
 import MatrixMath from 'react-native/Libraries/Utilities/MatrixMath';
 import Cube from './Cube';
 import { transformOrigin, rotateXY, rotateXZ } from '../service/utils';
+import * as Device from 'expo-device';
 
 const { width, height } = Dimensions.get('window')
+
+const endpoint  = 'https://asahigame.dev.kanda.digital/api';
+const apiKey    = '818EY26UYbZEYPZ76QwH4nVcTCtsLpYMnJQuI7Jn';
+const deviceUID = Device.osBuildId;
+const deviceName = Device.deviceName+"_expo";
+
 
 export default class Game extends Component {
     constructor(props){
@@ -27,23 +34,23 @@ export default class Game extends Component {
         isInit    : true,
         isRunnig  : false,
         isStop    : false,
+        accessToken: '',
+        paths      : []
       }
     }
-  
-
 
   UNSAFE_componentWillMount() {
-    console.log('UNSAFE_componentWillMount()');    
+
     this.panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: this.handlePanResponderMove.bind(this)
     });
   }
+  
 
   componentDidMount() {
     console.log('componentDidMount');
     this.initposition();
-
   }
 
   playGame = (val) => {
@@ -60,32 +67,27 @@ export default class Game extends Component {
     })
   };
 
+
+
   handlePanResponderMove = (e, gestureState) => {
     const { dx, dy } = gestureState;
     const origin = { x: 0, y: 0, z: -150 };
-    let matrix = rotateXY(dx, dy);
+    let matrix = rotateXY(dx, 0);
     transformOrigin(matrix, origin);
     this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
-    matrix = rotateXY(dx + 180, dy);
+    matrix = rotateXY(dx + 180, 0);
     transformOrigin(matrix, origin);
     this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
-    matrix = rotateXY(dx + 90, dy);
+    matrix = rotateXY(dx + 90, 0);
     transformOrigin(matrix, origin);
     this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
-    matrix = rotateXY(dx - 90, dy);
+    matrix = rotateXY(dx - 90, 0);
     transformOrigin(matrix, origin);
     this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
 
-    matrix = rotateXZ(dx, dy - 90);
-    transformOrigin(matrix, origin);
-    this.refViewTop.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
-
-    matrix = rotateXZ(-dx, dy + 90);
-    transformOrigin(matrix, origin);
-    this.refViewBottom.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
   }
 
   initposition = () => {
@@ -115,6 +117,7 @@ export default class Game extends Component {
       <View
         ref={component => this.refViewFront = component}
         style={[styles.front, (color) ? {backgroundColor: color} : null]}
+        // {...this.panResponder.panHandlers}
       >
         <Image style={styles.back} source={require("../assets/images/game/cubeSide.png")}/>
       </View>
@@ -126,6 +129,7 @@ export default class Game extends Component {
       <View
         ref={component => this.refViewBack = component}
         style={[styles.back, (color) ? {backgroundColor: color} : null]}
+        // {...this.panResponder.panHandlers}
       >
         <Image style={styles.back} source={require("../assets/images/game/cubeSide.png")}/>
       </View>
@@ -137,6 +141,7 @@ export default class Game extends Component {
       <View
         ref={component => this.refViewRight = component}
         style={[styles.left, (color) ? {backgroundColor: color} : null]}
+        // {...this.panResponder.panHandlers}
         >
         <Image style={styles.left} source={require("../assets/images/game/cubeSide.png")}/>
       </View>
@@ -148,6 +153,7 @@ export default class Game extends Component {
       <View
         ref={component => this.refViewLeft = component}
         style={[styles.right, (color) ? {backgroundColor: color} : null]}
+        // {...this.panResponder.panHandlers}
         >
         <Image style={styles.right} source={require("../assets/images/game/cubeSide.png")}/>
       </View>
@@ -174,7 +180,7 @@ export default class Game extends Component {
                           {this.renderRight('#e5afb9')}
                         </View>:null}
                         
-                        {this.state.isRunnig ? <Cube/>: null}
+                        {this.state.isRunnig ? <Cube navigation={this.props.navigation} />: null}
                       
                       </View>
                       {/* <Button title="flip x " onPress={() => this.flip('x')} /> */}
@@ -362,7 +368,7 @@ const styles = StyleSheet.create({
       height: 300,
       width: 300,
       backgroundColor: 'white',
-      zIndex: 100,
+      zIndex: 120,
     },
     left: {
       position: 'absolute',
