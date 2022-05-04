@@ -26,7 +26,7 @@ const deviceName = Device.deviceName+"_expo";
 
 
 const { width, height } = Dimensions.get('window');
-export default class Cube extends Component {
+export default class CubeRight extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -113,7 +113,7 @@ export default class Cube extends Component {
     const animate = () => {
       // cube.rotation.x += 0.07;
       requestAnimationFrame(animate);
-      cube.rotation.y += 0.2;
+      cube.rotation.y += 0.3;
       renderer.render(scene, camera);
       gl.endFrameEXP();
     }

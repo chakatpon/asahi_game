@@ -11,7 +11,8 @@ import {
     Text,
     TextInput,
     Linking, 
-    Button
+    Button,
+    Alert
 } from 'react-native';
 import { CheckBox } from 'react-native-elements'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -66,17 +67,24 @@ const _fetchResults = () => {
     if((status == "match")) {
       setProfile(profile)
     }else if(status == "notmatch") {
-      wrongSearch(message)
+      console.log("Search not match")
+      // wrongSearch(message)
+      setProfile('');
     }else {
-      wrongSearch(message)
+      console.log("Search not match")
+      setProfile('');
+      // wrongSearch(message)
     }
   })
   .catch((err) => {
     if(err.response.status == 400){
       console.log("AXIOS SEARCH ERROR: ", err.response.data.message);
-      wrongSearch(err.response.data.message)
+      setProfile('')
+      // wrongSearch(err.response.data.message)
     }else{
-      wrongSearch()
+      console.log("AXIOS SEARCH ERROR: ", err.response.data.message);
+      setProfile('')
+      // wrongSearch()
 
     }
   });

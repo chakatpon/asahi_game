@@ -15,7 +15,7 @@ import {
     PanResponder
 } from 'react-native';
 import MatrixMath from 'react-native/Libraries/Utilities/MatrixMath';
-import Cube from './Cube';
+import CubeRight from './CubeRight';
 import { transformOrigin, rotateXY, rotateXZ } from '../service/utils';
 import * as Device from 'expo-device';
 
@@ -54,10 +54,17 @@ export default class Game extends Component {
   }
 
   playGame = (val) => {
-    this.setState({
-      ...this.state,
-      isRunnig: true
-    })
+    if(!this.state.isRunnig){
+      this.setState({
+        ...this.state,
+        isRunnig: true
+      })
+    }else {
+      this.setState({
+        ...this.state,
+        isRunnig: false
+      })
+    }
   };
 
   stopGame = (val) => {
@@ -71,7 +78,7 @@ export default class Game extends Component {
 
   handlePanResponderMove = (e, gestureState) => {
     const { dx, dy } = gestureState;
-    const origin = { x: 0, y: 0, z: -150 };
+    const origin = { x: 0, y: 0, z: -164 };
     let matrix = rotateXY(dx, 0);
     transformOrigin(matrix, origin);
     this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
@@ -87,7 +94,10 @@ export default class Game extends Component {
     matrix = rotateXY(dx - 90, 0);
     transformOrigin(matrix, origin);
     this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    if(dx >= 180 ){
 
+      this.playGame()
+    }
   }
 
   initposition = () => {
@@ -117,7 +127,7 @@ export default class Game extends Component {
       <View
         ref={component => this.refViewFront = component}
         style={[styles.front, (color) ? {backgroundColor: color} : null]}
-        // {...this.panResponder.panHandlers}
+        {...this.panResponder.panHandlers}
       >
         <Image style={styles.back} source={require("../assets/images/game/cubeSide.png")}/>
       </View>
@@ -129,7 +139,7 @@ export default class Game extends Component {
       <View
         ref={component => this.refViewBack = component}
         style={[styles.back, (color) ? {backgroundColor: color} : null]}
-        // {...this.panResponder.panHandlers}
+        {...this.panResponder.panHandlers}
       >
         <Image style={styles.back} source={require("../assets/images/game/cubeSide.png")}/>
       </View>
@@ -141,7 +151,7 @@ export default class Game extends Component {
       <View
         ref={component => this.refViewRight = component}
         style={[styles.left, (color) ? {backgroundColor: color} : null]}
-        // {...this.panResponder.panHandlers}
+        {...this.panResponder.panHandlers}
         >
         <Image style={styles.left} source={require("../assets/images/game/cubeSide.png")}/>
       </View>
@@ -153,7 +163,7 @@ export default class Game extends Component {
       <View
         ref={component => this.refViewLeft = component}
         style={[styles.right, (color) ? {backgroundColor: color} : null]}
-        // {...this.panResponder.panHandlers}
+        {...this.panResponder.panHandlers}
         >
         <Image style={styles.right} source={require("../assets/images/game/cubeSide.png")}/>
       </View>
@@ -174,18 +184,22 @@ export default class Game extends Component {
                       <View style={styles.cubeContainer}>
                       {!this.state.isRunnig ? 
                       <View style={styles.cubeBox}>
-                          {this.renderFront('#4c72e0')}
                           {this.renderBack('#8697df')}
-                          {this.renderLeft('#b5bce2')}
                           {this.renderRight('#e5afb9')}
+                          {this.renderLeft('#b5bce2')}
+                          {this.renderFront('#4c72e0')}
                         </View>:null}
                         
-                        {this.state.isRunnig ? <Cube navigation={this.props.navigation} />: null}
+                        {this.state.isRunnig
+                        ? <TouchableOpacity onPress={() => this.stopGame()}>
+                           <CubeRight navigation={this.props.navigation} />
+                           </TouchableOpacity>
+                        : null}
                       
                       </View>
                       {/* <Button title="flip x " onPress={() => this.flip('x')} /> */}
                       {/* <Button title="Play" onPress={() => this.flip('y')} /> */}
-                      {!this.state.isRunnig ? <View style={styles.submitWrapper} >
+                      {/* {!this.state.isRunnig ? <View style={styles.submitWrapper} >
                         <TouchableOpacity style={styles.submit} onPress={() => this.playGame()}>
                           <Text style={styles.submitText}>เล่นเกมส์</Text>
                         </TouchableOpacity>
@@ -194,7 +208,7 @@ export default class Game extends Component {
                         <TouchableOpacity style={styles.submit} onPress={() => this.stopGame()}>
                           <Text style={styles.submitText}>หยุด</Text>
                         </TouchableOpacity>
-                      </View>:null}
+                      </View>:null} */}
                     </View>
                 </View>
               <ImageBackground source={require("../assets/images/register/background.png")} style={styles.backgroundImage}  />
@@ -377,7 +391,7 @@ const styles = StyleSheet.create({
       height: 300,
       width: 300,
       backgroundColor: 'white',
-      zIndex: 110,
+      zIndex: 120,
     },
     right: {
       position: 'absolute',

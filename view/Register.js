@@ -11,6 +11,7 @@ import {
     TextInput,
     Linking, 
     Button,
+    Touchable,
     Alert
 } from 'react-native';
 import { CheckBox } from 'react-native-elements';
@@ -388,7 +389,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         height: height,
-        width: width/2,
+        width: width,
         zIndex: 100
     },
     registerText: {
