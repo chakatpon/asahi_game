@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     backgroundImage: {
         top: 0  ,
         height: height,
-        width: height,
+        width: width,
         resizeMode: 'cover',
         position:"absolute",
     },

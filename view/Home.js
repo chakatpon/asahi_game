@@ -21,12 +21,12 @@ export default function Home ({navigation}) {
                 <Image source={require("../assets/images/register/asahi_logo.png")} style={styles.logo}  />
                 <View style={styles.wrapper}>
                     <View style={styles.panelWrapper}>
-                      <View style={styles.registerContainer}>
+                      {/* <View style={styles.registerContainer}>
                           <View style={styles.registerBox}>
                               <Image style={styles.homeImage} source={require("../assets/images/home/2Kanji.png")}></Image>
                           </View>
-                      </View>
-                    <ImageBackground source={require("../assets/images/register/background.png")} style={styles.backgroundImage}  />
+                      </View> */}
+                    <ImageBackground source={require("../assets/images/home/home_bg.png")} style={styles.backgroundImage}  />
                     </View>
 
                   <View style={styles.menu}  >
@@ -66,8 +66,8 @@ const styles = StyleSheet.create({
     },
     backgroundImage: {
         top: 0  ,
-        height: height,
-        width: height,
+        height: height/1.2,
+        width: width,
         resizeMode: 'cover',
         position:"absolute",
     },

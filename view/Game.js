@@ -78,22 +78,22 @@ export default class Game extends Component {
 
   handlePanResponderMove = (e, gestureState) => {
     const { dx, dy } = gestureState;
-    const origin = { x: 0, y: 0, z: -164 };
+    const origin = { x: 0, y: 0, z: -267 };
     let matrix = rotateXY(dx, 0);
     transformOrigin(matrix, origin);
-    this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    this.refViewFront.setNativeProps({style: {transform: [{perspective: 900}, {matrix: matrix}]}});
 
     matrix = rotateXY(dx + 180, 0);
     transformOrigin(matrix, origin);
-    this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    this.refViewBack.setNativeProps({style: {transform: [{perspective: 900}, {matrix: matrix}]}});
 
     matrix = rotateXY(dx + 90, 0);
     transformOrigin(matrix, origin);
-    this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    this.refViewRight.setNativeProps({style: {transform: [{perspective: 900}, {matrix: matrix}]}});
 
     matrix = rotateXY(dx - 90, 0);
     transformOrigin(matrix, origin);
-    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 900}, {matrix: matrix}]}});
     if(dx >= 180 ){
 
       this.playGame()
@@ -103,22 +103,22 @@ export default class Game extends Component {
   initposition = () => {
     let dx = 45;
     let dy = 0;
-    const origin = { x: 0, y: 0, z: -164 };
+    const origin = { x: 0, y: 0, z: -267 };
     let matrix = rotateXY(dx, dy);
     transformOrigin(matrix, origin);
-    this.refViewFront.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    this.refViewFront.setNativeProps({style: {transform: [{perspective: 900}, {matrix: matrix}]}});
 
     matrix = rotateXY(dx + 180, dy);
     transformOrigin(matrix, origin);
-    this.refViewBack.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    this.refViewBack.setNativeProps({style: {transform: [{perspective: 900}, {matrix: matrix}]}});
 
     matrix = rotateXY(dx - 90, dy);
     transformOrigin(matrix, origin);
-    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    this.refViewLeft.setNativeProps({style: {transform: [{perspective: 900}, {matrix: matrix}]}});
 
     matrix = rotateXY(dx + 90, dy);
     transformOrigin(matrix, origin);
-    this.refViewRight.setNativeProps({style: {transform: [{perspective: 1000}, {matrix: matrix}]}});
+    this.refViewRight.setNativeProps({style: {transform: [{perspective: 900}, {matrix: matrix}]}});
 
   }
 
@@ -129,7 +129,7 @@ export default class Game extends Component {
         style={[styles.front, (color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
       >
-        <Image style={styles.back} source={require("../assets/images/game/cubeSide.png")}/>
+        <Image style={styles.front} source={require("../assets/images/game/cubeSide.png")}/>
       </View>
     )
   }
@@ -184,10 +184,10 @@ export default class Game extends Component {
                       <View style={styles.cubeContainer}>
                       {!this.state.isRunnig ? 
                       <View style={styles.cubeBox}>
-                          {this.renderBack('#8697df')}
-                          {this.renderRight('#e5afb9')}
-                          {this.renderLeft('#b5bce2')}
-                          {this.renderFront('#4c72e0')}
+                          {this.renderBack('transparent')}
+                          {this.renderRight('transparent')}
+                          {this.renderLeft('transparent')}
+                          {this.renderFront('transparent')}
                         </View>:null}
                         
                         {this.state.isRunnig
@@ -211,7 +211,7 @@ export default class Game extends Component {
                       </View>:null} */}
                     </View>
                 </View>
-              <ImageBackground source={require("../assets/images/register/background.png")} style={styles.backgroundImage}  />
+              <ImageBackground source={require("../assets/images/game/game_bg.png")} style={styles.backgroundImage}  />
               </View>
 
             <View style={styles.menu}  >
@@ -253,8 +253,8 @@ const styles = StyleSheet.create({
     },
     backgroundImage: {
         top: 0  ,
-        height: height,
-        width: height,
+        height: height/1.2,
+        width: width,
         resizeMode: 'cover',
         position:"absolute",
     },
@@ -342,8 +342,8 @@ const styles = StyleSheet.create({
       position: 'relative',
       alignItems: 'center', 
       justifyContent: 'center',
-      width: 300,
-      height: 300,
+      width: 450,
+      height: 450,
       backgroundColor: "transparent",
       zIndex: 100,
       flexDirection: 'row',
@@ -361,17 +361,17 @@ const styles = StyleSheet.create({
     cubeBox: {
       position: 'absolute',
       left: 0,
-      top: 0,
-      width: 300,
-      height: 300,
+      top: -60,
+      width: 450,
+      height: 450,
       backgroundColor: "transparent"
     },
     front: {
       position: 'absolute',
       left: 0,
       top: 0,
-      height: 300,
-      width: 300,
+      height: 450,
+      width: 450,
       backgroundColor: 'white',
       zIndex: 120,
     },
@@ -379,8 +379,8 @@ const styles = StyleSheet.create({
       position: 'absolute',
       left: 0,
       top: 0,
-      height: 300,
-      width: 300,
+      height: 450,
+      width: 450,
       backgroundColor: 'white',
       zIndex: 120,
     },
@@ -388,8 +388,8 @@ const styles = StyleSheet.create({
       position: 'absolute',
       left: 0,
       top: 0,
-      height: 300,
-      width: 300,
+      height: 450,
+      width: 450,
       backgroundColor: 'white',
       zIndex: 120,
     },
@@ -397,8 +397,8 @@ const styles = StyleSheet.create({
       position: 'absolute',
       left: 0,
       top: 0,
-      height: 300,
-      width: 300,
+      height: 450,
+      width: 450,
       backgroundColor: 'white',
       zIndex: 120,
     },

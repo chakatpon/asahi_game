@@ -168,7 +168,6 @@ export default class LockScreenPinCode extends Component {
         if(!access_token) {
           this.wrongPIN()
         }else {
-          this.setState({...this.state, pincode: ['','','','','',''], isLoading: false, accessToken: `${token_type} ${access_token}`})
           this.storeToken(`${token_type} ${access_token}`);
           this.callEvent(`${token_type} ${access_token}`);
         }
@@ -227,7 +226,7 @@ export default class LockScreenPinCode extends Component {
             cubic[0].file_url,
             require("../assets/images/game/cubeSide.png")
           ]
-          this.setState({...this.state, paths: paths})
+          this.setState({...this.state, pincode: ['','','','','',''], isLoading: false,  paths: paths})
           this.storePath(paths);
           this.props.navigation.navigate('Home')
         }
@@ -377,10 +376,10 @@ const styles = StyleSheet.create({
         resizeMode: 'contain'
     },
     backgroundImage: {
-        top: -300  ,
-        height: height,
-        width: height,
-        resizeMode: 'cover',
+        top: -400  ,
+        height: height/1.2,
+        width: width,
+        resizeMode: 'contain',
         position:"absolute",
     },
     logo: {

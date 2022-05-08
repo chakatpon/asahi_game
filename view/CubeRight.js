@@ -105,7 +105,7 @@ export default class CubeRight extends Component {
         });
     });
 
-    const geometry = new BoxBufferGeometry(1.6, 1.6, 1.6);
+    const geometry = new BoxBufferGeometry(2.2, 2.2, 2.2);
     const  cube = new Mesh(geometry, materials)
     scene.add(cube);
     camera.position.z = 5;
@@ -113,7 +113,7 @@ export default class CubeRight extends Component {
     const animate = () => {
       // cube.rotation.x += 0.07;
       requestAnimationFrame(animate);
-      cube.rotation.y += 0.3;
+      cube.rotation.y += 0.4;
       renderer.render(scene, camera);
       gl.endFrameEXP();
     }
@@ -127,7 +127,7 @@ export default class CubeRight extends Component {
     return (
       <View style={styles.container}>
         <GLView
-          style={{flex:1, zIndex: 100 }}
+          style={{flex:1, zIndex: 100, top: -60 }}
           onContextCreate={this._onGLContextCreate}
         />
       </View>
