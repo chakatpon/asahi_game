@@ -140,15 +140,36 @@ const successSearch = (message) => {
                               </TouchableHighlight>
                           </View>
                           {profile 
-                          ? <View style={styles.searchResultBox}>
-                                <View style={styles.searchTitle}>
-                                  <Text style={styles.title} >ชื่อ : {profile['name']}</Text>
+                          ? <View style={styles.searchResultContainer}>
+                                <View style={styles.searchResultBox}>
+                                    <View style={styles.searchResultFrom}>
+                                      <View style={styles.titleForm}>
+                                        <Text style={styles.title} >พบข้อมูลสมาชิก</Text>
+                                      </View>
+                                      <View style={styles.searchTitle}>
+                                        <Text style={styles.title} >คุณ {profile['name']} {profile['phoneno']}</Text>
+                                      </View>
+                                      <View style={styles.submitWrapper} >
+                                        <TouchableOpacity style={styles.submit} onPress={() => {navigation.navigate('Register')}}>
+                                          <Text style={styles.submitText}>ลงทะเบียน</Text>
+                                        </TouchableOpacity>
+                                      </View>
+                                      <View style={styles.submitWrapper} >
+                                        <TouchableOpacity style={styles.submit} onPress={() => {navigation.navigate('Game')}}>
+                                          <Text style={styles.submitText}>เล่นเกมส์</Text>
+                                        </TouchableOpacity>
+                                      </View>
+                                      <View style={styles.submitWrapper} >
+                                        <TouchableOpacity style={styles.submit} onPress={() => {navigation.navigate('Home')}}>
+                                          <Text style={styles.submitText}>กลับไปหน้าหลัก</Text>
+                                        </TouchableOpacity>
+                                      </View>
+                                      <TouchableOpacity style={styles.registerLogoWrapper} onPress={() => {navigation.navigate('Home')}} >
+                                          <Image source={require("../assets/images/register/register_logo.png")} style={styles.RegisterLogo}  />
+                                      </TouchableOpacity>
+                                    </View>
                                 </View>
-                                <View style={styles.searchTitle}>
-                                  <Text style={styles.title} >เบอร์โทรศัพท์ : {profile['phoneno']}</Text>
-                                </View>
-                          </View>
-                          : null}
+                            </View> : <View style={styles.emptyContainer}></View>}
                         </View>
                       </View>
 
@@ -183,12 +204,14 @@ const styles = StyleSheet.create({
     container: {
       backgroundColor: '#000',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      zIndex: 100
     },
     wrapper: {
         height: height,
         width: width,
-        resizeMode: 'contain'
+        resizeMode: 'contain',
+        zIndex: 100
     },
     backgroundImage: {
         top: 0  ,
@@ -204,16 +227,32 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         resizeMode: 'contain',
-        zIndex: 100
+        zIndex: 110
     },
     panelWrapper: {
         height: height,
         width: width,
         alignItems: 'center',
         justifyContent: 'center',
+        zIndex: 100
     },
     registerContainer: {
-        marginTop: -200,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: height,
+        width: width,
+        zIndex: 100
+    },
+    searchResultContainer: {
+        marginTop: -600,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: height,
+        width: width,
+        zIndex: 100
+    },
+    emptyContainer: {
+        marginTop: -900,
         alignItems: 'center',
         justifyContent: 'center',
         height: height,
@@ -230,14 +269,50 @@ const styles = StyleSheet.create({
     searchResultBox: {
         alignItems: 'center',
         justifyContent: 'center',
-        height: height/2,
         width: width/1.3,
-        height: 300,
         backgroundColor: '#000',
         opacity: 0.8,
         borderWidth: 2,
-        marginTop: 100,
+        marginTop: 500,
         zIndex: 100
+    },
+    searchResultFrom: {
+        position: 'relative',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 500,
+        width: width/1.3,
+        zIndex: 100
+    },
+    submitWrapper: {
+      width: 350,
+      height: 90,
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: "center",
+      textAlignVertical: "center",
+      zIndex: 100
+    },
+    submit: {
+      width: 180,
+      height: 45,
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: "center",
+      textAlignVertical: "center",
+      backgroundColor: 'red',
+      zIndex: 100,
+    },
+    submitText: {
+      fontSize: 16,
+      color: 'white',
+    },
+    registerLogoWrapper: {
+      position: 'absolute',
+      bottom: -1,
+      right: -66, 
+      width: width/3,
+      zIndex: 200
     },
     registerText: {
         alignItems: 'center',
@@ -290,7 +365,7 @@ const styles = StyleSheet.create({
       justifyContent:'center',
       height: 60,
       width: 360,
-      zIndex: 100
+      zIndex: 110
 
     },
     input: {
@@ -329,7 +404,7 @@ const styles = StyleSheet.create({
       borderBottomColor: 'red',
       borderBottomWidth: 2,
       color: '#fff',
-      width: 160,
+      width: 240,
       padding: 10,
       marginBottom: 20
     },
@@ -345,6 +420,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       textAlignVertical: "center",
+      textAlign: "center",
       fontSize: 30,
       color: '#fff',
       height: 50,
