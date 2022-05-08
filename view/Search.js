@@ -133,12 +133,12 @@ const successSearch = (message) => {
                                     onSubmitEditing = {()=>{_fetchResults()}}
                                     />
                               </View>
-                              <TouchableHighlight style={styles.inputButton} onPress = {()=>{_fetchResults()}} underlayColor = 'transparent'>
+                              <TouchableOpacity style={styles.inputButton} onPress = {()=>{_fetchResults()}} underlayColor = 'transparent'>
                                   <Text style={styles.buttonText} >
                                     GO
                                   </Text>
-                              </TouchableHighlight>
-                          </View>
+                              </TouchableOpacity>
+                              </View>
                           {profile 
                           ? <View style={styles.searchResultContainer}>
                                 <View style={styles.searchResultBox}>

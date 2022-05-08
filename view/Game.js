@@ -18,6 +18,8 @@ import MatrixMath from 'react-native/Libraries/Utilities/MatrixMath';
 import CubeRight from './CubeRight';
 import { transformOrigin, rotateXY, rotateXZ } from '../service/utils';
 import * as Device from 'expo-device';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window')
 
@@ -31,11 +33,14 @@ export default class Game extends Component {
     constructor(props){
       super(props);
       this.state = {
-        isInit    : true,
-        isRunnig  : false,
-        isStop    : false,
-        accessToken: '',
-        paths      : []
+        isInit      : true,
+        isRunnig    : false,
+        isStop      : false,
+        accessToken : '',
+        paths       : [],
+        search      : '',
+        profile     : '',
+        token       : ''
       }
     }
 
@@ -45,12 +50,21 @@ export default class Game extends Component {
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: this.handlePanResponderMove.bind(this)
     });
+    AsyncStorage.getItem('@access_token')
+      .then((data) => {
+      const token = JSON.parse(data)
+      console.log("GET GAME page Token FROM STORE : ", token)
+      this.setState({
+        ...this.state,
+        token: token
+      })
+    });
   }
   
 
   componentDidMount() {
     console.log('componentDidMount');
-    this.initposition();
+    // this.initposition();
   }
 
   playGame = (val) => {
@@ -122,6 +136,67 @@ export default class Game extends Component {
 
   }
 
+  _fetchResults = () => {
+    axios({
+      method: 'post',
+      url: `${endpoint}/members/search`,
+      data: {
+        "phoneno" : this.state.search,
+    },
+      headers: {'X-Requested-With':'XMLHttpRequest',
+                'x-api-key':apiKey,
+                'x-device-uid':deviceUID,
+                'Authorization':`${this.state.token}`}
+    }).then((res) => {
+      // Example Response
+      // {
+      //   "status": "success",
+      //   "message": "ลงทะเบียนสำหรับ กรุณายืนยัน OTP จาก SMS",
+      //   "otp_refno": "3LHOD"
+      // }
+      console.log("RESPONSE SEARCH: ", res);
+      console.log("RESPONSE SEARCH RECEIVED: ", res.data);
+      const profile = res.data
+      const status = res.data.status
+      const message = res.data.message
+      if((status == "match")) {
+        this.setState({
+          ...this.state,
+          profile: profile
+        })
+        this.initposition()
+      }else if(status == "notmatch") {
+        console.log("Search not match")
+        this.setState({
+          ...this.state,
+          profile: ''
+        })
+      }else {
+        console.log("Search not match")
+        this.setState({
+          ...this.state,
+          profile: ''
+        })
+      }
+    })
+    .catch((err) => {
+      if(err.response.status == 400){
+        console.log("AXIOS GAME SEARCH ERROR: ", err.response.data.message);
+        this.setState({
+          ...this.state,
+          profile: ''
+        })
+      }else{
+        console.log("AXIOS GAME SEARCH ERROR: ", err.response.data.message);
+        this.setState({
+          ...this.state,
+          profile: ''
+        })
+  
+      }
+    });
+  }
+
   renderFront = (color) => {
     return (
       <View
@@ -181,22 +256,42 @@ export default class Game extends Component {
               <View style={styles.panelWrapper}>
                 <View style={styles.registerContainer}>
                     <View style={styles.registerBox}>
-                      <View style={styles.cubeContainer}>
-                      {!this.state.isRunnig ? 
-                      <View style={styles.cubeBox}>
+                      {!this.state.profile 
+                      ? <View style={styles.searchBox}>
+                          <Text style={styles.registerText}>Search</Text>
+                          <View style={styles.inputWrapper}>
+                          <View style={styles.inputWrapper}>
+                            <TextInput
+                                style={styles.input}
+                                value = {this.state.search}
+                                onChangeText = {(search) => {this.setState({...this.state, search: search})}}
+                                placeholder = 'ค้นหาเบอร์โทรศัทพ์'
+                                keyboardType = 'numeric'
+                                onSubmitEditing = {()=>{this._fetchResults()}}
+                                />
+                          </View>
+                          <TouchableOpacity style={styles.inputButton} onPress = {()=>{this._fetchResults()}} underlayColor = 'transparent'>
+                              <Text style={styles.buttonText} >
+                                GO
+                              </Text>
+                          </TouchableOpacity>
+                          </View>
+                        </View>
+                      : <View style={styles.cubeContainer}>
+                      {!this.state.isRunnig
+                       ? <View style={styles.cubeBox}>
                           {this.renderBack('transparent')}
                           {this.renderRight('transparent')}
                           {this.renderLeft('transparent')}
                           {this.renderFront('transparent')}
                         </View>:null}
-                        
-                        {this.state.isRunnig
-                        ? <TouchableOpacity onPress={() => this.stopGame()}>
+                      {this.state.isRunnig
+                       ? <TouchableOpacity onPress={() => this.stopGame()}>
                            <CubeRight navigation={this.props.navigation} />
                            </TouchableOpacity>
-                        : null}
-                      
-                      </View>
+                       : null}
+                      </View>}
+                     
                       {/* <Button title="flip x " onPress={() => this.flip('x')} /> */}
                       {/* <Button title="Play" onPress={() => this.flip('y')} /> */}
                       {/* {!this.state.isRunnig ? <View style={styles.submitWrapper} >
@@ -281,12 +376,52 @@ const styles = StyleSheet.create({
         width: width,
         zIndex: 100
     },
-    registerBox: {
+    searchBox: {
+        marginTop: -350,
         alignItems: 'center',
         justifyContent: 'center',
         height: height,
-        width: width/2,
-        zIndex: 100
+        width: width,
+        zIndex: 110,
+        backgroundColor: '#000',
+        opacity: 0.8,
+
+    },
+    inputWrapper: {
+      flexDirection:'row',
+      alignItems:'center',
+      justifyContent:'center',
+      height: 60,
+      width: 360,
+      zIndex: 110
+
+    },
+    input: {
+      flex:1,
+      alignItems:'center',
+      justifyContent:'center',
+      backgroundColor:'white',
+      height: 60,
+      width: 280,
+      paddingLeft: 20,
+      fontSize: 20,
+      zIndex: 100
+    },
+    inputButton: {
+      alignItems:'center',
+      height: 60,
+      width: 80,
+      backgroundColor: 'red',
+      zIndex: 100
+    },
+    buttonText: {
+      textAlign: 'center',
+      textAlignVertical: 'center', 
+      color: 'white',
+      height: 60,
+      width: 80,
+      fontSize: 30,
+      zIndex: 100
     },
     registerText: {
         alignItems: 'center',
