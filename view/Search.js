@@ -73,18 +73,18 @@ const _fetchResults = () => {
     }else {
       console.log("Search not match")
       setProfile('');
-      // wrongSearch(message)
+      wrongSearch(message)
     }
   })
   .catch((err) => {
     if(err.response.status == 400){
       console.log("AXIOS SEARCH ERROR: ", err.response.data.message);
       setProfile('')
-      // wrongSearch(err.response.data.message)
+      wrongSearch(err.response.data.message)
     }else{
       console.log("AXIOS SEARCH ERROR: ", err.response.data.message);
       setProfile('')
-      // wrongSearch()
+      wrongSearch()
 
     }
   });

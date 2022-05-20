@@ -12,7 +12,8 @@ import {
     Linking, 
     Button,
     Animated,
-    PanResponder
+    PanResponder,
+    Alert
 } from 'react-native';
 import MatrixMath from 'react-native/Libraries/Utilities/MatrixMath';
 import CubeRight from './CubeRight';
@@ -59,6 +60,15 @@ export default class Game extends Component {
         token: token
       })
     });
+    AsyncStorage.getItem('@id')
+    .then((data) => {
+    const id = JSON.parse(data)
+    console.log("GET ID page Token FROM STORE : ", id)
+    this.setState({
+      ...this.state,
+      id: id
+    })
+  });
   }
   
 
@@ -68,6 +78,27 @@ export default class Game extends Component {
   }
 
   playGame = (val) => {
+    axios({
+      method: 'post',
+      url: `${endpoint}/events/runCubic`,
+      data: {
+        "userId" : this.state.id,
+    },
+      headers: {'X-Requested-With':'XMLHttpRequest',
+                'x-api-key':apiKey,
+                'x-device-uid':deviceUID,
+                'Authorization':`${this.state.token}`}
+    }).then((res) => {
+      console.log('RANDOM DATA : ', res.data)
+      this.setState({
+        ...this.state,
+        ...res.data.stop_item,
+      })
+
+      console.log('RANDOM STATE : ', this.state)
+    }).catch((e) => {
+      console.log('RANDOM ERROR : ', e)
+    });
     if(!this.state.isRunnig){
       this.setState({
         ...this.state,
@@ -84,7 +115,8 @@ export default class Game extends Component {
   stopGame = (val) => {
     this.setState({
       ...this.state,
-      isRunnig: false
+      isRunnig: false,
+      winner: true,
     })
     setTimeout(this.initposition, 1);
   };
@@ -172,12 +204,14 @@ export default class Game extends Component {
           ...this.state,
           profile: ''
         })
+        this.wrongSearch();
       }else {
         console.log("Search not match")
         this.setState({
           ...this.state,
           profile: ''
         })
+        this.wrongSearch();
       }
     })
     .catch((err) => {
@@ -187,15 +221,29 @@ export default class Game extends Component {
           ...this.state,
           profile: ''
         })
+        this.wrongSearch();
       }else{
         console.log("AXIOS GAME SEARCH ERROR: ", err.response.data.message);
         this.setState({
           ...this.state,
           profile: ''
         })
+        this.wrongSearch();
   
       }
     });
+  }
+
+  wrongSearch = (message) => {
+    Alert.alert(
+      message || 'ไม่พบเบอร์โทรศัพท์ดังกล่าวลงทะเบียน',
+      'กรุณาลองใหม่',
+      [
+        {text: 'ตกลง', onPress: () => {console.log('Close dialog')}},
+        {text: 'ปิด', onPress: () => {console.log('Close dialog')}},
+      ],
+      { cancelable: false });
+      return true;
   }
 
   renderFront = (color) => {
@@ -279,6 +327,28 @@ export default class Game extends Component {
                           </View>
                         </View>
                       : <View style={styles.cubeContainer}>
+                      {this.state.winner ? <View style={styles.winnerReward} >
+                      {this.state.is_reward
+                       ? <View style={styles.titleForm}>
+                          <Text style={styles.title} >ยินดีด้วย คุณได้รับของรางวัล</Text>
+                          <Text style={styles.title} >{this.state.reward_name}</Text>
+                          {this.state.file_url?<Image style={styles.rewardImage} source={{uri: this.state.file_url}}/>:null}
+                        <View style={styles.submitWrapper} >
+                          <TouchableOpacity style={styles.submit} onPress={() => {this.props.navigation.navigate('Home')}}>
+                            <Text style={styles.submitText}>กลับไปหน้าหลัก</Text>
+                          </TouchableOpacity>
+                        </View>
+                        </View>:
+                        <View style={styles.badTitleForm}>
+                        <Text style={styles.title} >เสียใจด้วย!!! </Text>
+                        <Text style={styles.title} >คุณไม่ได้รับของรางวัล</Text>
+                        <View style={styles.submitWrapper} >
+                          <TouchableOpacity style={styles.submit} onPress={() => {this.props.navigation.navigate('Home')}}>
+                            <Text style={styles.submitText}>กลับไปหน้าหลัก</Text>
+                          </TouchableOpacity>
+                        </View>
+                    </View>}
+                      </View>: null}
                       {!this.state.isRunnig
                        ? <><View style={styles.cubeBox}>
                           {this.renderBack('transparent')}
@@ -589,6 +659,82 @@ const styles = StyleSheet.create({
       marginTop: height/3.5,
       width: width/5,
       resizeMode: 'contain'
+    },
+    winnerReward : {
+      position: 'absolute',
+      top: 50,
+
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: width/1.3,
+      height: height/2.5,
+      backgroundColor: '#000',
+      opacity: 0.8,
+      borderWidth: 2,
+      zIndex: 120
+
+    },
+    badTitleForm: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: "center",
+      textAlignVertical: "center",
+      overflow: 'visible',
+      borderBottomColor: 'red',
+      borderBottomWidth: 2,
+      color: '#fff',
+      width: 240,
+      padding: 10,
+      marginBottom: 20
+    },
+    titleForm: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: "center",
+      textAlignVertical: "center",
+      overflow: 'visible',
+      color: '#fff',
+      width: 240,
+      padding: 10,
+    },
+    title: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlignVertical: "center",
+      textAlign: "center",
+      fontSize: 30,
+      color: '#fff',
+      height: 50,
+      width: 500
+    },
+    rewardImage: {
+      width: 300,
+      height: 300,
+      resizeMode: 'contain',
+      zIndex: 120
+    },
+    submitWrapper: {
+      width: 350,
+      height: 90,
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: "center",
+      textAlignVertical: "center",
+      zIndex: 100
+    },
+    submit: {
+      width: 180,
+      height: 45,
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: "center",
+      textAlignVertical: "center",
+      backgroundColor: 'red',
+      zIndex: 100,
+    },
+    submitText: {
+      fontSize: 16,
+      color: 'white',
     }
   });
   

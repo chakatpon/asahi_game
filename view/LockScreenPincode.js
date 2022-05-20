@@ -203,6 +203,17 @@ export default class LockScreenPinCode extends Component {
       }
     }
 
+    storeID = async (value) => {
+      try {
+        const jsonValue = await JSON.stringify(value)
+        console.log('set ID jsonValue : ', jsonValue)
+        await AsyncStorage.setItem('@id', jsonValue)
+      } catch (e) {
+        // saving error
+        console.log('set token error : ', e)
+      }
+    }
+
     callEvent = (token) => {
       axios({
         method: 'get',
@@ -214,6 +225,7 @@ export default class LockScreenPinCode extends Component {
       }).then((res) => {
         console.log(`${endpoint}/events/info : `, res.data.cubic);
         const cubic = res.data.cubic
+        const id = res.data.id
         console.log('CUBIC : ', cubic)
         if(!cubic) {
           this.wrongEvent();
@@ -228,6 +240,7 @@ export default class LockScreenPinCode extends Component {
           ]
           this.setState({...this.state, pincode: ['','','','','',''], isLoading: false,  paths: paths})
           this.storePath(paths);
+          this.storeID(id);
           this.props.navigation.navigate('Home')
         }
       })
