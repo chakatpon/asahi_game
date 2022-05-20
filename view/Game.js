@@ -21,6 +21,8 @@ import { transformOrigin, rotateXY, rotateXZ } from '../service/utils';
 import * as Device from 'expo-device';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Audio } from 'expo-av';
+
 
 const { width, height } = Dimensions.get('window')
 
@@ -74,8 +76,27 @@ export default class Game extends Component {
 
   componentDidMount() {
     console.log('componentDidMount');
+    Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      staysActiveInBackground: true,
+      interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
+      playsInSilentModeIOS: true,
+      shouldDuckAndroid: true,
+      interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
+      playThroughEarpieceAndroid: false
+   });
     // this.initposition();
   }
+
+  async playSound() {
+    console.log('Loading Sound');
+    const { sound } = await Audio.Sound.createAsync(
+       require('../assets/sound/Spin.mp3')
+    );
+    setSound(sound);
+
+    console.log('Playing Sound');
+    await sound.playAsync(); }
 
   playGame = (val) => {
     axios({
@@ -94,7 +115,7 @@ export default class Game extends Component {
         ...this.state,
         ...res.data.stop_item,
       })
-
+      this.playSound();
       console.log('RANDOM STATE : ', this.state)
     }).catch((e) => {
       console.log('RANDOM ERROR : ', e)
