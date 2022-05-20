@@ -243,7 +243,7 @@ export default class Game extends Component {
                           ...styles.front,
                           transform: [{rotateX: rotateFrontX}, {rotateY: rotateFrontY}, {perspective: 500}],
                         }}>
-                            <Image style={styles.image2}  source={require("../assets/images/game/Kanji2.png")}/></Animated.View>
+                            <Image style={styles.image2}  source={require("../assets/images/game/kanji2.png")}/></Animated.View>
                       <Animated.View
                         ref={component => this.refViewBack = component}
                         style={{
@@ -251,7 +251,7 @@ export default class Game extends Component {
                           transform: [{rotateX: rotateBackX}, {rotateY: rotateBackY}, {perspective: 500}],
                         }}
                       >
-                      <Image style={styles.image2}  source={require("../assets/images/game/Kanji2.png")}/></Animated.View>
+                      <Image style={styles.image2}  source={require("../assets/images/game/kanji2.png")}/></Animated.View>
                       <Animated.View
                         ref={component => this.refViewLeft = component}
                         style={{
@@ -259,7 +259,7 @@ export default class Game extends Component {
                           transform: [{rotateX: rotateLeftX}, {rotateY: rotateLeftY}, {perspective: 500}],
                         }}
                       >
-                      <Image style={styles.image1}  source={require("../assets/images/game/Kanji1.png")}/></Animated.View>
+                      <Image style={styles.image1}  source={require("../assets/images/game/kanji1.png")}/></Animated.View>
                       <Animated.View
                         ref={component => this.refViewRight = component}
                         style={{
@@ -267,7 +267,7 @@ export default class Game extends Component {
                           transform: [{rotateX: rotateRightX}, {rotateY: rotateRightY}, {perspective: 500}],
                         }}
                       >
-                      <Image style={styles.image1}  source={require("../assets/images/game/Kanji1.png")}/></Animated.View>
+                      <Image style={styles.image1}  source={require("../assets/images/game/kanji1.png")}/></Animated.View>
                       
                       </View>
                       {/* <Button title="flip x " onPress={() => this.flip('x')} /> */}

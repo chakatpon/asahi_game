@@ -42,12 +42,12 @@ export default class App extends Component {
     // const cube = new THREE.Mesh(geometry, material);
     const loader = new THREE.TextureLoader();
     const paths = [
-      require("./assets/images/game/Kanji1.png"),
-      require("./assets/images/game/Kanji2.png"),
-      require("./assets/images/game/Kanji2.png"),
-      require("./assets/images/game/Kanji1.png"),
-      require("./assets/images/game/Kanji1.png"),
-      require("./assets/images/game/Kanji2.png")
+      require("./assets/images/game/kanji1.png"),
+      require("./assets/images/game/kanji2.png"),
+      require("./assets/images/game/kanji2.png"),
+      require("./assets/images/game/kanji1.png"),
+      require("./assets/images/game/kanji1.png"),
+      require("./assets/images/game/kanji2.png")
     ]
 
     const materials = []; // an array of materials you'll pass into the constructor of THREE.Mesh

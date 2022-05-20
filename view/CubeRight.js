@@ -105,7 +105,7 @@ export default class CubeRight extends Component {
         });
     });
 
-    const geometry = new BoxBufferGeometry(2.2, 2.2, 2.2);
+    const geometry = new BoxBufferGeometry(2, 2, 2);
     const  cube = new Mesh(geometry, materials)
     scene.add(cube);
     camera.position.z = 5;

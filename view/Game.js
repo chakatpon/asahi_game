@@ -86,6 +86,7 @@ export default class Game extends Component {
       ...this.state,
       isRunnig: false
     })
+    setTimeout(this.initposition, 1);
   };
 
 
@@ -204,7 +205,7 @@ export default class Game extends Component {
         style={[styles.front, (color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
       >
-        <Image style={styles.front} source={require("../assets/images/game/cubeSide.png")}/>
+        <Image style={styles.front} source={require("../assets/images/game/kanji1.png")}/>
       </View>
     )
   }
@@ -216,7 +217,7 @@ export default class Game extends Component {
         style={[styles.back, (color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
       >
-        <Image style={styles.back} source={require("../assets/images/game/cubeSide.png")}/>
+        <Image style={styles.back} source={require("../assets/images/game/kanji1.png")}/>
       </View>
     )
   }
@@ -228,7 +229,7 @@ export default class Game extends Component {
         style={[styles.left, (color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
         >
-        <Image style={styles.left} source={require("../assets/images/game/cubeSide.png")}/>
+        <Image style={styles.left} source={require("../assets/images/game/kanji2.png")}/>
       </View>
     )
   }
@@ -240,7 +241,7 @@ export default class Game extends Component {
         style={[styles.right, (color) ? {backgroundColor: color} : null]}
         {...this.panResponder.panHandlers}
         >
-        <Image style={styles.right} source={require("../assets/images/game/cubeSide.png")}/>
+        <Image style={styles.right} source={require("../assets/images/game/kanji2.png")}/>
       </View>
     )
   }
@@ -279,12 +280,16 @@ export default class Game extends Component {
                         </View>
                       : <View style={styles.cubeContainer}>
                       {!this.state.isRunnig
-                       ? <View style={styles.cubeBox}>
+                       ? <><View style={styles.cubeBox}>
                           {this.renderBack('transparent')}
                           {this.renderRight('transparent')}
                           {this.renderLeft('transparent')}
                           {this.renderFront('transparent')}
-                        </View>:null}
+                        </View>
+
+                        <Image style={styles.spinImage} source={require("../assets/images/game/spintodiscover.png")}/>
+                        </>
+                        :null}
                       {this.state.isRunnig
                        ? <TouchableOpacity onPress={() => this.stopGame()}>
                            <CubeRight navigation={this.props.navigation} />
@@ -348,7 +353,7 @@ const styles = StyleSheet.create({
     },
     backgroundImage: {
         top: 0  ,
-        height: height/1.2,
+        height: height,
         width: width,
         resizeMode: 'cover',
         position:"absolute",
@@ -494,6 +499,16 @@ const styles = StyleSheet.create({
       marginBottom: 20,
     },  
     cubeBox: {
+      display: 'flex',
+      position: 'absolute',
+      left: 0,
+      top: -60,
+      width: 450,
+      height: 450,
+      backgroundColor: "transparent"
+    },  
+    cubeBoxHide: {
+      display: 'none',
       position: 'absolute',
       left: 0,
       top: -60,
@@ -507,7 +522,7 @@ const styles = StyleSheet.create({
       top: 0,
       height: 450,
       width: 450,
-      backgroundColor: 'white',
+      backgroundColor: 'transparent',
       zIndex: 120,
     },
     back: {
@@ -516,7 +531,7 @@ const styles = StyleSheet.create({
       top: 0,
       height: 450,
       width: 450,
-      backgroundColor: 'white',
+      backgroundColor: 'transparent',
       zIndex: 120,
     },
     left: {
@@ -525,7 +540,7 @@ const styles = StyleSheet.create({
       top: 0,
       height: 450,
       width: 450,
-      backgroundColor: 'white',
+      backgroundColor: 'transparent',
       zIndex: 120,
     },
     right: {
@@ -534,7 +549,7 @@ const styles = StyleSheet.create({
       top: 0,
       height: 450,
       width: 450,
-      backgroundColor: 'white',
+      backgroundColor: 'transparent',
       zIndex: 120,
     },
     image1: {
@@ -570,5 +585,10 @@ const styles = StyleSheet.create({
       fontSize: 16,
       color: 'white',
     },
+    spinImage: {
+      marginTop: height/3.5,
+      width: width/5,
+      resizeMode: 'contain'
+    }
   });
   
