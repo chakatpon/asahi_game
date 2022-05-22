@@ -359,6 +359,11 @@ export default class Game extends Component {
                             <Text style={styles.submitText}>กลับไปหน้าหลัก</Text>
                           </TouchableOpacity>
                         </View>
+                        <View style={styles.submitWrapper} >
+                          <TouchableOpacity style={styles.submit} onPress={() => {this.setState({...this.state, winner: false})}}>
+                            <Text style={styles.submitText}>เล่นอีกครั้ง</Text>
+                          </TouchableOpacity>
+                        </View>
                         </View>:
                         <View style={styles.badTitleForm}>
                         <Text style={styles.title} >เสียใจด้วย!!! </Text>
@@ -366,6 +371,11 @@ export default class Game extends Component {
                         <View style={styles.submitWrapper} >
                           <TouchableOpacity style={styles.submit} onPress={() => {this.props.navigation.navigate('Home')}}>
                             <Text style={styles.submitText}>กลับไปหน้าหลัก</Text>
+                          </TouchableOpacity>
+                        </View>
+                        <View style={styles.submitWrapper} >
+                          <TouchableOpacity style={styles.submit} onPress={() => {this.setState({...this.state, winner: false})}}>
+                            <Text style={styles.submitText}>เล่นอีกครั้ง</Text>
                           </TouchableOpacity>
                         </View>
                     </View>}
@@ -688,7 +698,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       width: width/1.3,
-      height: height/2.5,
+      height: height/2.2,
       backgroundColor: '#000',
       opacity: 0.8,
       borderWidth: 2,
