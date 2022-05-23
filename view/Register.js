@@ -393,6 +393,7 @@ const styles = StyleSheet.create({
         zIndex: 100
     },
     registerText: {
+       fontFamily: 'Kanit-Black',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: "center",
@@ -443,6 +444,7 @@ const styles = StyleSheet.create({
       marginBottom: 20
     },
     title: {
+      fontFamily: 'Kanit-Black',
       alignItems: 'center',
       justifyContent: 'center',
       textAlign: "center",
@@ -452,6 +454,7 @@ const styles = StyleSheet.create({
       width: width
     },
     title2: {
+      fontFamily: 'Kanit-Black',
       alignItems: 'center',
       justifyContent: 'center',
       textAlign: "center",
@@ -461,6 +464,7 @@ const styles = StyleSheet.create({
       width: width/2
     },
     input: {
+      fontFamily: 'Kanit-Black',
       alignItems: 'center',
       justifyContent: 'center',
       textAlignVertical: "center",
@@ -478,6 +482,7 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     checkbox: {
+      fontFamily: 'Kanit-Black',
       padding: 0,
       margin: 0,
       backgroundColor: 'transparent',
@@ -489,6 +494,7 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     label: {
+      fontFamily: 'Kanit-Black',
       margin: 8,
       color: "#fff",
       padding: 0,
@@ -515,6 +521,7 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     link: {
+      fontFamily: 'Kanit-Black',
       color: 'grey',
       textDecorationLine: 'underline',
       zIndex: 100
@@ -554,6 +561,7 @@ const styles = StyleSheet.create({
       zIndex: 100,
     },
     submitText: {
+      fontFamily: 'Kanit-Black',
       fontSize: 16,
       color: 'white',
     },

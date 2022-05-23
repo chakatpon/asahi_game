@@ -304,6 +304,7 @@ const styles = StyleSheet.create({
       zIndex: 100,
     },
     submitText: {
+      fontFamily: 'Kanit-Black',
       fontSize: 16,
       color: 'white',
     },
@@ -315,6 +316,7 @@ const styles = StyleSheet.create({
       zIndex: 200
     },
     registerText: {
+      fontFamily: 'Kanit-Black',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: "center",
@@ -369,6 +371,7 @@ const styles = StyleSheet.create({
 
     },
     input: {
+      fontFamily: 'Kanit-Black',
       flex:1,
       alignItems:'center',
       justifyContent:'center',
@@ -387,6 +390,7 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     buttonText: {
+      fontFamily: 'Kanit-Black',
       textAlign: 'center',
       textAlignVertical: 'center', 
       color: 'white',
@@ -409,6 +413,7 @@ const styles = StyleSheet.create({
       marginBottom: 20
     },
     searchTitle: {
+      fontFamily: 'Kanit-Black',
       alignItems: 'center',
       justifyContent: 'center',
       textAlign: "center",
@@ -417,6 +422,7 @@ const styles = StyleSheet.create({
       color: '#fff'
     },
     title: {
+      fontFamily: 'Kanit-Black',
       alignItems: 'center',
       justifyContent: 'center',
       textAlignVertical: "center",
@@ -427,6 +433,7 @@ const styles = StyleSheet.create({
       width: 500
     },
     title2: {
+      fontFamily: 'Kanit-Black',
       alignItems: 'center',
       justifyContent: 'center',
       textAlign: "center",

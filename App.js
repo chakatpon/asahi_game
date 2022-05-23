@@ -15,11 +15,13 @@ import Flip                       from './view/Flip';
 import Register                   from './view/Register';
 import Home                       from './view/Home';
 import Search                     from './view/Search';  
+import AnimatedRingExample        from './view/Ring';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import 'react-native-gesture-handler';
 import * as Device from 'expo-device';
 import axios from 'axios';
+import { useFonts } from 'expo-font';
 
 
 
@@ -41,6 +43,11 @@ export default function App() {
     console.log("DeviceName : ",deviceName)
     checkDeviceID();
   },[])
+
+  let [fontsLoaded] = useFonts({
+    'Kanit-Black': require('./assets/fonts/Kanit-Black.ttf'),
+    'Kanit-Bold': require('./assets/fonts/Kanit-Bold.ttf'),
+  });
 
   const checkDeviceID = () => {
 
@@ -81,6 +88,10 @@ export default function App() {
       return true;
   }
 
+  if (!fontsLoaded) {
+    return <AnimatedRingExample />;
+  }
+
   const logout = () => {
     setHasPincode(true)
   }
@@ -103,6 +114,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
+    fontFamily: 'Kanit-Black',
     backgroundColor: '#000',
     justifyContent: 'center',
     width: width,

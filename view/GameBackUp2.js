@@ -22,7 +22,6 @@ import * as Device from 'expo-device';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Audio } from 'expo-av';
-import { WebView } from 'react-native-webview';
 
 
 const { width, height } = Dimensions.get('window')
@@ -63,45 +62,17 @@ export default class Game extends Component {
         token: token
       })
     });
-  //   AsyncStorage.getItem('@id')
-  //   .then((data) => {
-  //   const id = JSON.parse(data)
-  //   console.log("GET ID page Token FROM STORE : ", id)
-  //   this.setState({
-  //     ...this.state,
-  //     id: id
-  //   })
-
-  // });
-
-
+    AsyncStorage.getItem('@id')
+    .then((data) => {
+    const id = JSON.parse(data)
+    console.log("GET ID page Token FROM STORE : ", id)
+    this.setState({
+      ...this.state,
+      id: id
+    })
+  });
   }
   
-
-  findWebView(id) {
-    axios({
-      method: 'post',
-      url: `${endpoint}/members/playgame`,
-      data: {
-        "userId" : id,
-    },
-      headers: {'X-Requested-With':'XMLHttpRequest',
-                'x-api-key':apiKey,
-                'x-device-uid':deviceUID,
-                'Authorization':`${this.state.token}`}
-    }).then((res) => {
-      if(res.data.status == "success") {
-        this.setState({
-          ...this.state,
-          user_token: res.data.access_token,
-          game_url: res.data.game_url
-        })
-        console.log("GAME STATE : ", this.state)
-      }
-    }).catch((e) => {
-      console.log('PLAY_GAME ERROR : ', e)
-    });
-  }
 
   componentDidMount() {
     console.log('componentDidMount');
@@ -144,7 +115,7 @@ export default class Game extends Component {
         ...this.state,
         ...res.data.stop_item,
       })
-      // this.playSound();
+      this.playSound();
       console.log('RANDOM STATE : ', this.state)
     }).catch((e) => {
       console.log('RANDOM ERROR : ', e)
@@ -247,7 +218,6 @@ export default class Game extends Component {
           ...this.state,
           profile: profile
         })
-        this.findWebView(profile.id)
         this.initposition()
       }else if(status == "notmatch") {
         console.log("Search not match")
@@ -295,11 +265,6 @@ export default class Game extends Component {
       ],
       { cancelable: false });
       return true;
-  }
-
-  playAgain = () => {
-    this.findWebView(this.state.profile.id);
-    this.setState({...this.state, winner: false})
   }
 
   renderFront = (color) => {
@@ -382,38 +347,7 @@ export default class Game extends Component {
                           </TouchableOpacity>
                           </View>
                         </View>
-                      : 
-                      
-                      <View style={styles.cubeContainer}>
-                      <WebView  onMessage={(event) => {
-                          console.log("CALLBACK EVENT : ", event)
-                          const data = JSON.parse(event.nativeEvent.data);
-                          console.log("CALLBACK EVENT DATA: ", data)
-                          this.setState({
-                            ...this.state,
-                            winner: true,
-                            ...data.stop_item
-                          })
-                          /* CALLBACK EVENT
-                          รับข้อมูลที่ส่งมาผ่าน event.nativeEvent.data
-                          */
-                        }} 
-                        mediaPlaybackRequiresUserAction={false}
-                        allowsInlineMediaPlayback={true}
-                        originWhitelist={['*']} 
-                        source={{ 
-                          uri: this.state.game_url ,
-                          headers: {
-                            'Authorization': this.state.token,
-                            'user-token' : this.state.user_token
-                          },
-                        }} 
-                        injectedJavaScriptBeforeContentLoaded={`
-                          window.isNativeApp = true;
-                        `}
-                        style={{ width : width , height : height , flex : 1 , backgroundColor: 'transparent' }} 
-                      />
-
+                      : <View style={styles.cubeContainer}>
                       {this.state.winner ? <View style={styles.winnerReward} >
                       {this.state.is_reward
                        ? <View style={styles.titleForm}>
@@ -426,7 +360,7 @@ export default class Game extends Component {
                           </TouchableOpacity>
                         </View>
                         <View style={styles.submitWrapper} >
-                          <TouchableOpacity style={styles.submit} onPress={() => {this.playAgain()}}>
+                          <TouchableOpacity style={styles.submit} onPress={() => {this.setState({...this.state, winner: false})}}>
                             <Text style={styles.submitText}>เล่นอีกครั้ง</Text>
                           </TouchableOpacity>
                         </View>
@@ -440,16 +374,42 @@ export default class Game extends Component {
                           </TouchableOpacity>
                         </View>
                         <View style={styles.submitWrapper} >
-                          <TouchableOpacity style={styles.submit} onPress={() => {this.playAgain()}}>
+                          <TouchableOpacity style={styles.submit} onPress={() => {this.setState({...this.state, winner: false})}}>
                             <Text style={styles.submitText}>เล่นอีกครั้ง</Text>
                           </TouchableOpacity>
                         </View>
                     </View>}
                       </View>: null}
+                      {!this.state.isRunnig
+                       ? <><View style={styles.cubeBox}>
+                          {this.renderBack('transparent')}
+                          {this.renderRight('transparent')}
+                          {this.renderLeft('transparent')}
+                          {this.renderFront('transparent')}
+                        </View>
 
+                        <Image style={styles.spinImage} source={require("../assets/images/game/spintodiscover.png")}/>
+                        </>
+                        :null}
+                      {this.state.isRunnig
+                       ? <TouchableOpacity onPress={() => this.stopGame()}>
+                           <CubeRight navigation={this.props.navigation} />
+                           </TouchableOpacity>
+                       : null}
                       </View>}
                      
-
+                      {/* <Button title="flip x " onPress={() => this.flip('x')} /> */}
+                      {/* <Button title="Play" onPress={() => this.flip('y')} /> */}
+                      {/* {!this.state.isRunnig ? <View style={styles.submitWrapper} >
+                        <TouchableOpacity style={styles.submit} onPress={() => this.playGame()}>
+                          <Text style={styles.submitText}>เล่นเกมส์</Text>
+                        </TouchableOpacity>
+                      </View>:null}                      
+                      {this.state.isRunnig ? <View style={styles.submitWrapper} >
+                        <TouchableOpacity style={styles.submit} onPress={() => this.stopGame()}>
+                          <Text style={styles.submitText}>หยุด</Text>
+                        </TouchableOpacity>
+                      </View>:null} */}
                     </View>
                 </View>
               <ImageBackground source={require("../assets/images/game/game_bg.png")} style={styles.backgroundImage}  />
@@ -543,7 +503,6 @@ const styles = StyleSheet.create({
 
     },
     input: {
-      fontFamily: 'Kanit-Black',
       flex:1,
       alignItems:'center',
       justifyContent:'center',
@@ -555,7 +514,6 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     inputButton: {
-      fontFamily: 'Kanit-Black',
       alignItems:'center',
       height: 60,
       width: 80,
@@ -563,7 +521,6 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     buttonText: {
-      fontFamily: 'Kanit-Black',
       textAlign: 'center',
       textAlignVertical: 'center', 
       color: 'white',
@@ -573,7 +530,6 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     registerText: {
-      fontFamily: 'Kanit-Black',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: "center",
@@ -627,11 +583,12 @@ const styles = StyleSheet.create({
       position: 'relative',
       alignItems: 'center', 
       justifyContent: 'center',
-      width: width,
-      height: height,
+      width: 450,
+      height: 450,
       backgroundColor: "transparent",
       zIndex: 100,
       flexDirection: 'row',
+      //backgroundColor: 'black', 
     },
     item: {
       position: 'absolute',
@@ -726,7 +683,6 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     submitText: {
-      fontFamily: 'Kanit-Black',
       fontSize: 16,
       color: 'white',
     },
@@ -736,9 +692,9 @@ const styles = StyleSheet.create({
       resizeMode: 'contain'
     },
     winnerReward : {
-      marginTop: height/3,
       position: 'absolute',
       top: 50,
+
       alignItems: 'center',
       justifyContent: 'center',
       width: width/1.3,
@@ -773,7 +729,6 @@ const styles = StyleSheet.create({
       padding: 10,
     },
     title: {
-      fontFamily: 'Kanit-Black',
       alignItems: 'center',
       justifyContent: 'center',
       textAlignVertical: "center",
@@ -809,7 +764,6 @@ const styles = StyleSheet.create({
       zIndex: 100,
     },
     submitText: {
-      fontFamily: 'Kanit-Black',
       fontSize: 16,
       color: 'white',
     }
