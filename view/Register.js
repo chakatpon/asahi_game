@@ -393,14 +393,14 @@ const styles = StyleSheet.create({
         zIndex: 100
     },
     registerText: {
-       fontFamily: 'Kanit-Black',
+       fontFamily: 'Kanit-Medium',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: "center",
         textAlignVertical: "center",
-        fontSize: 50,
+        fontSize: 70,
         color: '#fff',
-        height: 80,
+        height: 110,
         width: width/1.5,
         zIndex: 100,
         marginBottom: 50
@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
       marginBottom: 20
     },
     title: {
-      fontFamily: 'Kanit-Black',
+      fontFamily: 'Kanit-Medium',
       alignItems: 'center',
       justifyContent: 'center',
       textAlign: "center",
@@ -454,7 +454,7 @@ const styles = StyleSheet.create({
       width: width
     },
     title2: {
-      fontFamily: 'Kanit-Black',
+      fontFamily: 'Kanit-Medium',
       alignItems: 'center',
       justifyContent: 'center',
       textAlign: "center",
@@ -464,7 +464,7 @@ const styles = StyleSheet.create({
       width: width/2
     },
     input: {
-      fontFamily: 'Kanit-Black',
+      fontFamily: 'Kanit-Medium',
       alignItems: 'center',
       justifyContent: 'center',
       textAlignVertical: "center",
@@ -482,7 +482,7 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     checkbox: {
-      fontFamily: 'Kanit-Black',
+      fontFamily: 'Kanit-Medium',
       padding: 0,
       margin: 0,
       backgroundColor: 'transparent',
@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     label: {
-      fontFamily: 'Kanit-Black',
+      fontFamily: 'Kanit-Medium',
       margin: 8,
       color: "#fff",
       padding: 0,
@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     link: {
-      fontFamily: 'Kanit-Black',
+      fontFamily: 'Kanit-Medium',
       color: 'grey',
       textDecorationLine: 'underline',
       zIndex: 100
@@ -561,7 +561,7 @@ const styles = StyleSheet.create({
       zIndex: 100,
     },
     submitText: {
-      fontFamily: 'Kanit-Black',
+      fontFamily: 'Kanit-Medium',
       fontSize: 16,
       color: 'white',
     },

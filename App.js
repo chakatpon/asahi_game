@@ -47,6 +47,7 @@ export default function App() {
   let [fontsLoaded] = useFonts({
     'Kanit-Black': require('./assets/fonts/Kanit-Black.ttf'),
     'Kanit-Bold': require('./assets/fonts/Kanit-Bold.ttf'),
+    'Kanit-Medium': require('./assets/fonts/Kanit-Medium.ttf')
   });
 
   const checkDeviceID = () => {

@@ -21,7 +21,7 @@ import { transformOrigin, rotateXY, rotateXZ } from '../service/utils';
 import * as Device from 'expo-device';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Audio } from 'expo-av';
+// import { Audio } from 'expo-av';
 import { WebView } from 'react-native-webview';
 
 
@@ -105,15 +105,15 @@ export default class Game extends Component {
 
   componentDidMount() {
     console.log('componentDidMount');
-    Audio.setAudioModeAsync({
-      allowsRecordingIOS: false,
-      staysActiveInBackground: true,
-      interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
-      playsInSilentModeIOS: true,
-      shouldDuckAndroid: true,
-      interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
-      playThroughEarpieceAndroid: false
-   });
+  //   Audio.setAudioModeAsync({
+  //     allowsRecordingIOS: false,
+  //     staysActiveInBackground: true,
+  //     interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
+  //     playsInSilentModeIOS: true,
+  //     shouldDuckAndroid: true,
+  //     interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
+  //     playThroughEarpieceAndroid: false
+  //  });
     // this.initposition();
   }
 
@@ -272,14 +272,14 @@ export default class Game extends Component {
           ...this.state,
           profile: ''
         })
-        this.wrongSearch();
+        this.wrongSearch(err.response.data.message);
       }else{
         console.log("AXIOS GAME SEARCH ERROR: ", err.response.data.message);
         this.setState({
           ...this.state,
           profile: ''
         })
-        this.wrongSearch();
+        this.wrongSearch(err.response.data.message);
   
       }
     });
@@ -368,14 +368,14 @@ export default class Game extends Component {
                           <View style={styles.inputWrapper}>
                             <TextInput
                                 style={styles.input}
-                                value = {this.state.search}
-                                onChangeText = {(search) => {this.setState({...this.state, search: search})}}
-                                placeholder = 'ค้นหาเบอร์โทรศัทพ์'
-                                keyboardType = 'numeric'
-                                onSubmitEditing = {()=>{this._fetchResults()}}
+                                value={this.state.search}
+                                onChangeText={(search) => {this.setState({...this.state, search: search})}}
+                                placeholder='ค้นหาเบอร์โทรศัทพ์'
+                                keyboardType='numeric'
+                                onSubmitEditing={()=>{this._fetchResults()}}
                                 />
                           </View>
-                          <TouchableOpacity style={styles.inputButton} onPress = {()=>{this._fetchResults()}} underlayColor = 'transparent'>
+                          <TouchableOpacity style={styles.inputButton}  onPress={()=>{this._fetchResults()}} underlayColor = 'transparent'>
                               <Text style={styles.buttonText} >
                                 GO
                               </Text>
@@ -543,7 +543,7 @@ const styles = StyleSheet.create({
 
     },
     input: {
-      fontFamily: 'Kanit-Black',
+      fontFamily: 'Kanit-Medium',
       flex:1,
       alignItems:'center',
       justifyContent:'center',
@@ -555,7 +555,7 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     inputButton: {
-      fontFamily: 'Kanit-Black',
+      fontFamily: 'Kanit-Medium',
       alignItems:'center',
       height: 60,
       width: 80,
@@ -563,7 +563,7 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     buttonText: {
-      fontFamily: 'Kanit-Black',
+      fontFamily: 'Kanit-Medium',
       textAlign: 'center',
       textAlignVertical: 'center', 
       color: 'white',
@@ -573,14 +573,14 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     registerText: {
-      fontFamily: 'Kanit-Black',
+      fontFamily: 'Kanit-Medium',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: "center",
         textAlignVertical: "center",
-        fontSize: 50,
+        fontSize: 70,
         color: '#fff',
-        height: 80,
+        height: 110,
         width: width/1.5,
         zIndex: 100,
         marginBottom: 50
@@ -726,7 +726,7 @@ const styles = StyleSheet.create({
       zIndex: 100
     },
     submitText: {
-      fontFamily: 'Kanit-Black',
+      fontFamily: 'Kanit-Medium',
       fontSize: 16,
       color: 'white',
     },
@@ -773,7 +773,7 @@ const styles = StyleSheet.create({
       padding: 10,
     },
     title: {
-      fontFamily: 'Kanit-Black',
+      fontFamily: 'Kanit-Medium',
       alignItems: 'center',
       justifyContent: 'center',
       textAlignVertical: "center",
@@ -809,7 +809,7 @@ const styles = StyleSheet.create({
       zIndex: 100,
     },
     submitText: {
-      fontFamily: 'Kanit-Black',
+      fontFamily: 'Kanit-Medium',
       fontSize: 16,
       color: 'white',
     }
