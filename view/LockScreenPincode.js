@@ -256,7 +256,6 @@ export default class LockScreenPinCode extends Component {
         'รหัส PIN ไม่ถูกต้อง',
         'กรุณาลองใหม่',
         [
-          {text: 'ตกลง', onPress: () => this.setState({...this.state, pincode: ['','','','','',''], isLoading: false})},
           {text: 'ปิด', onPress: () => this.setState({...this.state, pincode: ['','','','','',''], isLoading: false})},
         ],
         { cancelable: false });
