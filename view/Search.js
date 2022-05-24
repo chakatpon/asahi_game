@@ -347,7 +347,6 @@ export default class Game extends Component {
       message || 'ไม่พบเบอร์โทรศัพท์ดังกล่าวลงทะเบียน',
       'กรุณาลองใหม่',
       [
-        {text: 'ตกลง', onPress: () => {console.log('Close dialog')}},
         {text: 'ปิด', onPress: () => {console.log('Close dialog')}},
       ],
       { cancelable: false });
@@ -623,7 +622,6 @@ const styles = StyleSheet.create({
         zIndex: 100
     },
     searchBox: {
-        marginTop: -350,
         alignItems: 'center',
         justifyContent: 'center',
         height: height,
@@ -914,8 +912,8 @@ const styles = StyleSheet.create({
       color: 'white',
     },
     searchResultContainer: {
-        position: 'absolute',
-        top: 80,
+        position: 'relative',
+        marginTop: -600,
         alignItems: 'center',
         justifyContent: 'center',
         height: height,
@@ -954,6 +952,13 @@ const styles = StyleSheet.create({
         height: 500,
         width: width/1.3,
         zIndex: 100
+    },
+    registerLogoWrapper: {
+      position: 'absolute',
+      bottom:-9,
+      right: -66, 
+      width: width/3,
+      zIndex: 200
     }
   });
   
