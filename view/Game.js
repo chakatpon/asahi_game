@@ -22,7 +22,10 @@ import * as Device from 'expo-device';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import { Audio } from 'expo-av';
+
+import { useNavigationState } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
+
 
 
 const { width, height } = Dimensions.get('window')
@@ -44,12 +47,14 @@ export default class Game extends Component {
         paths       : [],
         search      : '',
         profile     : '',
-        token       : ''
+        token       : '',
+        // hasSearch           : props.route.params ? props.route.params.hasSearch : false,
+        // search_game_url     : props.route.params ? props.route.params.search_game_url : false,
+        // search_user_token   : props.route.params ? props.route.params.search_user_token : false,
       }
     }
 
   UNSAFE_componentWillMount() {
-
     this.panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: this.handlePanResponderMove.bind(this)
@@ -76,6 +81,55 @@ export default class Game extends Component {
 
 
   }
+
+
+
+//   componentDidUpdate(previousProps, previousState) {
+//     // const prestate = {
+//     //   hasSearch: this.props.route.params.hasSearch,
+//     //   search_game_url: this.props.route.params.search_game_url,
+//     //   search_user_token: this.props.route.params.search_user_token
+//     // }
+//     // this.props.route.params.onNavigateBack(...prestate)
+//     if (previousProps.route.params.hasSearch !== previousState.hasSearch) {
+//       this.setState({
+//         ...this.state,
+//         hasSearch: this.props.route.params.hasSearch,
+//         search_game_url: this.props.route.params.search_game_url,
+//         search_user_token: this.props.route.params.search_user_token
+  
+//       })
+//     }
+// }
+
+// componentWillReceiveProps(nextProps) {
+//   // Any time props.email changes, update state.    
+//   this.setState({
+//       hasSearch: this.props.route.params.hasSearch,
+//       search_game_url: this.props.route.params.search_game_url,
+//       search_user_token: this.props.route.params.search_user_token
+//     });
+//   if (nextProps.route.params.hasSearch !== this.props.route.params.hasSearch) {
+//     this.setState({
+//       hasSearch: this.props.route.params.hasSearch,
+//       search_game_url: this.props.route.params.search_game_url,
+//       search_user_token: this.props.route.params.search_user_token
+//     });
+//   }
+// }
+
+// static getDerivedStateFromProps(props, state) {
+//   // Any time the current user changes,
+//   // Reset any parts of state that are tied to that user.
+//   // In this simple example, that's just the email.
+//     return {
+//       hasSearch: props.route.params.hasSearch,
+//       search_game_url: props.route.params.search_game_url,
+//       search_user_token: props.route.params.search_user_token
+//     };
+  
+// }
+
   
 
   findWebView(id) {
@@ -104,7 +158,14 @@ export default class Game extends Component {
   }
 
   componentDidMount() {
-    console.log('componentDidMount');
+    console.log('componentDidMount');      
+    // this.setState({
+    //   ...this.state,
+    //   hasSearch: this.props.route.params.hasSearch,
+    //   search_game_url: this.props.route.params.search_game_url,
+    //   search_user_token: this.props.route.params.search_user_token
+
+    // })
   //   Audio.setAudioModeAsync({
   //     allowsRecordingIOS: false,
   //     staysActiveInBackground: true,

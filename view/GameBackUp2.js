@@ -36,14 +36,14 @@ export default class Game extends Component {
     constructor(props){
       super(props);
       this.state = {
-        isInit      : true,
-        isRunnig    : false,
-        isStop      : false,
-        accessToken : '',
-        paths       : [],
-        search      : '',
-        profile     : '',
-        token       : ''
+        isInit              : true,
+        isRunnig            : false,
+        isStop              : false,
+        accessToken         : '',
+        paths               : [],
+        search              : '',
+        profile             : '',
+        token               : ''
       }
     }
 
@@ -326,7 +326,7 @@ export default class Game extends Component {
               <View style={styles.panelWrapper}>
                 <View style={styles.registerContainer}>
                     <View style={styles.registerBox}>
-                      {!this.state.profile 
+                      {!this.state.profile && !this.props.hasSearch
                       ? <View style={styles.searchBox}>
                           <Text style={styles.registerText}>Search</Text>
                           <View style={styles.inputWrapper}>
