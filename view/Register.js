@@ -362,7 +362,7 @@ export default function Register ({navigation}) {
                       </View>
 
                         <View style={styles.policySubmitWrapper} >
-                          <TouchableOpacity style={styles.policySubmit} onPress={() => {setPolicyOpen(false)}}>
+                          <TouchableOpacity style={styles.policySubmit} onPress={() => {setSelection(true); setPolicyOpen(false)}}>
                             <Text style={styles.submitText}>ยอมรับเงื่อไขเพื่อเข้าร่วมกิจกรรม</Text>
                           </TouchableOpacity>
                         </View>
