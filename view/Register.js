@@ -19,6 +19,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 import * as Device from 'expo-device';
+import { WebView } from 'react-native-webview';
 
 const { width, height } = Dimensions.get('window');
 
@@ -36,6 +37,8 @@ export default function Register ({navigation}) {
   const [refOTP, setRefOTP]         = useState('');
   const [token, setToken]           = useState('');
   const [profile, setProfile]       = useState('');
+  const [isPolicyOpen, setPolicyOpen] =  useState(false);
+  const [tac_url, set_tac_url] = useState('');
 
 
   useEffect(() => {
@@ -44,6 +47,12 @@ export default function Register ({navigation}) {
       const token = JSON.parse(data)
       console.log("GET Token FROM STORE : ", token)
       setToken(token)
+    });
+    AsyncStorage.getItem('@tac_url')
+      .then((data) => {
+      const tac_url = JSON.parse(data)
+      console.log("GET Token FROM STORE : ", tac_url)
+      set_tac_url(tac_url)
     });
   },[])
 
@@ -228,7 +237,10 @@ export default function Register ({navigation}) {
                                   </View>
                                   <TouchableOpacity style={styles.linkWrapper}>
                                     <Text style={styles.link}
-                                          onPress={() => Linking.openURL('https://www.google.com')}>
+                                          onPress={() => {
+
+                                            setPolicyOpen(true);
+                                            }}>
                                       อ่านโยบายความปลอดภัย
                                     </Text>
                                   </TouchableOpacity>
@@ -317,6 +329,44 @@ export default function Register ({navigation}) {
                               </View>
                           </View>
                       </View>: null}
+
+                      {isPolicyOpen&&<View  style={styles.policyContainer}>
+                        <View style={styles.policyContent}>
+                      <WebView  onMessage={(event) => {
+                          console.log("CALLBACK EVENT : ", event)
+                          const data = JSON.parse(event.nativeEvent.data);
+                          console.log("CALLBACK EVENT DATA: ", data)
+                          // this.setState({
+                          //   ...this.state,
+                          //   winner: true,
+                          //   ...data.stop_item
+                          // })
+                          /* CALLBACK EVENT
+                          รับข้อมูลที่ส่งมาผ่าน event.nativeEvent.data
+                          */
+                        }} 
+                        mediaPlaybackRequiresUserAction={false}
+                        allowsInlineMediaPlayback={true}
+                        originWhitelist={['*']} 
+                        source={{ 
+                          uri: "https://asahigame.dev.kanda.digital/tac" ,
+                          headers: {
+                            'Authorization': token,
+                          },
+                        }} 
+                        injectedJavaScriptBeforeContentLoaded={`
+                          window.isNativeApp = true;
+                        `}
+                        style={{ width : width/1.2 , height : height/2.5 , flex : 1 , backgroundColor: 'transparent' }} 
+                      />
+                      </View>
+
+                        <View style={styles.policySubmitWrapper} >
+                          <TouchableOpacity style={styles.policySubmit} onPress={() => {setPolicyOpen(false)}}>
+                            <Text style={styles.submitText}>ยอมรับเงื่อไขเพื่อเข้าร่วมกิจกรรม</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>}
                       
                     <ImageBackground source={require("../assets/images/register/background.png")} style={styles.backgroundImage}  />
                   </View>
@@ -598,6 +648,53 @@ const styles = StyleSheet.create({
       backgroundColor: 'red',
       zIndex: 100
     },
+    policyContainer: {
+        position: 'absolute',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        top: 177,
+        width: width/1.1,
+        height: height/1.45,
+        backgroundColor: '#000',
+        zIndex: 300
+    },
+
+    policyContent: {
+      top: 50,
+      position: 'absolute',
+      marginTop: -10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: width/1.2,
+      height: height/1.75,
+      backgroundColor: '#fff',
+      flexWrap: 'wrap',
+      overflowZ: 'scroll',
+      overflowY: 'scroll',
+      zIndex: 300
+  },
+  policySubmitWrapper: {
+    position: 'absolute',
+    bottom: 30,
+    width: 400,
+    height: 90,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: "center",
+    textAlignVertical: "center",
+    zIndex: 300
+  },
+  policySubmit: {
+    width: 280,
+    height: 45,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: "center",
+    textAlignVertical: "center",
+    backgroundColor: 'red',
+    zIndex: 300
+  }
 
   });
   

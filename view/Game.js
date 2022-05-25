@@ -431,7 +431,7 @@ export default class Game extends Component {
                                 style={styles.input}
                                 value={this.state.search}
                                 onChangeText={(search) => {this.setState({...this.state, search: search})}}
-                                placeholder='ค้นหาเบอร์โทรศัทพ์'
+                                placeholder='ค้นหาเบอร์โทรศัพท์'
                                 keyboardType='numeric'
                                 onSubmitEditing={()=>{this._fetchResults()}}
                                 />

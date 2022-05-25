@@ -203,6 +203,18 @@ export default class LockScreenPinCode extends Component {
       }
     }
 
+
+    storeTacURL = async (value) => {
+      try {
+        const jsonValue = await JSON.stringify(value)
+        console.log('set PATHS jsonValue : ', jsonValue)
+        await AsyncStorage.setItem('@tac_url', jsonValue)
+      } catch (e) {
+        // saving error
+        console.log('set token error : ', e)
+      }
+    }
+
     // storeID = async (value) => {
     //   try {
     //     const jsonValue = await JSON.stringify(value)
@@ -225,8 +237,10 @@ export default class LockScreenPinCode extends Component {
       }).then((res) => {
         console.log(`${endpoint}/events/info : `, res.data.cubic);
         const cubic = res.data.cubic
+        const tag_url = res.data.tag_url
         // const id = res.data.id
         console.log('CUBIC : ', cubic)
+        console.log('TAC_URL : ', tag_url)
         if(!cubic) {
           this.wrongEvent();
         }else {
@@ -240,6 +254,7 @@ export default class LockScreenPinCode extends Component {
           ]
           this.setState({...this.state, pincode: ['','','','','',''], isLoading: false,  paths: paths})
           this.storePath(paths);
+          this.storeTacURL(tag_url);
           // this.storeID(id);
           this.props.navigation.navigate('Home')
         }
